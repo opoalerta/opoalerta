@@ -26,10 +26,12 @@ from typing import Any
 import httpx
 
 RESEND_ENDPOINT = "https://api.resend.com/emails"
-FROM = os.environ.get("ALERTAS_FROM", "OpoAlerta <onboarding@resend.dev>")
-SITE_URL = os.environ.get("SITE_URL", "https://opoalerta.es")
+# `or` en vez de default: una variable de entorno vacía ("") no debe ganar al valor por defecto.
+FROM = os.environ.get("ALERTAS_FROM") or "OpoAlerta <onboarding@resend.dev>"
+SITE_URL = os.environ.get("SITE_URL") or "https://opoalerta.es"
 VENTANA_HORAS = 25
-TELEGRAM_MAX_ITEMS = 20
+TELEGRAM_MAX_ITEMS = 10
+TELEGRAM_TITULO_MAX = 130
 
 
 def _norm(s: str) -> str:
@@ -102,12 +104,18 @@ def _escape_html(s: str) -> str:
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+def _acorta(s: str, n: int) -> str:
+    return s if len(s) <= n else s[: n - 1].rstrip() + "…"
+
+
 def _render_telegram(convocatorias: list[dict[str, Any]]) -> str:
     n = len(convocatorias)
     lineas = [f"<b>{n} nueva{'s' if n != 1 else ''} convocatoria{'s' if n != 1 else ''}</b>", ""]
     for c in convocatorias[:TELEGRAM_MAX_ITEMS]:
-        lineas.append(f'• <a href="{c["url_oficial"]}">{_escape_html(c["titulo"])}</a>')
-        lineas.append(f"  {_escape_html(c['organismo'])} · {c['fuente_codigo'].upper()}")
+        titulo = _escape_html(_acorta(c["titulo"], TELEGRAM_TITULO_MAX))
+        org = _escape_html(_acorta(c["organismo"], 60))
+        lineas.append(f'• <a href="{c["url_oficial"]}">{titulo}</a>')
+        lineas.append(f"  {org} · {c['fuente_codigo'].upper()}")
     if n > TELEGRAM_MAX_ITEMS:
         lineas.append(f"\n…y {n - TELEGRAM_MAX_ITEMS} más en {SITE_URL}")
     lineas.append("\nPara darte de baja: /stop")
