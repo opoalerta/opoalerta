@@ -1,0 +1,20 @@
+{
+  "name": "OpoAlerta",
+  "short_name": "OpoAlerta",
+  "description": "Buscador unificado y gratuito de convocatorias de empleo público en España.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f5f6",
+  "theme_color": "#154273",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

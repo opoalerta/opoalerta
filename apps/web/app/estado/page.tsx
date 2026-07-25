@@ -1,6 +1,8 @@
 import { getEstado } from "@/lib/db";
+import { getBaseUrl } from "@/lib/site";
 import { Container } from "../components/Container";
 import { EstadoTable } from "../components/EstadoTable";
+import { JsonLd } from "../components/JsonLd";
 import { NoticeBox } from "../components/NoticeBox";
 import { PageHeader } from "../components/PageHeader";
 
@@ -8,13 +10,50 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Estado del servicio",
+  description:
+    "Consulta el estado de las fuentes de datos de OpoAlerta: BOE, boletines autonómicos, convocatorias ingeridas y última ejecución de los scrapers.",
+  alternates: { canonical: "/estado" },
 };
 
 export default async function Estado() {
   const fuentes = await getEstado();
+  const baseUrl = getBaseUrl();
+
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${baseUrl}/estado#webpage`,
+      url: `${baseUrl}/estado`,
+      name: "Estado del servicio — OpoAlerta",
+      description:
+        "Consulta el estado de las fuentes de datos de OpoAlerta: BOE, boletines autonómicos, convocatorias ingeridas y última ejecución de los scrapers.",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+      inLanguage: "es-ES",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: baseUrl,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Estado del servicio",
+          item: `${baseUrl}/estado`,
+        },
+      ],
+    },
+  ];
 
   return (
     <Container className="py-12">
+      <JsonLd data={structuredData} />
       <PageHeader
         title="Estado del servicio"
         lead="Convocatorias ingeridas por fuente y fecha de la última ingesta. La ingesta del BOE corre a diario a las 06:00 UTC."

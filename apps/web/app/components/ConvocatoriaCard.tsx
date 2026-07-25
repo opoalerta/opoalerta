@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Convocatoria } from "@/lib/db";
 
 const CCAA_NOMBRE: Record<string, string> = {
@@ -20,8 +21,8 @@ export function ConvocatoriaCard({ convocatoria }: { convocatoria: Convocatoria 
       : CCAA_NOMBRE[convocatoria.ccaa ?? ""] ?? convocatoria.ambito;
 
   return (
-    <a
-      href={convocatoria.url_oficial}
+    <Link
+      href={`/convocatoria/${convocatoria.id}`}
       className="group block rounded border border-[#e5e5e5] bg-white p-4 no-underline shadow-sm transition hover:border-[#01689b] hover:shadow-md"
     >
       <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-[#595959]">
@@ -35,6 +36,6 @@ export function ConvocatoriaCard({ convocatoria }: { convocatoria: Convocatoria 
         {convocatoria.titulo}
       </h3>
       <p className="text-sm text-[#595959]">{convocatoria.organismo}</p>
-    </a>
+    </Link>
   );
 }

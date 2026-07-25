@@ -1,10 +1,19 @@
+import { getBaseUrl } from "@/lib/site";
 import { getConvocatorias, getEstado } from "@/lib/db";
 import { Container } from "./components/Container";
 import { ConvocatoriaSearch } from "./components/ConvocatoriaSearch";
 import { FeatureBlock } from "./components/FeatureBlock";
+import { JsonLd } from "./components/JsonLd";
 import { NoticeBox } from "./components/NoticeBox";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Inicio",
+  description:
+    "Buscador gratuito de convocatorias de empleo público, oposiciones y ofertas de empleo en España. Datos oficiales del BOE y boletines autonómicos, con alertas por email.",
+  alternates: { canonical: "/" },
+};
 
 const FUENTES = [
   { codigo: "BOE", nombre: "Boletín Oficial del Estado", estado: "activo" },
@@ -31,7 +40,7 @@ const FAQ = [
   {
     question: "¿Cómo puedo recibir alertas?",
     answer:
-      "Por ahora puedes consultar la web y el estado del servicio. Las alertas por email y Telegram están en la hoja de ruta de la Fase 1.",
+      "Puedes suscribirte por email desde la página principal. Guarda una búsqueda con tus filtros y te avisamos cuando salga una convocatoria que encaje contigo.",
   },
   {
     question: "¿Puedo contribuir o replicar el proyecto?",
@@ -53,8 +62,62 @@ export default async function Home() {
     .sort()
     .at(-1);
 
+  const baseUrl = getBaseUrl();
+
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "OpoAlerta",
+      url: baseUrl,
+      inLanguage: "es-ES",
+      description:
+        "Buscador unificado y gratuito de convocatorias de empleo público, oposiciones y ofertas de empleo en España.",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${baseUrl}/?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "OpoAlerta",
+      url: baseUrl,
+      sameAs: ["https://github.com/opoalerta/opoalerta"],
+      logo: `${baseUrl}/icon.svg`,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${baseUrl}/#webpage`,
+      url: baseUrl,
+      name: "OpoAlerta — Convocatorias de empleo público en España",
+      description:
+        "Buscador unificado y gratuito de convocatorias de empleo público, oposiciones y ofertas de empleo en España.",
+      isPartOf: { "@id": `${baseUrl}/#website` },
+      inLanguage: "es-ES",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQ.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    },
+  ];
+
   return (
     <>
+      <JsonLd data={structuredData} />
       <section className="bg-[#f3f5f6] py-16">
         <Container>
           <div className="max-w-3xl">
