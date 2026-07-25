@@ -19,6 +19,7 @@
 
 <p align="center">
   <a href="https://opoalerta.es"><b>🌐 opoalerta.es</b></a> ·
+  <a href="https://opoalerta.es/blog"><b>📝 Blog</b></a> ·
   <a href="https://t.me/opoalertbot"><b>🤖 Bot de Telegram</b></a> ·
   <a href="https://opoalerta.es/rss.xml"><b>📡 RSS</b></a>
 </p>
@@ -57,6 +58,7 @@ sociedad mejor presentados, siempre citando fuente y fecha.
 - **Alertas por email y Telegram** — doble confirmación (opt-in) y baja en un clic; cada día se envía lo nuevo que coincide.
 - **Ficha de convocatoria** — página propia por convocatoria, con enlace oficial y datos normalizados.
 - **Estado del servicio** — `/estado`: qué boletines están activos, su última ejecución y las nuevas por fuente.
+- **Blog** — `/blog`: guías y recursos sobre oposiciones, convocatorias y el funcionamiento del proyecto.
 
 <table>
   <tr>
@@ -123,7 +125,8 @@ datos reales en local, exporta `DATABASE_URL` (Postgres) y aplica `data/schema/*
 **Estructura del repo:**
 
 ```
-apps/web/             Next.js: buscador, alertas, /estado, fichas, RSS
+apps/web/             Next.js: buscador, alertas, /estado, fichas, RSS, blog
+apps/web/content/     Contenido estático del blog (Markdown + frontmatter)
 scrapers/             Python: un módulo por boletín + interfaz común + tests
 packages/normalizer/  Esquema común de convocatoria (JSON Schema)
 data/schema/          Esquema de base de datos (SQL, migraciones incrementales)
@@ -179,6 +182,7 @@ citan siempre con enlace y fecha.
 <p align="center">
   <a href="https://opoalerta.es">🌐 Web</a> ·
   <a href="https://opoalerta.es">▶️ Demo en vivo</a> ·
+  <a href="https://opoalerta.es/blog">📝 Blog</a> ·
   <a href="https://t.me/opoalertbot">🤖 Bot de Telegram</a> ·
   <a href="https://opoalerta.es/rss.xml">📡 RSS</a> ·
   <a href="https://ko-fi.com/I2I31CXQVM">☕ Invítanos a un café</a>
