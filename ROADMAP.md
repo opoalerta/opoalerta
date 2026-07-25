@@ -1,6 +1,6 @@
 # Roadmap
 
-## Fase 0 — Fundación ✅ (en curso)
+## Fase 0 — Fundación ✅ (completada)
 
 - Repositorio con licencias (AGPL-3.0 / CC BY-SA 4.0 / ODbL), CONTRIBUTING, gobernanza.
 - Esquema común de convocatoria (JSON Schema) y esquema de base de datos.
@@ -9,7 +9,7 @@
 - Web mínima: landing + página `/estado`.
 - Dominio `opoalerta.es`.
 
-## Fase 1 — MVP
+## Fase 1 — MVP 🚧 (en curso)
 
 - Scrapers **BOE + BOJA (Andalucía) + BOCM (Madrid) + DOGV (Valencia)**: cubren >50% de las convocatorias.
 - Base de datos real (Supabase) con ingesta diaria automatizada.

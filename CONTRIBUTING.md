@@ -23,6 +23,8 @@ python -m boe --dry-run
 # Web (opcional para trabajar solo en scrapers)
 cd ../apps/web
 pnpm install
+pnpm lint        # eslint directamente (next lint se eliminó en Next.js 16)
+pnpm build
 pnpm dev
 ```
 
@@ -51,8 +53,10 @@ Hay 19 boletines oficiales (17 CCAA + Ceuta y Melilla). Cada uno que falta es un
 - **Tests obligatorios** para todo scraper (offline, con fixture).
 - **[Conventional Commits](https://www.conventionalcommits.org/es/)**: `feat(boja): añade scraper de Andalucía`, `fix(boe): ...`.
 - **Scraping respetuoso**: usa APIs/datos abiertos oficiales cuando existan, respeta rate limits, identifícate con un User-Agent claro, cita siempre la fuente.
-- Todo PR pasa CI (ruff + pytest + build web) y requiere revisión de al menos un mantenedor.
+- Todo PR pasa CI (`ruff` + `pytest` + `pnpm lint` + `pnpm build`) y requiere revisión de al menos un mantenedor.
 - Sigue el estilo del código existente. `ruff` formatea y lintea Python.
+- Si trabajas en la web, sigue el [diseño institucional documentado en `apps/web/DESIGN.md`](apps/web/DESIGN.md): paleta, tipografía, componentes y accesibilidad.
+- Si cambias dependencias principales (Next.js, React, Tailwind, ESLint), actualiza también `apps/web/DESIGN.md` y `docs/guia-proteccion-proyecto.md` si es necesario.
 
 ## Flujo de trabajo
 

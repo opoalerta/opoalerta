@@ -21,6 +21,17 @@ El rediseño toma como referencia el estilo visual de las administraciones neerl
 - Cajas de aviso con borde lateral de color.
 - Tablas con encabezados azules y filas alternadas suaves.
 
+## Stack
+
+- **Framework**: Next.js 16 App Router.
+- **UI**: React 19.2, React DOM 19.2, Tailwind CSS 4.
+- **Linter**: ESLint 9 con flat config (`eslint.config.mjs` importando `eslint-config-next`).
+- **Base de datos**: PostgreSQL vía Neon (`@neondatabase/serverless`).
+- **Despliegue**: Vercel.
+- No se usan librerías de componentes externas ni iconos de terceros.
+
+> El comando de lint es `pnpm lint`, que ejecuta `eslint .`. Next.js 16 eliminó el comando `next lint`, así que usamos ESLint directamente.
+
 ## Sistema visual
 
 ### Paleta de colores
@@ -164,12 +175,16 @@ Tabla de fuentes con columnas:
 - **Buscador en cliente**: filtra las 30 convocatorias cargadas sin añadir backend, manteniendo la página principal como Server Component para el fetch inicial.
 - **Layout compartido**: Header y Footer se incluyen en `layout.tsx` para no repetir código en cada página.
 - **Estilos globales con baja especificidad**: en `globals.css` los estilos base de enlaces (`:where(a)`) y código (`:where(code)`) usan `:where()` para no anular las clases utilitarias de Tailwind (por ejemplo, `text-white` o `no-underline` en la cabecera).
+- **ESLint flat config nativa**: en Next.js 16 se eliminó `next lint`, por lo que `eslint.config.mjs` usa directamente los paquetes `eslint-config-next` y `eslint-config-next/typescript` sin `FlatCompat`.
+- **Next.js gestiona `tsconfig.json`**: el build de Next.js 16 añade automáticamente `jsx: react-jsx` e include `.next/dev/types/**/*.ts` en `tsconfig.json`.
 
 ## Cómo probar el diseño
 
 ```bash
 cd apps/web
 pnpm install
+pnpm lint        # eslint directamente (next lint se eliminó en Next.js 16)
+pnpm build
 pnpm dev
 ```
 

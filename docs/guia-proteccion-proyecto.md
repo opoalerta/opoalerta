@@ -20,37 +20,37 @@ Antes de proteger el repositorio, protege la cuenta que tiene el control.
 
 ---
 
-## Paso 2: Configurar branch protection en `main`
+## Paso 2: Configurar ruleset de protección en `main`
 
-Esta es la regla más importante: **nadie puede modificar `main` directamente**, ni siquiera tú. Todo debe pasar por un *pull request* revisado.
+La forma recomendada en GitHub actual es usar **Rulesets** (Settings → Rules → Rulesets), no las reglas clásicas de rama. Un ruleset permite reutilizar la misma configuración, auditar cambios y aplicarla a varias ramas.
 
 1. Entra en tu repositorio: `https://github.com/opoalerta/opoalerta`.
-2. Ve a **Settings → Branches**.
-3. Pulsa **Add rule** (o edita la regla si ya existe).
-4. En **Branch name pattern**, escribe: `main`.
-5. Activa estas opciones:
+2. Ve a **Settings → Rules → Rulesets**.
+3. Pulsa **New ruleset → New branch ruleset**.
+4. Rellena:
+   - **Ruleset name**: `main-protection`.
+   - **Enforcement status**: `Active`.
+   - **Bypass list**: solo añade aquí si necesitas bypass para deploys automáticos. Como admin, evita añadirte a ti mismo para no saltarte tus propias reglas por descuido.
+   - **Target branches**: añade un target con **Default branch** (o patrón `main`).
+5. En **Branch rules**, activa:
+   - ☑ **Restrict deletions** (evita borrar `main`).
+   - ☑ **Require linear history** (sin merge commits).
+   - ☑ **Block force pushes**.
    - ☑ **Require a pull request before merging**
-     - ☑ **Require approvals**: pon `1` (o más si tienes mantenedores de confianza).
-     - ☑ **Dismiss stale PR approvals when new commits are pushed**
-     - ☑ **Require review from CODEOWNERS** (opcional, ver más abajo).
-   - ☑ **Require status checks to pass before merging**
-     - Busca y marca los checks que ya tengas, por ejemplo:
-       - `ci` (si lo tienes configurado)
-       - `build-web` o similar
-       - Checks de Vercel (aparecen cuando hay un PR)
-   - ☑ **Require conversation resolution before merging**
-   - ☑ **Require linear history** (recomendado para mantener la historia limpia)
-   - ☑ **Include administrators** (para que la regla también te afecte a ti)
-   - ☑ **Restrict pushes that create files larger than 5 MiB** (opcional, evita archivos enormes)
-6. Guarda los cambios con **Create** o **Save changes**.
+     - **Required approving review count**: `1` si tienes colaboradores de confianza; `0` si eres el único mantenedor (un autor no puede aprobar su propio PR).
+     - ☑ **Dismiss stale pull request approvals when new commits are pushed**.
+   - ☑ **Require status checks to pass**
+     - ☑ **Require branches to be up to date before merging**.
+     - Añade los checks exactos de tu CI:
+       - `Scrapers (ruff + pytest)`
+       - `Web (lint + build)`
+6. Guarda con **Create**.
 
-A partir de ahora, para cambiar `main` se necesita:
+> **Nota importante**: en GitHub, el autor de un pull request **no puede aprobar su propio PR**. Si eres el único mantenedor, la opción más práctica es dejar `Required approving review count` en `0` y confiar en que los checks de CI bloqueen cualquier PR roto. Si pones `1`, tendrás que usar el botón **“Bypass rules and merge”** para tus propios PRs, lo cual anula la protección.
 
-1. Crear una rama.
-2. Abrir un *pull request*.
-3. Que pasen los checks automáticos.
-4. Que alguien lo apruebe (tú mismo si eres el único, o un mantenedor).
-5. Hacer *merge* desde GitHub.
+### Si ya existe la regla clásica
+
+Si tienes una regla antigua en **Settings → Branches**, bórrala o desactívala para evitar que entre en conflicto con el ruleset nuevo.
 
 ---
 
@@ -69,7 +69,7 @@ A partir de ahora, para cambiar `main` se necesita:
 
 ---
 
-## Paso 4: Usar CODEOWNERS para revisión obligatoria
+## Paso 4: Usar CODEOWNERS para revisión obligatoria (opcional)
 
 Un archivo `CODEOWNERS` permite exigir que ciertos archivos o carpetas sean revisados por personas específicas.
 
@@ -78,20 +78,20 @@ Un archivo `CODEOWNERS` permite exigir que ciertos archivos o carpetas sean revi
 
 ```text
 # Todo el repositorio requiere aprobación del propietario
-* @opoalerta
+* @zaswear
 
 # La web solo puede cambiar con tu aprobación
-apps/web/ @opoalerta
+apps/web/ @zaswear
 
 # Los scrapers y datos son especialmente sensibles
-scrapers/ @opoalerta
-data/ @opoalerta
+scrapers/ @zaswear
+data/ @zaswear
 ```
 
 3. Guarda el archivo en `main`.
-4. En la regla de branch protection, activa **Require review from CODEOWNERS**.
+4. En el ruleset, activa **Require review from CODEOWNERS** si quieres que sea obligatorio.
 
-> Asegúrate de que `@opoalerta` sea tu nombre de usuario real de GitHub. Si no, cámbialo por el tuyo.
+> Sustituye `@zaswear` por tu nombre de usuario real de GitHub.
 
 ---
 
@@ -110,37 +110,76 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   scrapers:
+    name: Scrapers (ruff + pytest)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scrapers
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: cd scrapers && pip install -e ".[dev]" && ruff check . && pytest
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest -q
 
   web:
+    name: Web (lint + build)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: cd apps/web && npm install -g pnpm && pnpm install && pnpm lint && pnpm build
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint      # ejecuta eslint . (next lint se eliminó en Next.js 16)
+      - run: pnpm build
 ```
 
 Si no tienes `ruff`, `pytest`, `pnpm lint` o `pnpm build`, añádelos.
 
 ### 5.2 Proteger los checks
 
-En la regla de branch protection del Paso 2, marca los checks que correspondan a estos jobs. Si los nombres de los jobs son `scrapers` y `web`, los checks se llamarán `CI / scrapers` y `CI / web`.
+En el ruleset del Paso 2, añade los checks obligatorios con los nombres exactos de los jobs de CI:
+
+- `Scrapers (ruff + pytest)`
+- `Web (lint + build)`
+
+GitHub los muestra con esos nombres exactos en la lista de checks de cada PR.
 
 ---
 
-## Paso 6: Configurar Vercel de forma segura
+## Paso 6: Gestionar PRs de Dependabot
+
+Dependabot abre PRs automáticos para actualizar dependencias. **No los mergees a ciegas**.
+
+1. **No mergees nunca un PR con ❌** en los checks.
+2. Si el PR está anticuado y falla por un workflow corregido en `main`, escribe un comentario con `@dependabot rebase` para que actualice la rama.
+3. Revisa si la actualización es **major** (cambia el primer número de versión, por ejemplo `15 → 16`). Los cambios major pueden romper el build y requieren revisión manual.
+4. Actualizaciones de **GitHub Actions** (`actions/checkout`, `actions/setup-node`, etc.) suelen ser seguras si pasan los checks.
+5. Actualizaciones menores y de parche (`^1.2.3 → ^1.2.4`) generalmente son seguras si pasan CI.
+
+---
+
+## Paso 7: Configurar Vercel de forma segura
 
 La web se despliega en Vercel. Es importante que solo se despliegue desde tu repo y tu rama `main`.
 
@@ -156,7 +195,7 @@ La web se despliega en Vercel. Es importante que solo se despliegue desde tu rep
 7. Si hay otras variables (tokens de Telegram, claves de API), configúralas solo en el entorno necesario y no en *Preview* si no es imprescindible.
 8. En **Settings → General**, activa **Protection Bypass for Automation** solo si es necesario para CI; en general, mantenlo desactivado.
 
-### 6.1 Revertir un deploy rápidamente
+### 7.1 Revertir un deploy rápidamente
 
 Si algo malo llega a producción:
 
@@ -168,7 +207,7 @@ Así la web vuelve a la versión anterior en segundos, sin depender de GitHub.
 
 ---
 
-## Paso 7: Establecer un proceso de revisión de PRs
+## Paso 8: Establecer un proceso de revisión de PRs
 
 Aunque tengas checks automáticos, la revisión humana es clave.
 
@@ -186,7 +225,7 @@ Si algo no te convence, pide cambios con **Request changes** en lugar de aceptar
 
 ---
 
-## Paso 8: Proteger datos e inputs de usuarios (cuando añadas interacción)
+## Paso 9: Proteger datos e inputs de usuarios (cuando añadas interacción)
 
 Ahora la web es principalmente lectura. Cuando añadas alertas, filtros guardados o suscripciones:
 
@@ -200,7 +239,7 @@ Ahora la web es principalmente lectura. Cuando añadas alertas, filtros guardado
 
 ---
 
-## Paso 9: Monitorear y mantener el proyecto
+## Paso 10: Monitorear y mantener el proyecto
 
 1. Activa las notificaciones de GitHub para:
    - Nuevos PRs e issues.
@@ -209,7 +248,7 @@ Ahora la web es principalmente lectura. Cuando añadas alertas, filtros guardado
    - Los **Dependabot alerts** si los activas (GitHub avisa de dependencias vulnerables).
    - Los **secretos** del repo para que no hayan quedado expuestos.
    - Los **deploys** de Vercel.
-3. Mantén actualizados `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` y `SECURITY.md`.
+3. Mantén actualizados `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `apps/web/DESIGN.md` y esta guía.
 4. Si un contribuidor rompe las reglas repetidamente, bloquéalo o revócale el acceso.
 
 ---
@@ -219,11 +258,11 @@ Ahora la web es principalmente lectura. Cuando añadas alertas, filtros guardado
 | Acción | Hecho |
 |--------|-------|
 | 2FA activado en tu cuenta de GitHub | [ ] |
-| Branch protection activado en `main` | [ ] |
-| Requiere PR y aprobación antes de mergear | [ ] |
+| Ruleset `main-protection` creado y activo | [ ] |
+| Requiere PR antes de mergear | [ ] |
 | Checks de CI obligatorios antes de mergear | [ ] |
 | Colaboradores revisados y con permisos mínimos | [ ] |
-| Archivo `.github/CODEOWNERS` creado | [ ] |
+| Archivo `.github/CODEOWNERS` creado (si se desea) | [ ] |
 | Variables de entorno en Vercel protegidas | [ ] |
 | Deploys solo desde `main` | [ ] |
 | Proceso de revisión de PRs definido | [ ] |
@@ -233,10 +272,11 @@ Ahora la web es principalmente lectura. Cuando añadas alertas, filtros guardado
 
 ## Conclusión
 
-Con estas medidas, el riesgo de que alguien publique tonterías en la web oficial se reduce prácticamente a cero:
+Con estas medidas, el riesgo de que alguien publique cambios no deseados en la web oficial se reduce prácticamente a cero:
 
 - **La web solo cambia cuando tú aceptas un PR bien revisado.**
 - **Los checks automáticos detectan errores antes de que lleguen a producción.**
 - **Vercel te permite volver atrás en segundos si algo sale mal.**
+- **Dependabot propone, pero tú decides** cuándo actualizar dependencias.
 
-Si quieres, el siguiente paso concreto es configurar la **branch protection** de `main` y crear el archivo `CODEOWNERS`.
+Si quieres, el siguiente paso concreto es revisar el ruleset de `main`, comprobar que los checks de CI son obligatorios y decidir si quieres añadir un archivo `CODEOWNERS`.
