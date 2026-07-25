@@ -24,7 +24,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["common"]
-py-modules = ["boe", "boja"]
+py-modules = ["boe", "boja", "bocm"]
 
 [tool.ruff]
 line-length = 100
