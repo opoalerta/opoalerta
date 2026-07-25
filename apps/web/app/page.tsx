@@ -24,7 +24,7 @@ const FUENTES = [
   { codigo: "BOIB", nombre: "Butlletí Oficial de les Illes Balears", estado: "activo" },
   { codigo: "EPSO", nombre: "Oposiciones de la Unión Europea (EPSO)", estado: "activo" },
   { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "previsto" },
-  { codigo: "BOPG", nombre: "Boletín Oficial de Pontevedra (Galicia)", estado: "previsto" },
+  { codigo: "DOG", nombre: "Diario Oficial de Galicia", estado: "activo" },
   { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
 ];
 
