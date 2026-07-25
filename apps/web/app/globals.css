@@ -30,13 +30,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+:where(a) {
   color: var(--color-link);
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }
 
-a:hover {
+:where(a:hover) {
   color: var(--color-link-hover);
 }
 
@@ -47,7 +47,7 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
-code {
+:where(code) {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   background: var(--color-surface);
   padding: 0.125rem 0.375rem;
