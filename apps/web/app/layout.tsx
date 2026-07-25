@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     "theme-color": "#154273",
   },
   verification: {
-    // Añade aquí tu código de Google Search Console: google: "TU_CODIGO",
+    google: "google-site-verification=oJMYPZXcvxXIKk5jAJe7rAImTWdwsyNRNzoJvQhR2W4",
   },
 };
 
