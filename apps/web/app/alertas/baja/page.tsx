@@ -4,7 +4,12 @@ import { Container } from "../../components/Container";
 import { NoticeBox } from "../../components/NoticeBox";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Darse de baja" };
+export const metadata = {
+  title: "Darse de baja",
+  description: "Cancela tu alerta de convocatorias de empleo público en OpoAlerta.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "/alertas/baja" },
+};
 
 export default async function Baja({
   searchParams,

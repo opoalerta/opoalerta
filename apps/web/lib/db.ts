@@ -82,3 +82,40 @@ export async function getEstado(): Promise<EstadoFuente[]> {
     return [];
   }
 }
+
+export async function getConvocatoriaById(id: string): Promise<Convocatoria | null> {
+  const sql = client();
+  if (!sql) return null;
+  try {
+    const rows = await sql`
+      SELECT id, titulo, organismo, ambito, ccaa,
+             fecha_publicacion::text AS fecha_publicacion,
+             fecha_fin_plazo::text AS fecha_fin_plazo,
+             url_oficial, fuente_codigo
+      FROM convocatorias
+      WHERE id = ${id}
+      LIMIT 1
+    `;
+    return (rows[0] as Convocatoria | undefined) ?? null;
+  } catch (err) {
+    console.error("getConvocatoriaById:", err);
+    return null;
+  }
+}
+
+export async function getConvocatoriaIds(limit = 1000): Promise<string[]> {
+  const sql = client();
+  if (!sql) return [];
+  try {
+    const rows = await sql`
+      SELECT id
+      FROM convocatorias
+      ORDER BY fecha_publicacion DESC, fecha_ingesta DESC
+      LIMIT ${limit}
+    `;
+    return rows.map((r) => (r as { id: string }).id);
+  } catch (err) {
+    console.error("getConvocatoriaIds:", err);
+    return [];
+  }
+}

@@ -4,7 +4,12 @@ import { Container } from "../../components/Container";
 import { NoticeBox } from "../../components/NoticeBox";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Confirmar alerta" };
+export const metadata = {
+  title: "Confirmar alerta",
+  description: "Confirma tu suscripción a alertas de convocatorias de empleo público en OpoAlerta.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "/alertas/confirmar" },
+};
 
 export default async function Confirmar({
   searchParams,
