@@ -1,0 +1,29 @@
+name: Migrar base de datos
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: db-migrate
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Aplicar esquema (data/schema/*.sql en orden)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::Falta el secret DATABASE_URL"
+            exit 1
+          fi
+          for f in $(ls data/schema/*.sql | sort); do
+            echo "── Aplicando $f"
+            psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$f"
+          done
+          echo "── Tablas resultantes:"
+          psql "$DATABASE_URL" -c "\dt"
