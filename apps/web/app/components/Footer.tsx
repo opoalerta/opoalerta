@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { LogoHorizontalDark } from "./Logo";
+import { getEstado } from "@/lib/db";
 
-export function Footer() {
+function faseLabel(activas: number) {
+  if (activas <= 1) return "Fase 1 · MVP";
+  if (activas <= 5) return "Fase 2 · Cobertura nacional";
+  return "Fase 3 · Consolidación";
+}
+
+export async function Footer() {
+  const estado = await getEstado();
+  const activas = estado.filter((e) => e.estado === "ok").length;
+
   return (
     <footer className="bg-navy text-white">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -95,7 +105,7 @@ export function Footer() {
           </div>
         </div>
         <div className="pt-4 text-sm text-white/70">
-          Proyecto cívico · Open source · Fase 1 · MVP
+          Proyecto cívico · Open source · {faseLabel(activas)}
         </div>
       </div>
     </footer>
