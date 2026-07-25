@@ -139,12 +139,18 @@ def _enviar_telegram(bot_token: str, chat_id: int, text: str) -> bool:
     return True
 
 
-def _fetch(conn) -> tuple[list[dict], list[dict]]:
+def _fetch(conn, force: bool = False) -> tuple[list[dict], list[dict]]:
     from datetime import UTC, datetime, timedelta
 
     from psycopg.rows import dict_row
 
     cutoff = datetime.now(UTC) - timedelta(hours=VENTANA_HORAS)
+    # Con --force se ignora el guard de 12h (envío manual).
+    guard = (
+        ""
+        if force
+        else "AND (ultima_notificada IS NULL OR ultima_notificada < now() - interval '12 hours')"
+    )
     with conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             """
@@ -158,12 +164,12 @@ def _fetch(conn) -> tuple[list[dict], list[dict]]:
         )
         nuevas = cur.fetchall()
         cur.execute(
-            """
+            f"""
             SELECT id, email, canal, telegram_chat_id, q, ccaa, ambito,
                    fuente_codigo, token, ultima_notificada
             FROM suscripciones
             WHERE confirmada = TRUE
-              AND (ultima_notificada IS NULL OR ultima_notificada < now() - interval '12 hours')
+              {guard}
             """
         )
         suscripciones = cur.fetchall()
@@ -189,6 +195,9 @@ def _notificar_una(susc: dict[str, Any], matches: list[dict], api_key, tg_token)
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Envío de alertas (email y Telegram)")
     parser.add_argument("--dry-run", action="store_true", help="No envía ni marca notificadas.")
+    parser.add_argument(
+        "--force", action="store_true", help="Ignora el guard de 12h (envío manual)."
+    )
     args = parser.parse_args(argv)
 
     dsn = os.environ.get("DATABASE_URL")
@@ -202,7 +211,7 @@ def main(argv: list[str] | None = None) -> int:
 
     enviados = 0
     with psycopg.connect(dsn) as conn:
-        nuevas, suscripciones = _fetch(conn)
+        nuevas, suscripciones = _fetch(conn, force=args.force)
         print(f"{len(nuevas)} convocatorias nuevas, {len(suscripciones)} suscripciones activas.")
         for susc in suscripciones:
             matches = [c for c in nuevas if coincide(c, susc)]
