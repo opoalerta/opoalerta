@@ -38,6 +38,14 @@ export function Footer() {
                   Contribuir
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://github.com/opoalerta/opoalerta"
+                  className="text-white no-underline hover:underline"
+                >
+                  Ver el código
+                </a>
+              </li>
             </ul>
           </div>
           <div>

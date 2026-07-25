@@ -73,7 +73,7 @@ Todos los componentes están en `app/components/`.
 ### `Footer`
 
 - Fondo azul oscuro, texto blanco, tres columnas en escritorio.
-- Columnas: descripción del proyecto, enlaces del proyecto, licencias y datos.
+- Columnas: descripción del proyecto, enlaces del proyecto (Estado, Roadmap, Contribuir, Ver el código), licencias y datos.
 - Nota final: "Proyecto cívico · Open source · Fase 1 · MVP".
 
 ### `Container`
@@ -131,7 +131,7 @@ Tabla de fuentes con columnas:
 
 ### `/` (home)
 
-1. **Hero**: título, descripción, CTAs a buscador y GitHub.
+1. **Hero**: título, descripción y CTA al buscador.
 2. **Aviso MVP**: explica la fase actual, la ingesta diaria y cómo reportar incidencias.
 3. **Buscador y convocatorias**: input funcional + tarjetas de las últimas 30 convocatorias.
 4. **Cómo funciona**: 3 bloques explicando ingesta, normalización y alertas futuras.
@@ -163,6 +163,7 @@ Tabla de fuentes con columnas:
 - **Sin iconos externos**: se usan solo elementos tipográficos y formas geométricas (círculos, badges) para evitar dependencias y mantener la carga ligera.
 - **Buscador en cliente**: filtra las 30 convocatorias cargadas sin añadir backend, manteniendo la página principal como Server Component para el fetch inicial.
 - **Layout compartido**: Header y Footer se incluyen en `layout.tsx` para no repetir código en cada página.
+- **Estilos globales con baja especificidad**: en `globals.css` los estilos base de enlaces (`:where(a)`) y código (`:where(code)`) usan `:where()` para no anular las clases utilitarias de Tailwind (por ejemplo, `text-white` o `no-underline` en la cabecera).
 
 ## Cómo probar el diseño
 
