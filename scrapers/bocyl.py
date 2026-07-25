@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import argparse
 import html
-import json
 import re
 import sys
 from datetime import UTC, datetime
@@ -26,7 +25,7 @@ from typing import Any
 import httpx
 
 from common.base import BaseScraper
-from common.db import has_database, upsert
+from common.runner import execute
 
 HOME_URL = "https://bocyl.jcyl.es/"
 BOLETIN_URL = "https://bocyl.jcyl.es/boletin.do?fechaBoletin={fecha}"
@@ -147,27 +146,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
-    scraper = BocylScraper()
-
-    convocatorias = scraper.run()
-    print(f"BOCYL: {len(convocatorias)} convocatorias (B.2 Oposiciones y Concursos).")
-
-    if args.out:
-        from pathlib import Path
-
-        out = Path(args.out)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(convocatorias, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"Escrito {out}")
-
-    if args.dry_run or not has_database():
-        if not args.dry_run:
-            print("Sin DATABASE_URL: modo dry-run (no se escribe en base de datos).")
-        return 0
-
-    nuevas, actualizadas = upsert(convocatorias, scraper.fuente())
-    print(f"Upsert: {nuevas} nuevas, {actualizadas} actualizadas.")
-    return 0
+    return execute(BocylScraper(), dry_run=args.dry_run, out=args.out)
 
 
 if __name__ == "__main__":

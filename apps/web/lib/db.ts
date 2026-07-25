@@ -17,6 +17,9 @@ export type EstadoFuente = {
   nombre: string;
   total: number;
   ultima_ingesta: string | null;
+  ultima_ejecucion: string | null;
+  estado: string | null;
+  ultimas_nuevas: number | null;
 };
 
 /**
@@ -57,10 +60,20 @@ export async function getEstado(): Promise<EstadoFuente[]> {
       SELECT f.codigo AS fuente_codigo,
              f.nombre,
              COUNT(c.id)::int AS total,
-             MAX(c.fecha_ingesta)::text AS ultima_ingesta
+             MAX(c.fecha_ingesta)::text AS ultima_ingesta,
+             r.iniciada_en::text AS ultima_ejecucion,
+             r.estado AS estado,
+             r.convocatorias_nuevas AS ultimas_nuevas
       FROM fuentes f
       LEFT JOIN convocatorias c ON c.fuente_codigo = f.codigo
-      GROUP BY f.codigo, f.nombre
+      LEFT JOIN LATERAL (
+        SELECT iniciada_en, estado, convocatorias_nuevas
+        FROM ingest_runs ir
+        WHERE ir.fuente_codigo = f.codigo
+        ORDER BY ir.iniciada_en DESC
+        LIMIT 1
+      ) r ON true
+      GROUP BY f.codigo, f.nombre, r.iniciada_en, r.estado, r.convocatorias_nuevas
       ORDER BY f.codigo
     `;
     return rows as EstadoFuente[];

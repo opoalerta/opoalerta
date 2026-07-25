@@ -13,6 +13,29 @@ function fmtInstante(iso: string | null): string {
   });
 }
 
+function EstadoBadge({ estado }: { estado: string | null }) {
+  const map: Record<string, { label: string; className: string }> = {
+    ok: { label: "OK", className: "bg-[#f4f9f0] text-[#39870c]" },
+    error: { label: "Error", className: "bg-[#fff4f4] text-[#d52b1e]" },
+    en_curso: { label: "En curso", className: "bg-[#fff8e6] text-[#8a6d00]" },
+  };
+  const s = estado ? map[estado] : undefined;
+  if (!s) {
+    return (
+      <span className="inline-flex items-center rounded bg-[#f3f5f6] px-2 py-1 text-xs font-medium text-[#595959]">
+        sin ejecuciones
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`inline-flex items-center rounded px-2 py-1 text-xs font-semibold ${s.className}`}
+    >
+      {s.label}
+    </span>
+  );
+}
+
 export function EstadoTable({ fuentes }: { fuentes: EstadoFuente[] }) {
   return (
     <div className="overflow-x-auto">
@@ -21,7 +44,8 @@ export function EstadoTable({ fuentes }: { fuentes: EstadoFuente[] }) {
           <tr className="border-b-2 border-[#01689b] bg-[#f3f5f6]">
             <th className="px-4 py-3 font-semibold text-[#154273]">Fuente</th>
             <th className="px-4 py-3 font-semibold text-[#154273]">Convocatorias</th>
-            <th className="px-4 py-3 font-semibold text-[#154273]">Última ingesta</th>
+            <th className="px-4 py-3 font-semibold text-[#154273]">Última ejecución</th>
+            <th className="px-4 py-3 font-semibold text-[#154273]">Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -38,13 +62,17 @@ export function EstadoTable({ fuentes }: { fuentes: EstadoFuente[] }) {
               </td>
               <td className="px-4 py-3 font-medium text-[#1a1a1a]">{f.total}</td>
               <td className="px-4 py-3 text-[#595959]">
-                {f.total > 0 ? (
-                  fmtInstante(f.ultima_ingesta)
-                ) : (
-                  <span className="inline-flex items-center rounded bg-[#fff4f4] px-2 py-1 text-xs font-medium text-[#d52b1e]">
-                    sin datos
-                  </span>
-                )}
+                {fmtInstante(f.ultima_ejecucion ?? f.ultima_ingesta)}
+                {f.estado === "ok" &&
+                  f.ultimas_nuevas != null &&
+                  f.ultimas_nuevas > 0 && (
+                    <span className="ml-2 text-xs text-[#39870c]">
+                      +{f.ultimas_nuevas} nuevas
+                    </span>
+                  )}
+              </td>
+              <td className="px-4 py-3">
+                <EstadoBadge estado={f.estado} />
               </td>
             </tr>
           ))}

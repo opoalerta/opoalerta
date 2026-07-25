@@ -47,6 +47,19 @@ ON CONFLICT (codigo) DO UPDATE SET
     licencia = EXCLUDED.licencia;
 """
 
+INSERT_RUN_OK_SQL = """
+INSERT INTO ingest_runs (
+    fuente_codigo, iniciada_en, finalizada_en, estado,
+    convocatorias_nuevas, convocatorias_actualizadas
+) VALUES (%(fuente_codigo)s, now(), now(), 'ok', %(nuevas)s, %(actualizadas)s);
+"""
+
+INSERT_RUN_ERROR_SQL = """
+INSERT INTO ingest_runs (
+    fuente_codigo, iniciada_en, finalizada_en, estado, error_mensaje
+) VALUES (%(fuente_codigo)s, now(), now(), 'error', %(error)s);
+"""
+
 
 def _flatten(c: dict[str, Any]) -> dict[str, Any]:
     """Aplana la clave anidada ``fuente`` a ``fuente_codigo`` para el INSERT."""
@@ -89,5 +102,24 @@ def upsert(convocatorias: list[dict[str, Any]], fuente: dict[str, str]) -> tuple
                 nuevas += 1
             else:
                 actualizadas += 1
+        # Registra la ejecución correcta (misma transacción que el upsert).
+        cur.execute(
+            INSERT_RUN_OK_SQL,
+            {"fuente_codigo": fuente["codigo"], "nuevas": nuevas, "actualizadas": actualizadas},
+        )
         conn.commit()
     return nuevas, actualizadas
+
+
+def record_failed_run(fuente: dict[str, str], error: str) -> None:
+    """Registra una ejecución fallida en ingest_runs (para /estado y diagnóstico)."""
+    import psycopg
+
+    dsn = os.environ["DATABASE_URL"]
+    with psycopg.connect(dsn) as conn, conn.cursor() as cur:
+        cur.execute(UPSERT_FUENTE_SQL, fuente)
+        cur.execute(
+            INSERT_RUN_ERROR_SQL,
+            {"fuente_codigo": fuente["codigo"], "error": error[:2000]},
+        )
+        conn.commit()

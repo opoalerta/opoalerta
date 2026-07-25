@@ -15,7 +15,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from datetime import UTC, date, datetime
 from typing import Any
@@ -23,7 +22,7 @@ from typing import Any
 import httpx
 
 from common.base import BaseScraper
-from common.db import has_database, upsert
+from common.runner import execute
 
 API_URL = "https://www.boe.es/datosabiertos/api/boe/sumario/{fecha}"
 SECCION_OPOSICIONES = "2B"
@@ -97,27 +96,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     fecha = date.fromisoformat(args.fecha) if args.fecha else date.today()
-    scraper = BoeScraper(fecha=fecha)
-
-    convocatorias = scraper.run()
-    print(f"BOE {fecha.isoformat()}: {len(convocatorias)} convocatorias (sección II.B).")
-
-    if args.out:
-        from pathlib import Path
-
-        out = Path(args.out)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(convocatorias, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"Escrito {out}")
-
-    if args.dry_run or not has_database():
-        if not args.dry_run:
-            print("Sin DATABASE_URL: modo dry-run (no se escribe en base de datos).")
-        return 0
-
-    nuevas, actualizadas = upsert(convocatorias, scraper.fuente())
-    print(f"Upsert: {nuevas} nuevas, {actualizadas} actualizadas.")
-    return 0
+    return execute(BoeScraper(fecha=fecha), dry_run=args.dry_run, out=args.out)
 
 
 if __name__ == "__main__":
