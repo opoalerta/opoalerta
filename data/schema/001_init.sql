@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS convocatorias (
     titulo                TEXT NOT NULL,
     organismo             TEXT NOT NULL,
     ambito                TEXT NOT NULL
-        CHECK (ambito IN ('estatal','autonomico','provincial','local','universidad','otro')),
+        CHECK (ambito IN ('estatal','autonomico','provincial','local','universidad','europeo','otro')),
     ccaa                  TEXT,                       -- código ISO 3166-2:ES sin prefijo
     cuerpo                TEXT,
     grupo                 TEXT
