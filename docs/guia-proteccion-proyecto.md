@@ -46,7 +46,12 @@ La forma recomendada en GitHub actual es usar **Rulesets** (Settings → Rules �
        - `Web (lint + build)`
 6. Guarda con **Create**.
 
-> **Nota importante**: en GitHub, el autor de un pull request **no puede aprobar su propio PR**. Si eres el único mantenedor, la opción más práctica es dejar `Required approving review count` en `0` y confiar en que los checks de CI bloqueen cualquier PR roto. Si pones `1`, tendrás que usar el botón **“Bypass rules and merge”** para tus propios PRs, lo cual anula la protección.
+> **Nota importante**: en GitHub, el autor de un pull request **no puede aprobar su propio PR**. Si eres el único mantenedor y pones `Required approving review count: 1`, tus propios PRs quedarán bloqueados con el mensaje *“Review required”*. Verás un botón **“Bypass rules and merge”** porque eres administrador.
+>
+> - **No uses el bypass para mergear PRs de otras personas.** Úsalo solo para tus propios PRs, y solo cuando los checks de CI hayan pasado.
+> - El bypass es una válvula de seguridad, no una forma habitual de trabajar. Si un PR tuyo no pasa los checks, corrígelo en lugar de saltarte las reglas.
+> - Si consigues un segundo mantenedor de confianza, sube el conteo a `1` y deja de usar el bypass; así cada cambio tendrá revisión humana independiente.
+> - Si prefieres no depender del bypass mientras eres solo, deja `Required approving review count` en `0` y deja que los checks de CI actúen como gatekeeper.
 
 ### Si ya existe la regla clásica
 
@@ -69,29 +74,41 @@ Si tienes una regla antigua en **Settings → Branches**, bórrala o desactíval
 
 ---
 
-## Paso 4: Usar CODEOWNERS para revisión obligatoria (opcional)
+## Paso 4: Usar CODEOWNERS para revisión obligatoria (recomendado)
 
-Un archivo `CODEOWNERS` permite exigir que ciertos archivos o carpetas sean revisados por personas específicas.
-
-1. Crea o edita el archivo `.github/CODEOWNERS` en la raíz del repositorio.
-2. Añade algo como esto:
+El repositorio ya incluye el archivo `.github/CODEOWNERS`:
 
 ```text
-# Todo el repositorio requiere aprobación del propietario
+# Todo el repositorio requiere revisión del propietario del proyecto.
 * @zaswear
 
-# La web solo puede cambiar con tu aprobación
+# Aplicación web
 apps/web/ @zaswear
 
-# Los scrapers y datos son especialmente sensibles
+# Scrapers y datos
 scrapers/ @zaswear
 data/ @zaswear
+
+# Workflows de CI/CD
+.github/workflows/ @zaswear
+
+# Documentación de gobierno del proyecto
+docs/ @zaswear
+CONTRIBUTING.md @zaswear
+GOVERNANCE.md @zaswear
+SECURITY.md @zaswear
 ```
 
-3. Guarda el archivo en `main`.
-4. En el ruleset, activa **Require review from CODEOWNERS** si quieres que sea obligatorio.
+Este archivo hace que GitHub solicite automáticamente la revisión de `@zaswear` para cualquier PR. Para que sea obligatorio:
 
-> Sustituye `@zaswear` por tu nombre de usuario real de GitHub.
+1. Ve a **Settings → Rules → Rulesets → main-protection**.
+2. Edita la regla **Require a pull request before merging**.
+3. Activa **Require review from CODEOWNERS**.
+4. Guarda los cambios.
+
+> **Consecuencia práctica**: si activas CODEOWNERS review y eres el único maintainer, tus propios PRs seguirán requiriendo el botón **“Bypass rules and merge”**. El beneficio es que **ningún contribuidor externo podrá mergear sin tu aprobación explícita**, aunque tenga permisos de escritura.
+
+> Sustituye `@zaswear` por tu nombre de usuario real de GitHub si el archivo no está actualizado.
 
 ---
 
@@ -123,8 +140,8 @@ jobs:
       run:
         working-directory: scrapers
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -140,11 +157,11 @@ jobs:
       run:
         working-directory: apps/web
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
         with:
           version: 11.9.0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: pnpm
@@ -258,11 +275,12 @@ Ahora la web es principalmente lectura. Cuando añadas alertas, filtros guardado
 | Acción | Hecho |
 |--------|-------|
 | 2FA activado en tu cuenta de GitHub | [ ] |
-| Ruleset `main-protection` creado y activo | [ ] |
-| Requiere PR antes de mergear | [ ] |
-| Checks de CI obligatorios antes de mergear | [ ] |
+| Ruleset `main-protection` creado y activo | [x] |
+| Requiere PR antes de mergear | [x] |
+| Checks de CI obligatorios antes de mergear | [x] |
 | Colaboradores revisados y con permisos mínimos | [ ] |
-| Archivo `.github/CODEOWNERS` creado (si se desea) | [ ] |
+| Archivo `.github/CODEOWNERS` creado | [x] |
+| "Require review from CODEOWNERS" activado en el ruleset | [ ] |
 | Variables de entorno en Vercel protegidas | [ ] |
 | Deploys solo desde `main` | [ ] |
 | Proceso de revisión de PRs definido | [ ] |
