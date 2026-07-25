@@ -11,6 +11,17 @@ export function Footer() {
               Buscador unificado y gratuito de convocatorias de empleo público en España.
               Open source, sin publicidad, sobre datos abiertos oficiales.
             </p>
+            <p className="mt-4 text-sm text-white/70">
+              El proyecto es gratuito y su único coste es el dominio. Si te sirve, invítanos a un café.
+            </p>
+            <a
+              href="https://ko-fi.com/I2I31CXQVM"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-2 rounded bg-[#f9e11e] px-4 py-2 text-sm font-semibold text-[#154273] no-underline hover:bg-[#ffe94d]"
+            >
+              <span aria-hidden="true">☕</span> Invítanos a un café
+            </a>
           </div>
           <div>
             <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-white/70">
