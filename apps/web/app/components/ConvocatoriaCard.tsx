@@ -22,7 +22,7 @@ export function ConvocatoriaCard({ convocatoria }: { convocatoria: Convocatoria 
 
   return (
     <Link
-      href={`/convocatoria/${convocatoria.id}`}
+      href={`/convocatoria/${encodeURIComponent(convocatoria.id)}`}
       className="group block rounded border border-border bg-white p-4 no-underline shadow-sm transition hover:border-gold hover:shadow-md"
     >
       <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate">
