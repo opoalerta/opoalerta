@@ -1,20 +1,44 @@
 @import "tailwindcss";
 
-:root {
-  --color-background: #ffffff;
-  --color-surface: #f3f5f6;
-  --color-text: #1a1a1a;
-  --color-text-muted: #595959;
-  --color-link: #01689b;
-  --color-link-hover: #154273;
-  --color-primary: #01689b;
-  --color-primary-dark: #154273;
-  --color-accent: #f9e11e;
-  --color-success: #39870c;
-  --color-warning: #d52b1e;
+@theme {
+  /* Marca */
+  --color-navy: #1B3358;
+  --color-navy-700: #33507A;
+  --color-navy-900: #0F2340;
+  --color-gold: #D9A62B;
+  --color-gold-dark: #C7941F;
+  --color-gold-light: #F7C948;
+  --color-cream: #F7F5F0;
+  --color-slate: #8792A2;
+
+  /* Neutros y semánticos */
+  --color-ink: #1a1a1a;
+  --color-white: #ffffff;
   --color-border: #e5e5e5;
   --color-border-strong: #cccccc;
-  --color-focus: #2b7bb9;
+  --color-success: #39870c;
+  --color-success-bg: #f4f9f0;
+  --color-danger: #d52b1e;
+  --color-danger-bg: #fff4f4;
+  --color-warning: #8a6d00;
+  --color-warning-bg: #fff8e6;
+  --color-focus: #D9A62B;
+
+  /* Tipografía */
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: var(--font-poppins), system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+:root {
+  --color-background: var(--color-cream);
+  --color-surface: var(--color-cream);
+  --color-text: var(--color-ink);
+  --color-text-muted: var(--color-slate);
+  --color-link: var(--color-navy-700);
+  --color-link-hover: var(--color-navy);
+  --color-primary: var(--color-gold);
+  --color-primary-dark: var(--color-gold-dark);
+  --color-accent: var(--color-gold-light);
 }
 
 html {
@@ -24,10 +48,14 @@ html {
 body {
   background: var(--color-background);
   color: var(--color-text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 @layer base {

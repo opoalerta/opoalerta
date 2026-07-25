@@ -15,14 +15,14 @@ function fmtInstante(iso: string | null): string {
 
 function EstadoBadge({ estado }: { estado: string | null }) {
   const map: Record<string, { label: string; className: string }> = {
-    ok: { label: "OK", className: "bg-[#f4f9f0] text-[#39870c]" },
-    error: { label: "Error", className: "bg-[#fff4f4] text-[#d52b1e]" },
-    en_curso: { label: "En curso", className: "bg-[#fff8e6] text-[#8a6d00]" },
+    ok: { label: "OK", className: "bg-success-bg text-success" },
+    error: { label: "Error", className: "bg-danger-bg text-danger" },
+    en_curso: { label: "En curso", className: "bg-warning-bg text-warning" },
   };
   const s = estado ? map[estado] : undefined;
   if (!s) {
     return (
-      <span className="inline-flex items-center rounded bg-[#f3f5f6] px-2 py-1 text-xs font-medium text-[#595959]">
+      <span className="inline-flex items-center rounded bg-cream px-2 py-1 text-xs font-medium text-slate">
         sin ejecuciones
       </span>
     );
@@ -41,32 +41,32 @@ export function EstadoTable({ fuentes }: { fuentes: EstadoFuente[] }) {
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-sm">
         <thead>
-          <tr className="border-b-2 border-[#01689b] bg-[#f3f5f6]">
-            <th className="px-4 py-3 font-semibold text-[#154273]">Fuente</th>
-            <th className="px-4 py-3 font-semibold text-[#154273]">Convocatorias</th>
-            <th className="px-4 py-3 font-semibold text-[#154273]">Última ejecución</th>
-            <th className="px-4 py-3 font-semibold text-[#154273]">Estado</th>
+          <tr className="border-b-2 border-gold bg-cream">
+            <th className="px-4 py-3 font-semibold text-navy">Fuente</th>
+            <th className="px-4 py-3 font-semibold text-navy">Convocatorias</th>
+            <th className="px-4 py-3 font-semibold text-navy">Última ejecución</th>
+            <th className="px-4 py-3 font-semibold text-navy">Estado</th>
           </tr>
         </thead>
         <tbody>
           {fuentes.map((f) => (
             <tr
               key={f.fuente_codigo}
-              className="border-b border-[#e5e5e5] hover:bg-[#f9f9f9]"
+              className="border-b border-border hover:bg-cream"
             >
               <td className="px-4 py-3">
-                <span className="font-semibold uppercase text-[#01689b]">
+                <span className="font-semibold uppercase text-navy-700">
                   {f.fuente_codigo}
                 </span>
-                <span className="ml-2 text-[#595959]">{f.nombre}</span>
+                <span className="ml-2 text-slate">{f.nombre}</span>
               </td>
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">{f.total}</td>
-              <td className="px-4 py-3 text-[#595959]">
+              <td className="px-4 py-3 font-medium text-ink">{f.total}</td>
+              <td className="px-4 py-3 text-slate">
                 {fmtInstante(f.ultima_ejecucion ?? f.ultima_ingesta)}
                 {f.estado === "ok" &&
                   f.ultimas_nuevas != null &&
                   f.ultimas_nuevas > 0 && (
-                    <span className="ml-2 text-xs text-[#39870c]">
+                    <span className="ml-2 text-xs text-success">
                       +{f.ultimas_nuevas} nuevas
                     </span>
                   )}
