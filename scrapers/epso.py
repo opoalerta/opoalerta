@@ -58,14 +58,14 @@ def _id_ref(ref: str, url: str) -> str:
 
 def _fecha_pub(ref: str) -> str:
     """Fecha estable derivada del año de la referencia (la lista no da fecha).
-    Evita usar 'hoy', que haría que EPSO copara el orden del listado por fecha."""
-    seg = ref.split("/")[-1].split("-")[0].strip() if ref else ""
+    No usa 'hoy' para que EPSO no copara el orden del listado por fecha."""
+    seg = re.split(r"[-–—]", ref.split("/")[-1])[0].strip() if ref else ""
     if seg.isdigit():
         year = int(seg)
         if year < 100:
             year += 2000
         return f"{year}-01-01"
-    return date.today().isoformat()
+    return f"{date.today().year}-01-01"
 
 
 class EpsoScraper(BaseScraper):
