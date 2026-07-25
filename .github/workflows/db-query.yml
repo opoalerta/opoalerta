@@ -1,0 +1,15 @@
+name: Consulta DB (temporal)
+on:
+  workflow_dispatch:
+    inputs:
+      sql:
+        description: "SQL a ejecutar"
+        required: true
+jobs:
+  query:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ejecutar
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: psql "$DATABASE_URL" -c "${{ inputs.sql }}"
