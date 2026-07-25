@@ -26,6 +26,7 @@ const FUENTES = [
   { codigo: "EPSO", nombre: "Oposiciones de la Unión Europea (EPSO)", estado: "activo" },
   { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "previsto" },
   { codigo: "DOG", nombre: "Diario Oficial de Galicia", estado: "activo" },
+  { codigo: "BOC", nombre: "Boletín Oficial de Canarias", estado: "activo" },
   { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
 ];
 
