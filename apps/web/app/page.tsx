@@ -54,9 +54,7 @@ export default async function Home() {
   const convocatorias = await getConvocatorias(30);
   const estado = await getEstado();
 
-  const totalFuentes = FUENTES.length;
   const activas = estado.filter((e) => e.estado === "ok").length;
-  const porcentaje = Math.round((activas / totalFuentes) * 100);
   const ultimaActualizacion = estado
     .filter((e) => e.ultima_ingesta)
     .map((e) => e.ultima_ingesta!)
@@ -146,11 +144,12 @@ export default async function Home() {
 
       <section className="py-12">
         <Container>
-          <NoticeBox title="Estamos en Fase 1 · MVP" variant="info">
+          <NoticeBox title="Estamos en Fase 2 · Cobertura nacional" variant="info">
             {activas > 0 ? (
               <>
-                Tenemos <strong>{activas} de {totalFuentes} boletines</strong> activos ({porcentaje}%). La ingesta
-                corre cada día a las 06:00 UTC.{" "}
+                Ya tenemos <strong>{activas} boletines</strong> activos (BOE y varias
+                comunidades autónomas) y vamos sumando el resto. La ingesta corre cada
+                día a las 06:00 UTC.{" "}
                 {ultimaActualizacion && (
                   <>
                     Última actualización:{" "}
