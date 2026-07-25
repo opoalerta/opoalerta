@@ -14,10 +14,11 @@ Las convocatorias de empleo público se publican dispersas en el BOE, 17 boletin
 
 Una web pública y gratuita que agrega automáticamente todas las convocatorias, las normaliza y permite:
 
-- **Búsqueda unificada** por cuerpo/categoría, comunidad, titulación, fecha y plazo.
+- **Búsqueda unificada** por cuerpo/categoría, comunidad, titulación, fecha, plazo y texto libre.
 - **Alertas personalizadas** (email / Telegram) con filtros guardados.
 - **Vista clara de plazos** abiertos y próximos a cerrar.
 - **Código y datos abiertos**: cualquiera puede mejorarlo, corregirlo o replicarlo.
+- **Interfaz pública y accesible** con diseño inspirado en las administraciones neerlandesas.
 
 Todo el valor se construye sobre datos públicos (BOE, boletines oficiales, datos.gob.es) con licencias abiertas; el proyecto los devuelve a la sociedad mejor presentados, siempre citando fuente y fecha.
 
@@ -36,12 +37,14 @@ Todo el valor se construye sobre datos públicos (BOE, boletines oficiales, dato
 ## Estructura del repositorio
 
 ```
-apps/web/             Next.js: buscador, alertas, /estado
+apps/web/             Next.js 16: buscador, alertas, /estado, diseño institucional
 scrapers/             Python: un módulo por boletín + interfaz común + tests
 packages/normalizer/  Esquema común de convocatoria (JSON Schema)
 data/schema/          Esquema de base de datos (SQL)
-docs/                 Arquitectura, guía para añadir una CCAA, ADRs
+docs/                 Arquitectura, guía para añadir una CCAA, ADRs, guía de protección y diseño UI
 ```
+
+> El diseño de la web está documentado en [`apps/web/DESIGN.md`](apps/web/DESIGN.md). La configuración de seguridad y gobernanza está en [`docs/guia-proteccion-proyecto.md`](docs/guia-proteccion-proyecto.md).
 
 ## Quiero contribuir
 
@@ -57,8 +60,10 @@ python -m boe --dry-run          # ingesta del sumario BOE de hoy, sin base de d
 pytest                            # tests offline con fixtures
 
 # Web (Node ≥ 22, pnpm)
-cd apps/web
+cd ../apps/web
 pnpm install
+pnpm lint        # eslint directamente (next lint se eliminó en Next.js 16)
+pnpm build
 pnpm dev
 ```
 
@@ -74,4 +79,4 @@ Los datos originales pertenecen a sus fuentes oficiales (BOE, boletines autonóm
 
 ## Estado del proyecto
 
-**Fase 0 — Fundación.** Ver [ROADMAP.md](ROADMAP.md).
+**Fase 1 — MVP.** Ver [ROADMAP.md](ROADMAP.md). La web ya incluye el rediseño institucional, el buscador funcional y la página `/estado`.
