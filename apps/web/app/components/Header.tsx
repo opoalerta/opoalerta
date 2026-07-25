@@ -16,19 +16,19 @@ export function Header() {
           <nav aria-label="Principal">
             <ul className="flex flex-wrap items-center gap-6 text-sm font-medium">
               <li>
-                <Link href="/" className="text-white no-underline hover:underline">
+                <Link href="/" className="text-white no-underline hover:text-white/90">
                   Inicio
                 </Link>
               </li>
               <li>
-                <Link href="/estado" className="text-white no-underline hover:underline">
+                <Link href="/estado" className="text-white no-underline hover:text-white/90">
                   Estado del servicio
                 </Link>
               </li>
               <li>
                 <a
                   href="https://github.com/opoalerta/opoalerta"
-                  className="text-white no-underline hover:underline"
+                  className="text-white no-underline hover:text-white/90"
                 >
                   Código en GitHub
                 </a>
