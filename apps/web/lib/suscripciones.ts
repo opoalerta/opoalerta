@@ -11,7 +11,7 @@ export type FiltrosSuscripcion = {
 function client() {
   const url = process.env.DATABASE_URL;
   if (!url) return null;
-  return neon(url);
+  return neon(url, { fetchOptions: { cache: "no-store" } });
 }
 
 function limpiar(v: string | null | undefined): string | null {
