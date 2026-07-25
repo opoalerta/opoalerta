@@ -99,6 +99,10 @@ export async function getConvocatoriaById(id: string): Promise<Convocatoria | nu
       WHERE id = ${id}
       LIMIT 1
     `;
+    console.log(
+      "DIAG getConvocatoriaById",
+      JSON.stringify({ id, len: id.length, found: rows.length })
+    );
     return (rows[0] as Convocatoria | undefined) ?? null;
   } catch (err) {
     console.error("getConvocatoriaById:", err);
