@@ -8,7 +8,7 @@ Este proyecto sigue el [Código de Conducta](CODE_OF_CONDUCT.md). Al participar,
 
 ## Entorno en 10 minutos
 
-Requisitos: **Python ≥ 3.12** y **Node ≥ 22** con `pnpm`.
+Requisitos: **Python ≥ 3.12**, **Node ≥ 22** y **pnpm** (el repo fija `pnpm@11.9.0` vía `packageManager`; con Corepack se instala solo).
 
 ```bash
 git clone https://github.com/opoalerta/opoalerta.git
@@ -29,6 +29,18 @@ pnpm dev
 ```
 
 No necesitas base de datos para desarrollar un scraper: sin `DATABASE_URL`, el pipeline corre en **modo dry-run** y escribe el resultado como JSON.
+
+## Por dónde empezar
+
+¿Primera vez? Mira los issues marcados como
+[**`good first issue`**](https://github.com/opoalerta/opoalerta/issues?q=is%3Aopen+label%3A%22good+first+issue%22)
+— cambios acotados y bien descritos. Si te va el scraping, echa un ojo a
+[**`nueva-fuente`**](https://github.com/opoalerta/opoalerta/issues?q=is%3Aopen+label%3Anueva-fuente).
+Comenta en el issue que lo coges, para que no haya trabajo duplicado.
+
+## Reportar un bug o proponer una mejora
+
+Abre una issue con la plantilla correspondiente (bug, scraper roto, nueva fuente o feature). Si un scraper deja de funcionar, es probable que el bot de ingesta ya haya abierto una issue `scraper-roto`: compruébalo antes de duplicar.
 
 ## La tarea estrella: añade tu comunidad autónoma
 
@@ -64,6 +76,10 @@ Hay 19 boletines oficiales (17 CCAA + Ceuta y Melilla). Cada uno que falta es un
 2. Commits pequeños y con mensaje convencional.
 3. Abre el PR contra `main` rellenando la plantilla.
 4. La preview de Vercel y el CI se ejecutan solos; resuelve lo que marquen.
+
+## Reconocimiento
+
+Toda persona que contribuye aparece en el historial del proyecto y en la lista de contribuidores de GitHub. Las aportaciones cuentan por igual: código, documentación, reportar un scraper roto o proponer una fuente nueva. ¡Gracias por hacer OpoAlerta mejor!
 
 ## ¿Dudas?
 
