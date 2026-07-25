@@ -12,6 +12,7 @@ function normalize(str: string): string {
 
 const AMBITO_LABEL: Record<string, string> = {
   estatal: "Estatal",
+  europeo: "Unión Europea",
   autonomico: "Autonómico",
   provincial: "Provincial",
   local: "Local",

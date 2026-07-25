@@ -18,7 +18,9 @@ export function ConvocatoriaCard({ convocatoria }: { convocatoria: Convocatoria 
   const ambito =
     convocatoria.ambito === "estatal"
       ? "Estatal"
-      : CCAA_NOMBRE[convocatoria.ccaa ?? ""] ?? convocatoria.ambito;
+      : convocatoria.ambito === "europeo"
+        ? "Unión Europea"
+        : CCAA_NOMBRE[convocatoria.ccaa ?? ""] ?? convocatoria.ambito;
 
   return (
     <Link

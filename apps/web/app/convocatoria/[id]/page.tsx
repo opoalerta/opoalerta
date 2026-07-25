@@ -37,6 +37,7 @@ function fmtFecha(iso: string | null): string {
 
 function getAmbito(conv: NonNullable<Awaited<ReturnType<typeof getConvocatoriaById>>>) {
   if (conv.ambito === "estatal") return "Estatal";
+  if (conv.ambito === "europeo") return "Unión Europea";
   return CCAA_NOMBRE[conv.ccaa ?? ""] ?? conv.ambito ?? "—";
 }
 

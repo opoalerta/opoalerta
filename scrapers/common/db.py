@@ -32,7 +32,8 @@ ON CONFLICT (id) DO UPDATE SET
     titulacion_requerida = EXCLUDED.titulacion_requerida,
     num_plazas = EXCLUDED.num_plazas,
     tipo_acceso = EXCLUDED.tipo_acceso,
-    fecha_publicacion = EXCLUDED.fecha_publicacion,
+    -- fecha_publicacion NO se sobrescribe: es la fecha de primera aparición y no
+    -- debe cambiar al reingerir (importante para fuentes sin fecha propia, p. ej. EPSO).
     fecha_fin_plazo = EXCLUDED.fecha_fin_plazo,
     url_oficial = EXCLUDED.url_oficial,
     actualizada_en = now()

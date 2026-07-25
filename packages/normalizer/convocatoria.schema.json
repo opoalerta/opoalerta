@@ -32,7 +32,7 @@
     },
     "ambito": {
       "type": "string",
-      "enum": ["estatal", "autonomico", "provincial", "local", "universidad", "otro"],
+      "enum": ["estatal", "autonomico", "provincial", "local", "universidad", "europeo", "otro"],
       "description": "Nivel administrativo de la convocatoria."
     },
     "ccaa": {
