@@ -17,7 +17,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import json
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -27,7 +26,7 @@ from typing import Any
 import httpx
 
 from common.base import BaseScraper
-from common.db import has_database, upsert
+from common.runner import execute
 
 HOME_URL = "https://www.bocm.es/"
 SUMARIO_RE = re.compile(r"/boletin/CM_Boletin_BOCM/\d{4}/\d{2}/\d{2}/BOCM-\d+\.xml")
@@ -137,27 +136,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
-    scraper = BocmScraper()
-
-    convocatorias = scraper.run()
-    print(f"BOCM: {len(convocatorias)} convocatorias (apartado B, Autoridades y Personal).")
-
-    if args.out:
-        from pathlib import Path
-
-        out = Path(args.out)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(convocatorias, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"Escrito {out}")
-
-    if args.dry_run or not has_database():
-        if not args.dry_run:
-            print("Sin DATABASE_URL: modo dry-run (no se escribe en base de datos).")
-        return 0
-
-    nuevas, actualizadas = upsert(convocatorias, scraper.fuente())
-    print(f"Upsert: {nuevas} nuevas, {actualizadas} actualizadas.")
-    return 0
+    return execute(BocmScraper(), dry_run=args.dry_run, out=args.out)
 
 
 if __name__ == "__main__":

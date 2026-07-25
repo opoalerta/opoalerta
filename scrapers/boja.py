@@ -22,7 +22,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import json
 import re
 import sys
 from datetime import UTC, datetime
@@ -31,7 +30,7 @@ from typing import Any
 import httpx
 
 from common.base import BaseScraper
-from common.db import has_database, upsert
+from common.runner import execute
 
 FEED_URL = "https://www.juntadeandalucia.es/boja/distribucion/s53.xml"
 USER_AGENT = "OpoAlerta/0.1 (+https://opoalerta.es; civic open-data scraper)"
@@ -135,27 +134,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
-    scraper = BojaScraper()
-
-    convocatorias = scraper.run()
-    print(f"BOJA: {len(convocatorias)} convocatorias (sección 2.2 Oposiciones).")
-
-    if args.out:
-        from pathlib import Path
-
-        out = Path(args.out)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(convocatorias, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"Escrito {out}")
-
-    if args.dry_run or not has_database():
-        if not args.dry_run:
-            print("Sin DATABASE_URL: modo dry-run (no se escribe en base de datos).")
-        return 0
-
-    nuevas, actualizadas = upsert(convocatorias, scraper.fuente())
-    print(f"Upsert: {nuevas} nuevas, {actualizadas} actualizadas.")
-    return 0
+    return execute(BojaScraper(), dry_run=args.dry_run, out=args.out)
 
 
 if __name__ == "__main__":
