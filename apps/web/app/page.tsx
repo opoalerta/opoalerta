@@ -21,6 +21,7 @@ const FUENTES = [
   { codigo: "BOCM", nombre: "Boletín Oficial de la Comunidad de Madrid", estado: "activo" },
   { codigo: "BOCYL", nombre: "Boletín Oficial de Castilla y León", estado: "activo" },
   { codigo: "BOA", nombre: "Boletín Oficial de Aragón", estado: "activo" },
+  { codigo: "BOIB", nombre: "Butlletí Oficial de les Illes Balears", estado: "activo" },
   { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "previsto" },
   { codigo: "BOPG", nombre: "Boletín Oficial de Pontevedra (Galicia)", estado: "previsto" },
   { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
