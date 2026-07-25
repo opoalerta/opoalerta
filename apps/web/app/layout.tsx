@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     "theme-color": "#154273",
   },
   verification: {
-    google: "google-site-verification=oJMYPZXcvxXIKk5jAJe7rAImTWdwsyNRNzoJvQhR2W4",
+    google: "oJMYPZXcvxXIKk5jAJe7rAImTWdwsyNRNzoJvQhR2W4",
   },
 };
 
