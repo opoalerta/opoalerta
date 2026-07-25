@@ -1,6 +1,6 @@
 """Tests offline del matching de alertas (función pura, sin red ni base de datos)."""
 
-from notificar import coincide
+from notificar import _render_telegram, coincide
 
 CONV = {
     "titulo": "Resolución por la que se convoca proceso selectivo de Auxiliar Administrativo",
@@ -36,3 +36,19 @@ def test_texto_ignora_acentos_y_mayusculas():
 def test_combinacion_de_filtros():
     assert coincide(CONV, {"fuente_codigo": "boja", "q": "selectivo"})
     assert not coincide(CONV, {"fuente_codigo": "boja", "q": "veterinario"})
+
+
+def test_render_telegram_incluye_enlaces_y_baja():
+    convs = [
+        {
+            "titulo": "Convocatoria de <Auxiliar> & personal",
+            "organismo": "Ayuntamiento",
+            "fuente_codigo": "boib",
+            "url_oficial": "https://www.caib.es/x",
+        }
+    ]
+    texto = _render_telegram(convs)
+    assert "https://www.caib.es/x" in texto
+    assert "&lt;Auxiliar&gt; &amp; personal" in texto  # escapado HTML
+    assert "/stop" in texto
+    assert "1 nueva convocatoria" in texto

@@ -66,3 +66,51 @@ export async function bajaSuscripcion(token: string): Promise<boolean> {
   `;
   return rows.length > 0;
 }
+
+/**
+ * Crea una suscripción de Telegram pendiente (sin chat_id) y devuelve su token.
+ * El webhook la vincula al chat cuando la persona pulsa Start en el bot.
+ */
+export async function crearSuscripcionTelegram(
+  filtros: FiltrosSuscripcion
+): Promise<{ token: string } | null> {
+  const sql = client();
+  if (!sql) return null;
+  const token = randomUUID();
+  await sql`
+    INSERT INTO suscripciones (canal, q, ccaa, ambito, fuente_codigo, token)
+    VALUES (
+      'telegram',
+      ${limpiar(filtros.q)}, ${limpiar(filtros.ccaa)},
+      ${limpiar(filtros.ambito)}, ${limpiar(filtros.fuente_codigo)},
+      ${token}
+    )
+  `;
+  return { token };
+}
+
+/**
+ * Vincula una suscripción de Telegram (por token) a un chat y la confirma.
+ * La invoca el webhook al recibir "/start <token>".
+ */
+export async function vincularTelegram(token: string, chatId: number): Promise<boolean> {
+  const sql = client();
+  if (!sql) return false;
+  const rows = await sql`
+    UPDATE suscripciones
+    SET telegram_chat_id = ${chatId}, confirmada = TRUE, confirmada_en = now()
+    WHERE token = ${token} AND canal = 'telegram'
+    RETURNING id
+  `;
+  return rows.length > 0;
+}
+
+/** Baja de todas las suscripciones de un chat de Telegram (comando /stop). */
+export async function bajaTelegram(chatId: number): Promise<number> {
+  const sql = client();
+  if (!sql) return 0;
+  const rows = await sql`
+    DELETE FROM suscripciones WHERE telegram_chat_id = ${chatId} RETURNING id
+  `;
+  return rows.length;
+}
