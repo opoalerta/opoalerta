@@ -27,13 +27,11 @@ import sys
 from datetime import UTC, datetime
 from typing import Any
 
-import httpx
-
 from common.base import BaseScraper
+from common.http import get as http_get
 from common.runner import execute
 
 FEED_URL = "https://www.juntadeandalucia.es/boja/distribucion/s53.xml"
-USER_AGENT = "OpoAlerta/0.1 (+https://opoalerta.es; civic open-data scraper)"
 
 # El feed debe seguir siendo la sección de oposiciones; si cambia, fallamos fuerte.
 SECCION_ESPERADA = "Oposiciones"
@@ -55,10 +53,7 @@ class BojaScraper(BaseScraper):
     licencia = "Reutilización de datos públicos citando fuente (aviso legal Junta de Andalucía)"
 
     def fetch(self) -> str:
-        headers = {"Accept": "application/atom+xml", "User-Agent": USER_AGENT}
-        resp = httpx.get(FEED_URL, headers=headers, timeout=30, follow_redirects=True)
-        resp.raise_for_status()
-        return resp.text
+        return http_get(FEED_URL, headers={"Accept": "application/atom+xml"}).text
 
     def parse(self, raw: str) -> list[dict[str, Any]]:
         # Comprobación defensiva: el feed debe ser el de oposiciones.

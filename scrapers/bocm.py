@@ -23,15 +23,13 @@ import xml.etree.ElementTree as ET
 from datetime import UTC, datetime
 from typing import Any
 
-import httpx
-
 from common.base import BaseScraper
+from common.http import get as http_get
 from common.runner import execute
 
 HOME_URL = "https://www.bocm.es/"
 SUMARIO_RE = re.compile(r"/boletin/CM_Boletin_BOCM/\d{4}/\d{2}/\d{2}/BOCM-\d+\.xml")
 APARTADO_OPOSICIONES = "Autoridades y Personal"
-USER_AGENT = "OpoAlerta/0.1 (+https://opoalerta.es; civic open-data scraper)"
 
 
 class BocmScraper(BaseScraper):
@@ -40,16 +38,11 @@ class BocmScraper(BaseScraper):
     licencia = "Reutilización de datos públicos citando fuente (aviso legal BOCM)"
 
     def fetch(self) -> str:
-        headers = {"User-Agent": USER_AGENT}
-        home = httpx.get(HOME_URL, headers=headers, timeout=30, follow_redirects=True)
-        home.raise_for_status()
+        home = http_get(HOME_URL)
         m = SUMARIO_RE.search(home.text)
         if not m:
             raise ValueError("No se encontró el enlace al sumario XML en la portada del BOCM")
-        url = "https://www.bocm.es" + m.group(0)
-        resp = httpx.get(url, headers=headers, timeout=30, follow_redirects=True)
-        resp.raise_for_status()
-        return resp.text
+        return http_get("https://www.bocm.es" + m.group(0)).text
 
     def parse(self, raw: str) -> list[dict[str, Any]]:
         root = ET.fromstring(raw)
