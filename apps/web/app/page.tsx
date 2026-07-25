@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
 const FUENTES = [
   { codigo: "BOE", nombre: "Boletín Oficial del Estado", estado: "activo" },
   { codigo: "BOJA", nombre: "Boletín Oficial de la Junta de Andalucía", estado: "activo" },
-  { codigo: "BOCM", nombre: "Boletín Oficial de la Comunidad de Madrid", estado: "previsto" },
+  { codigo: "BOCM", nombre: "Boletín Oficial de la Comunidad de Madrid", estado: "activo" },
+  { codigo: "BOCYL", nombre: "Boletín Oficial de Castilla y León", estado: "activo" },
   { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "previsto" },
   { codigo: "BOPG", nombre: "Boletín Oficial de Pontevedra (Galicia)", estado: "previsto" },
   { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
