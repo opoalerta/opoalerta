@@ -77,6 +77,16 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
+.header-link {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.header-link:hover,
+.header-link:focus-visible {
+  color: var(--color-gold-light) !important;
+}
+
 :where(code) {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   background: var(--color-surface);

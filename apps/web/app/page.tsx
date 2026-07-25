@@ -133,7 +133,7 @@ export default async function Home() {
             <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#convocatorias"
-                className="inline-flex items-center rounded bg-gold px-6 py-3 text-base font-semibold text-white no-underline hover:bg-navy hover:text-white"
+                className="inline-flex items-center rounded bg-gold px-6 py-3 text-base font-semibold text-navy no-underline shadow-sm hover:bg-gold-dark hover:text-navy-900 focus-visible:outline-offset-2"
               >
                 Buscar convocatorias
               </a>
