@@ -25,10 +25,10 @@
 
 ---
 
-<!-- Sustituye por un GIF de demo (docs/screenshots/demo.gif) cuando lo grabes. -->
 <p align="center">
-  <img src="docs/screenshots/demo.gif" alt="Demo de OpoAlerta: buscar y filtrar convocatorias" width="820">
+  <img src="docs/screenshots/buscador.png" alt="Buscador de OpoAlerta: chips por fuente, filtros y convocatorias en tiempo real" width="860">
 </p>
+<p align="center"><sub>Buscador con filtros rápidos y resultados en tiempo real. <i>Para un GIF animado, sustituye por <code>docs/screenshots/demo.gif</code>.</i></sub></p>
 
 ## El problema
 
@@ -53,14 +53,21 @@ sociedad mejor presentados, siempre citando fuente y fecha.
 
 ## Funcionalidades
 
-| Funcionalidad | Descripción | Captura |
-|---|---|---|
-| **Buscador con filtros** | Chips rápidos por fuente, filtros por ámbito y búsqueda por texto; revelado progresivo. | `docs/screenshots/buscador.png` |
-| **Alertas email + Telegram** | Doble confirmación (opt-in), baja en un clic; envío diario de lo nuevo que coincide. | `docs/screenshots/alertas.png` |
-| **Ficha de convocatoria** | Página propia por convocatoria con enlace oficial y datos normalizados. | `docs/screenshots/ficha.png` |
-| **Estado del servicio** | `/estado`: qué boletines están activos, última ejecución y nuevas por fuente. | `docs/screenshots/estado.png` |
+- **Buscador con filtros** — chips rápidos por fuente, filtros por ámbito y búsqueda por texto, con revelado progresivo.
+- **Alertas por email y Telegram** — doble confirmación (opt-in) y baja en un clic; cada día se envía lo nuevo que coincide.
+- **Ficha de convocatoria** — página propia por convocatoria, con enlace oficial y datos normalizados.
+- **Estado del servicio** — `/estado`: qué boletines están activos, su última ejecución y las nuevas por fuente.
 
-> **¿No tienes GIF/capturas?** Ver [«Capturas que hay que grabar»](#capturas-que-hay-que-grabar) más abajo.
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/buscador.png" alt="Buscador con filtros"><br><sub><b>Buscador con filtros</b></sub></td>
+    <td width="50%"><img src="docs/screenshots/estado.png" alt="Estado del servicio"><br><sub><b>Estado del servicio</b></sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/alertas.png" alt="Alertas y paginado"><br><sub><b>Alertas por email y Telegram</b></sub></td>
+    <td width="50%"><img src="docs/screenshots/ficha.png" alt="Ficha de convocatoria"><br><sub><b>Ficha de convocatoria</b></sub></td>
+  </tr>
+</table>
 
 ## Stack técnico
 
