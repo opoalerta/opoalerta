@@ -44,7 +44,7 @@ jobs:
 
       - name: Subir artefacto
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ingest-${{ matrix.fuente }}
           path: out/
