@@ -1,0 +1,71 @@
+name: Ingesta BOE
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC diario
+  workflow_dispatch:
+    inputs:
+      fecha:
+        description: "Fecha del sumario (YYYY-MM-DD). Vacío = hoy."
+        required: false
+
+concurrency:
+  group: ingest-boe
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scrapers
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+
+      - name: Ejecutar scraper BOE
+        id: run
+        env:
+          # Cuando exista el secret, la ingesta escribe en Postgres.
+          # Mientras no exista, corre en dry-run y produce un artefacto JSON.
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          set -o pipefail
+          ARGS="--out ../out/boe.json"
+          if [ -z "$DATABASE_URL" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ -n "${{ inputs.fecha }}" ]; then ARGS="$ARGS --fecha ${{ inputs.fecha }}"; fi
+          mkdir -p ../out
+          python -m boe $ARGS 2>&1 | tee ../out/boe.log
+
+      - name: Subir artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boe-ingest
+          path: out/
+          if-no-files-found: ignore
+
+      - name: Abrir issue si el scraper falla
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="[scraper-roto] BOE falló el $(date -u +%Y-%m-%d)"
+          # Evita duplicar: reutiliza una issue abierta con el mismo título de hoy.
+          EXISTING=$(gh issue list --label scraper-roto --state open --search "$TITLE" --json number --jq '.[0].number' || echo "")
+          if [ -n "$EXISTING" ]; then
+            echo "Issue #$EXISTING ya existe, no duplico."
+            exit 0
+          fi
+          gh issue create \
+            --title "$TITLE" \
+            --label scraper-roto \
+            --body "El workflow de ingesta del BOE falló. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Preguntas y debate
+    url: https://github.com/opoalerta/opoalerta/discussions
+    about: Para dudas, ideas y conversación general, usa las Discussions.
+  - name: 🔒 Reportar una vulnerabilidad
+    url: https://github.com/opoalerta/opoalerta/security/advisories/new
+    about: No abras una issue pública para problemas de seguridad.

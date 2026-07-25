@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opoalerta.es/schema/convocatoria.schema.json",
+  "title": "Convocatoria",
+  "description": "Modelo normalizado de una convocatoria de empleo público. Todo scraper produce objetos que validan contra este esquema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "titulo",
+    "organismo",
+    "ambito",
+    "fuente",
+    "url_oficial",
+    "fecha_publicacion",
+    "fecha_ingesta"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Identificador estable y único. Convención: '<fuente>:<identificador-oficial>', p. ej. 'boe:BOE-A-2026-12345'.",
+      "pattern": "^[a-z0-9_-]+:.+$"
+    },
+    "titulo": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Título de la convocatoria tal como aparece en el boletín."
+    },
+    "organismo": {
+      "type": "string",
+      "description": "Organismo convocante (ministerio, consejería, ayuntamiento, universidad…)."
+    },
+    "ambito": {
+      "type": "string",
+      "enum": ["estatal", "autonomico", "provincial", "local", "universidad", "otro"],
+      "description": "Nivel administrativo de la convocatoria."
+    },
+    "ccaa": {
+      "type": ["string", "null"],
+      "description": "Comunidad autónoma (código ISO 3166-2:ES sin prefijo, p. ej. 'AN', 'MD', 'VC'). Null si es estatal.",
+      "pattern": "^[A-Z]{2}$"
+    },
+    "cuerpo": {
+      "type": ["string", "null"],
+      "description": "Cuerpo, escala o categoría profesional."
+    },
+    "grupo": {
+      "type": ["string", "null"],
+      "enum": ["A1", "A2", "B", "C1", "C2", "E", "AP", null],
+      "description": "Grupo de clasificación profesional (EBEP), si consta."
+    },
+    "titulacion_requerida": {
+      "type": ["string", "null"],
+      "description": "Titulación mínima exigida."
+    },
+    "num_plazas": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Número de plazas convocadas, si consta."
+    },
+    "tipo_acceso": {
+      "type": ["string", "null"],
+      "enum": ["libre", "promocion_interna", "concurso", "concurso_oposicion", "oposicion", "bolsa", "otro", null],
+      "description": "Modalidad de acceso."
+    },
+    "fecha_publicacion": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de publicación en el boletín (YYYY-MM-DD)."
+    },
+    "fecha_fin_plazo": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Último día de plazo de presentación de solicitudes, si se puede extraer."
+    },
+    "url_oficial": {
+      "type": "string",
+      "format": "uri",
+      "description": "Enlace a la publicación oficial (obligatorio: siempre citamos fuente)."
+    },
+    "fuente": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["codigo", "nombre", "licencia"],
+      "properties": {
+        "codigo": {
+          "type": "string",
+          "description": "Código corto de la fuente: 'boe', 'boja', 'bocm', 'dogv'…",
+          "pattern": "^[a-z0-9_-]+$"
+        },
+        "nombre": {
+          "type": "string",
+          "description": "Nombre legible: 'Boletín Oficial del Estado'."
+        },
+        "licencia": {
+          "type": "string",
+          "description": "Licencia/condiciones de reutilización de la fuente oficial."
+        }
+      }
+    },
+    "fecha_ingesta": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Instante en que OpoAlerta ingirió esta convocatoria (ISO 8601 UTC)."
+    }
+  }
+}

@@ -1,0 +1,30 @@
+name: "🐛 Bug"
+description: Algo no funciona como debería (web, alertas, datos incorrectos)
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción del problema
+    validations:
+      required: true
+  - type: textarea
+    id: reproducir
+    attributes:
+      label: Pasos para reproducir
+      placeholder: |
+        1. Ir a…
+        2. Buscar…
+        3. Ver el error
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+  - type: input
+    id: entorno
+    attributes:
+      label: Entorno
+      placeholder: "Navegador/OS, o versión de Python si es un scraper"

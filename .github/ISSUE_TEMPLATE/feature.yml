@@ -1,0 +1,20 @@
+name: "💡 Propuesta de mejora"
+description: Sugerir una funcionalidad o mejora
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: ¿Qué problema resuelve?
+      placeholder: "Como opositor, me gustaría… porque…"
+    validations:
+      required: true
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Solución propuesta
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas

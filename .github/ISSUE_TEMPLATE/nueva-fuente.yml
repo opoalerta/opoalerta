@@ -1,0 +1,44 @@
+name: "➕ Nueva fuente"
+description: Proponer o reclamar un boletín/portal nuevo para scrapear
+title: "[nueva-fuente] "
+labels: ["nueva-fuente"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ¿Quieres añadir tu comunidad autónoma? Lee la [guía paso a paso](../blob/main/docs/guia-nueva-ccaa.md).
+  - type: input
+    id: fuente
+    attributes:
+      label: Nombre de la fuente
+      placeholder: "BON (Boletín Oficial de Navarra)"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL del boletín o de su API/datos abiertos
+    validations:
+      required: true
+  - type: dropdown
+    id: acceso
+    attributes:
+      label: Tipo de acceso
+      options:
+        - API / datos abiertos (JSON/XML/RDF)
+        - RSS
+        - Scraping de HTML
+        - No lo sé todavía
+    validations:
+      required: true
+  - type: input
+    id: licencia
+    attributes:
+      label: Licencia de los datos de la fuente (si la conoces)
+      placeholder: "CC-BY 4.0, aviso legal propio, datos.gob.es…"
+  - type: checkboxes
+    id: reclamo
+    attributes:
+      label: Compromiso
+      options:
+        - label: Me ofrezco a implementar este scraper

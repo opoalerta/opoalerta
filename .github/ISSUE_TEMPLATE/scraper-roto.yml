@@ -1,0 +1,32 @@
+name: "🔧 Scraper roto"
+description: Un scraper existente ha dejado de recoger convocatorias
+title: "[scraper-roto] "
+labels: ["scraper-roto"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por avisar. Muchas de estas issues las abre automáticamente el bot de ingesta cuando un boletín cambia de formato.
+  - type: input
+    id: boletin
+    attributes:
+      label: Boletín afectado
+      placeholder: "BOE, BOJA, BOCM, DOGV, …"
+    validations:
+      required: true
+  - type: textarea
+    id: sintoma
+    attributes:
+      label: ¿Qué falla?
+      placeholder: "Error, 0 convocatorias donde debería haber, cambio de estructura HTML/API…"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs o traza
+      render: shell
+  - type: input
+    id: run
+    attributes:
+      label: Enlace al run de GitHub Actions (si aplica)

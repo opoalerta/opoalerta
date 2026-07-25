@@ -1,0 +1,81 @@
+{
+ "status": {
+  "code": "200",
+  "text": "ok"
+ },
+ "data": {
+  "sumario": {
+   "metadatos": {
+    "publicacion": "BOE",
+    "fecha_publicacion": "20250723"
+   },
+   "diario": [
+    {
+     "numero": "176",
+     "sumario_diario": {
+      "identificador": "BOE-S-2025-176",
+      "url_pdf": {
+       "szBytes": "415734",
+       "szKBytes": "406",
+       "texto": "https://www.boe.es/boe/dias/2025/07/23/pdfs/BOE-S-2025-176.pdf"
+      }
+     },
+     "seccion": [
+      {
+       "codigo": "2B",
+       "nombre": "II. Autoridades y personal. - B. Oposiciones y concursos",
+       "departamento": [
+        {
+         "codigo": "9562",
+         "nombre": "MINISTERIO DE ASUNTOS EXTERIORES, UNIÓN EUROPEA Y COOPERACIÓN",
+         "epigrafe": [
+          {
+           "nombre": "Carrera Diplomática",
+           "item": {
+            "identificador": "BOE-A-2025-15277",
+            "control": "2025/11684",
+            "titulo": "Resolución de 18 de julio de 2025, de la Subsecretaría, por la que se publica la relación de aspirantes que han aprobado la fase de oposición del proceso selectivo para ingreso, por el sistema general de acceso libre, en la Carrera Diplomática, convocado por Resolución de 9 de diciembre de 2024.",
+            "url_pdf": {
+             "szBytes": "236060",
+             "szKBytes": "231",
+             "pagina_inicial": "98301",
+             "pagina_final": "98303",
+             "texto": "https://www.boe.es/boe/dias/2025/07/23/pdfs/BOE-A-2025-15277.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-15277",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2025-15277"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9585",
+         "nombre": "MINISTERIO DE LA PRESIDENCIA, JUSTICIA Y RELACIONES CON LAS CORTES",
+         "epigrafe": [
+          {
+           "nombre": "Cuerpos de Gestión Procesal y Administrativa, Tramitación Procesal y Administrativa y Auxilio Judicial de la Administración de Justicia",
+           "item": {
+            "identificador": "BOE-A-2025-15278",
+            "control": "2025/11685",
+            "titulo": "Orden PJC/782/2025, de 15 de julio, por la que se aprueba la relación definitiva de personas admitidas y excluidas y se publican las sedes de examen de los procesos selectivos para acceso por turno libre, a los Cuerpos de Gestión Procesal y Administrativa, Tramitación Procesal y Administrativa y Auxilio Judicial de la Administración de Justicia, convocados por Orden PJC/1437/2024, de 3 de diciembre.",
+            "url_pdf": {
+             "szBytes": "4794918",
+             "szKBytes": "4683",
+             "pagina_inicial": "98304",
+             "pagina_final": "98398",
+             "texto": "https://www.boe.es/boe/dias/2025/07/23/pdfs/BOE-A-2025-15278.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-15278",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2025-15278"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
