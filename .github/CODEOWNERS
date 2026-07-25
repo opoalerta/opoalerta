@@ -1,0 +1,20 @@
+# Todo el repositorio requiere revisión del propietario del proyecto.
+# Esto se combina con el ruleset 'main-protection' si activas
+# "Require review from CODEOWNERS" en Settings → Rules → Rulesets.
+* @zaswear
+
+# Aplicación web
+apps/web/ @zaswear
+
+# Scrapers y datos
+scrapers/ @zaswear
+data/ @zaswear
+
+# Workflows de CI/CD (pueden desplegar o romper el proyecto)
+.github/workflows/ @zaswear
+
+# Documentación de gobierno del proyecto
+docs/ @zaswear
+CONTRIBUTING.md @zaswear
+GOVERNANCE.md @zaswear
+SECURITY.md @zaswear
