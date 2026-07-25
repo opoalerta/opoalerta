@@ -47,6 +47,11 @@ export async function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/blog" className="text-white no-underline hover:text-gold-light">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <a
                   href="https://github.com/opoalerta/opoalerta/blob/main/ROADMAP.md"
                   className="text-white no-underline hover:text-gold-light"
