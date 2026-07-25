@@ -3,7 +3,7 @@
 > Buscador unificado y gratuito de convocatorias de empleo público en España. Open source, sin publicidad, construido sobre datos abiertos oficiales.
 
 [![CI](https://github.com/opoalerta/opoalerta/actions/workflows/ci.yml/badge.svg)](https://github.com/opoalerta/opoalerta/actions/workflows/ci.yml)
-[![Ingesta BOE](https://github.com/opoalerta/opoalerta/actions/workflows/ingest-boe.yml/badge.svg)](https://github.com/opoalerta/opoalerta/actions/workflows/ingest-boe.yml)
+[![Ingesta diaria](https://github.com/opoalerta/opoalerta/actions/workflows/ingest.yml/badge.svg)](https://github.com/opoalerta/opoalerta/actions/workflows/ingest.yml)
 [![Licencia: AGPL-3.0](https://img.shields.io/badge/licencia-AGPL--3.0-blue)](LICENSE)
 
 ## El problema
@@ -24,7 +24,7 @@ Todo el valor se construye sobre datos públicos (BOE, boletines oficiales, dato
 ## Cómo funciona
 
 ```
-06:00 UTC  GitHub Action "ingest-boe"        descarga sumario BOE → normaliza → upsert en Postgres
+06:00 UTC  GitHub Action "ingest" (matrix)   descarga BOE + BOJA + … → normaliza → upsert en Postgres
 06:15 UTC  GitHub Actions por CCAA (matrix)  BOJA, BOCM, DOGV, …
 07:00 UTC  "match-alerts"                    cruza novedades con filtros guardados → email/Telegram
 ```

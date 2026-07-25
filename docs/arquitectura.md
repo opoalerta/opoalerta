@@ -35,7 +35,7 @@ OpoAlerta es una arquitectura sin servidores propios: todo corre en tiers gratui
   para que el upsell sea idempotente entre ejecuciones.
 
 ### Ingesta (`.github/workflows/`)
-- [`ingest-boe.yml`](../.github/workflows/ingest-boe.yml): cron diario +
+- [`ingest.yml`](../.github/workflows/ingest.yml): cron diario (matrix por fuente) +
   `workflow_dispatch`. Si el scraper falla, **abre automáticamente una issue
   etiquetada `scraper-roto`** (sin duplicar la del día).
 - Cada nueva CCAA se añade como un job más (matrix), sin tocar las demás.

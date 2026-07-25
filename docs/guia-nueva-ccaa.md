@@ -70,8 +70,9 @@ Campos obligatorios y opcionales: ver [`convocatoria.schema.json`](../packages/n
 
 ### 3. Añade tu boletín a la ingesta
 
-Duplica el patrón de [`ingest-boe.yml`](../.github/workflows/ingest-boe.yml) para
-tu módulo, o (mejor) añádelo a la matriz cuando exista un workflow unificado.
+Añade el código de tu boletín a la matriz `fuente` de
+[`ingest.yml`](../.github/workflows/ingest.yml) (p. ej. `[boe, boja, tu_codigo]`).
+El resto del workflow (artefacto, auto-issue `scraper-roto`) ya es genérico.
 
 ### 4. Verifica en local
 

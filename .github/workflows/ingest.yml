@@ -1,16 +1,12 @@
-name: Ingesta BOE
+name: Ingesta diaria
 
 on:
   schedule:
     - cron: "0 6 * * *" # 06:00 UTC diario
   workflow_dispatch:
-    inputs:
-      fecha:
-        description: "Fecha del sumario (YYYY-MM-DD). Vacío = hoy."
-        required: false
 
 concurrency:
-  group: ingest-boe
+  group: ingest
   cancel-in-progress: false
 
 permissions:
@@ -19,6 +15,10 @@ permissions:
 
 jobs:
   ingest:
+    strategy:
+      fail-fast: false
+      matrix:
+        fuente: [boe, boja]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -31,25 +31,22 @@ jobs:
           cache: pip
       - run: pip install -e ".[db]"
 
-      - name: Ejecutar scraper BOE
-        id: run
+      - name: Ejecutar scraper ${{ matrix.fuente }}
         env:
-          # Cuando exista el secret, la ingesta escribe en Postgres.
-          # Mientras no exista, corre en dry-run y produce un artefacto JSON.
+          # Con el secret, la ingesta escribe en Postgres; sin él, dry-run.
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           set -o pipefail
-          ARGS="--out ../out/boe.json"
-          if [ -z "$DATABASE_URL" ]; then ARGS="$ARGS --dry-run"; fi
-          if [ -n "${{ inputs.fecha }}" ]; then ARGS="$ARGS --fecha ${{ inputs.fecha }}"; fi
           mkdir -p ../out
-          python -m boe $ARGS 2>&1 | tee ../out/boe.log
+          ARGS="--out ../out/${{ matrix.fuente }}.json"
+          if [ -z "$DATABASE_URL" ]; then ARGS="$ARGS --dry-run"; fi
+          python -m ${{ matrix.fuente }} $ARGS 2>&1 | tee ../out/${{ matrix.fuente }}.log
 
       - name: Subir artefacto
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: boe-ingest
+          name: ingest-${{ matrix.fuente }}
           path: out/
           if-no-files-found: ignore
 
@@ -58,8 +55,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TITLE="[scraper-roto] BOE falló el $(date -u +%Y-%m-%d)"
-          # Evita duplicar: reutiliza una issue abierta con el mismo título de hoy.
+          FUENTE="${{ matrix.fuente }}"
+          TITLE="[scraper-roto] ${FUENTE^^} falló el $(date -u +%Y-%m-%d)"
           EXISTING=$(gh issue list --label scraper-roto --state open --search "$TITLE" --json number --jq '.[0].number' || echo "")
           if [ -n "$EXISTING" ]; then
             echo "Issue #$EXISTING ya existe, no duplico."
@@ -68,4 +65,4 @@ jobs:
           gh issue create \
             --title "$TITLE" \
             --label scraper-roto \
-            --body "El workflow de ingesta del BOE falló. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            --body "El workflow de ingesta de ${FUENTE^^} falló. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
