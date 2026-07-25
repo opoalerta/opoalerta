@@ -1,0 +1,35 @@
+name: Enviar alertas (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Ignorar el guard de 12h (reenviar aunque se notificara hace poco)"
+        type: boolean
+        default: true
+
+jobs:
+  notificar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scrapers
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[db]"
+
+      - name: Enviar alertas
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ALERTAS_FROM: ${{ vars.ALERTAS_FROM }}
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.force }}" = "true" ]; then ARGS="--force"; fi
+          python -m notificar $ARGS
