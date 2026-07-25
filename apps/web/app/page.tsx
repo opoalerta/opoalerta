@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 const FUENTES = [
   { codigo: "BOE", nombre: "Boletín Oficial del Estado", estado: "activo" },
-  { codigo: "BOJA", nombre: "Boletín Oficial de la Junta de Andalucía", estado: "previsto" },
+  { codigo: "BOJA", nombre: "Boletín Oficial de la Junta de Andalucía", estado: "activo" },
   { codigo: "BOCM", nombre: "Boletín Oficial de la Comunidad de Madrid", estado: "previsto" },
   { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "previsto" },
   { codigo: "BOPG", nombre: "Boletín Oficial de Pontevedra (Galicia)", estado: "previsto" },
@@ -62,12 +62,6 @@ export default async function Home() {
                 className="inline-flex items-center rounded bg-[#01689b] px-6 py-3 text-base font-semibold text-white no-underline hover:bg-[#154273]"
               >
                 Buscar convocatorias
-              </a>
-              <a
-                href="https://github.com/opoalerta/opoalerta"
-                className="inline-flex items-center rounded border border-[#cccccc] bg-white px-6 py-3 text-base font-semibold text-[#01689b] no-underline hover:bg-[#f3f5f6]"
-              >
-                Ver el código
               </a>
             </div>
           </div>
