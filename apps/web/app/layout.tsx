@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Inter, Poppins } from "next/font/google";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { getBaseUrl } from "@/lib/site";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-poppins",
+  display: "swap",
+});
 
 const baseUrl = getBaseUrl();
 
@@ -59,12 +73,17 @@ export const metadata: Metadata = {
       "Buscador unificado y gratuito de convocatorias de empleo público, oposiciones y ofertas de empleo en España.",
   },
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
   manifest: "/manifest.json",
   other: {
-    "msapplication-TileColor": "#154273",
-    "theme-color": "#154273",
+    "msapplication-TileColor": "#1B3358",
+    "theme-color": "#1B3358",
   },
   verification: {
     google: "oJMYPZXcvxXIKk5jAJe7rAImTWdwsyNRNzoJvQhR2W4",
@@ -76,7 +95,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
-      <body className="flex min-h-screen flex-col">
+      <body className={`${inter.variable} ${poppins.variable} flex min-h-screen flex-col font-sans`}>
         <Header />
         <main className="grow">{children}</main>
         <Footer />

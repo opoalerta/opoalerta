@@ -119,23 +119,23 @@ export default async function Home() {
   return (
     <>
       <JsonLd data={structuredData} />
-      <section className="bg-[#f3f5f6] py-16">
+      <section className="bg-cream py-16">
         <Container>
           <div className="max-w-3xl">
-            <p className="mb-4 inline-block rounded bg-[#01689b] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+            <p className="mb-4 inline-block rounded bg-gold px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
               Proyecto cívico · Open source
             </p>
-            <h1 className="text-4xl font-bold tracking-tight text-[#154273] sm:text-5xl">
+            <h1 className="text-4xl font-bold tracking-tight text-navy sm:text-5xl">
               Todas las convocatorias de empleo público de España, en un solo sitio.
             </h1>
-            <p className="mt-6 text-xl text-[#595959]">
+            <p className="mt-6 text-xl text-slate">
               OpoAlerta agrega automáticamente las oposiciones del BOE y los boletines
               autonómicos. Gratis, sin publicidad, con el código y los datos abiertos.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#convocatorias"
-                className="inline-flex items-center rounded bg-[#01689b] px-6 py-3 text-base font-semibold text-white no-underline hover:bg-[#154273] hover:text-white"
+                className="inline-flex items-center rounded bg-gold px-6 py-3 text-base font-semibold text-white no-underline hover:bg-navy hover:text-white"
               >
                 Buscar convocatorias
               </a>
@@ -180,8 +180,8 @@ export default async function Home() {
       <section id="convocatorias" className="py-8">
         <Container>
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-[#154273]">Últimas convocatorias</h2>
-            <p className="mt-1 text-[#595959]">
+            <h2 className="text-2xl font-bold text-navy">Últimas convocatorias</h2>
+            <p className="mt-1 text-slate">
               Consulta las últimas publicaciones o filtra por puesto, organismo o fuente.
             </p>
           </div>
@@ -189,11 +189,11 @@ export default async function Home() {
         </Container>
       </section>
 
-      <section className="bg-[#f3f5f6] py-16">
+      <section className="bg-cream py-16">
         <Container>
           <div className="mb-10">
-            <h2 className="text-2xl font-bold text-[#154273]">Cómo funciona</h2>
-            <p className="mt-1 text-[#595959]">
+            <h2 className="text-2xl font-bold text-navy">Cómo funciona</h2>
+            <p className="mt-1 text-slate">
               Tres pasos para pasar de cientos de portales a una lista clara y usable.
             </p>
           </div>
@@ -218,8 +218,8 @@ export default async function Home() {
       <section className="py-16">
         <Container>
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-[#154273]">Fuentes oficiales</h2>
-            <p className="mt-1 text-[#595959]">
+            <h2 className="text-2xl font-bold text-navy">Fuentes oficiales</h2>
+            <p className="mt-1 text-slate">
               Usamos exclusivamente datos públicos y citamos siempre la fuente original.
             </p>
           </div>
@@ -227,21 +227,21 @@ export default async function Home() {
             {FUENTES.map((f) => (
               <li
                 key={f.codigo}
-                className="flex items-center justify-between rounded border border-[#e5e5e5] bg-white p-4"
+                className="flex items-center justify-between rounded border border-border bg-white p-4"
               >
                 <div>
-                  <span className="block text-base font-semibold text-[#01689b]">
+                  <span className="block text-base font-semibold text-navy-700">
                     {f.codigo}
                   </span>
-                  <span className="text-sm text-[#595959]">{f.nombre}</span>
+                  <span className="text-sm text-slate">{f.nombre}</span>
                 </div>
                 <span
                   className={`rounded px-2 py-1 text-xs font-semibold uppercase ${
                     f.estado === "activo"
-                      ? "bg-[#f4f9f0] text-[#39870c]"
+                      ? "bg-success-bg text-success"
                       : f.estado === "previsto"
-                        ? "bg-[#f3f5f6] text-[#595959]"
-                        : "bg-[#fff4f4] text-[#d52b1e]"
+                        ? "bg-cream text-slate"
+                        : "bg-danger-bg text-danger"
                   }`}
                 >
                   {f.estado}
@@ -249,7 +249,7 @@ export default async function Home() {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-sm text-[#595959]">
+          <p className="mt-4 text-sm text-slate">
             El objetivo es cubrir los 19 boletines autonómicos. Si falta el tuyo, puedes{" "}
             <a href="https://github.com/opoalerta/opoalerta/blob/main/docs/guia-nueva-ccaa.md">
               añadirlo siguiendo esta guía
@@ -259,11 +259,11 @@ export default async function Home() {
         </Container>
       </section>
 
-      <section className="bg-[#f3f5f6] py-16">
+      <section className="bg-cream py-16">
         <Container>
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-[#154273]">Open source y contribución</h2>
-            <p className="mt-1 text-[#595959]">
+            <h2 className="text-2xl font-bold text-navy">Open source y contribución</h2>
+            <p className="mt-1 text-slate">
               El proyecto vive en GitHub y mejora con la comunidad.
             </p>
           </div>
@@ -277,12 +277,12 @@ export default async function Home() {
               <a
                 key={item.label}
                 href={item.href}
-                className="block rounded border border-[#e5e5e5] bg-white p-4 no-underline shadow-sm transition hover:border-[#01689b]"
+                className="block rounded border border-border bg-white p-4 no-underline shadow-sm transition hover:border-gold"
               >
-                <span className="block text-base font-semibold text-[#01689b]">
+                <span className="block text-base font-semibold text-navy-700">
                   {item.label}
                 </span>
-                <span className="text-sm text-[#595959]">{item.desc}</span>
+                <span className="text-sm text-slate">{item.desc}</span>
               </a>
             ))}
           </div>
@@ -292,15 +292,15 @@ export default async function Home() {
       <section className="py-16">
         <Container>
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-[#154273]">Preguntas frecuentes</h2>
+            <h2 className="text-2xl font-bold text-navy">Preguntas frecuentes</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
             {FAQ.map((item) => (
               <div key={item.question}>
-                <h3 className="mb-1 text-lg font-semibold text-[#154273]">
+                <h3 className="mb-1 text-lg font-semibold text-navy">
                   {item.question}
                 </h3>
-                <p className="text-[#595959]">{item.answer}</p>
+                <p className="text-slate">{item.answer}</p>
               </div>
             ))}
           </div>

@@ -115,44 +115,44 @@ export default async function ConvocatoriaPage({
     <Container className="py-12">
       <JsonLd data={jobPosting} />
 
-      <nav aria-label="Breadcrumb" className="mb-4 text-sm text-[#595959]">
-        <Link href="/" className="text-[#01689b] no-underline hover:underline">
+      <nav aria-label="Breadcrumb" className="mb-4 text-sm text-slate">
+        <Link href="/" className="text-navy-700 no-underline hover:underline">
           Inicio
         </Link>
         <span className="mx-2" aria-hidden="true">/</span>
         <span>Convocatoria</span>
       </nav>
 
-      <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-[#595959]">
-        <span className="rounded bg-[#f3f5f6] px-2 py-1 font-semibold uppercase text-[#01689b]">
+      <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate">
+        <span className="rounded bg-cream px-2 py-1 font-semibold uppercase text-navy-700">
           {conv.fuente_codigo}
         </span>
         <span>{ambito}</span>
-        <span className="text-[#999999]">· Publicada el {fmtFecha(conv.fecha_publicacion)}</span>
+        <span className="text-slate">· Publicada el {fmtFecha(conv.fecha_publicacion)}</span>
       </div>
 
-      <h1 className="mb-4 text-3xl font-bold leading-tight text-[#154273] sm:text-4xl">
+      <h1 className="mb-4 text-3xl font-bold leading-tight text-navy sm:text-4xl">
         {conv.titulo}
       </h1>
 
-      <p className="mb-6 text-lg text-[#595959]">{conv.organismo}</p>
+      <p className="mb-6 text-lg text-slate">{conv.organismo}</p>
 
       <dl className="mb-8 grid gap-4 sm:grid-cols-2">
-        <div className="rounded border border-[#e5e5e5] bg-[#f3f5f6] p-4">
-          <dt className="text-sm font-semibold uppercase text-[#595959]">Ámbito</dt>
-          <dd className="text-base text-[#1a1a1a]">{ambito}</dd>
+        <div className="rounded border border-border bg-cream p-4">
+          <dt className="text-sm font-semibold uppercase text-slate">Ámbito</dt>
+          <dd className="text-base text-ink">{ambito}</dd>
         </div>
-        <div className="rounded border border-[#e5e5e5] bg-[#f3f5f6] p-4">
-          <dt className="text-sm font-semibold uppercase text-[#595959]">Fuente</dt>
-          <dd className="text-base text-[#1a1a1a]">{conv.fuente_codigo}</dd>
+        <div className="rounded border border-border bg-cream p-4">
+          <dt className="text-sm font-semibold uppercase text-slate">Fuente</dt>
+          <dd className="text-base text-ink">{conv.fuente_codigo}</dd>
         </div>
-        <div className="rounded border border-[#e5e5e5] bg-[#f3f5f6] p-4">
-          <dt className="text-sm font-semibold uppercase text-[#595959]">Publicación</dt>
-          <dd className="text-base text-[#1a1a1a]">{fmtFecha(conv.fecha_publicacion)}</dd>
+        <div className="rounded border border-border bg-cream p-4">
+          <dt className="text-sm font-semibold uppercase text-slate">Publicación</dt>
+          <dd className="text-base text-ink">{fmtFecha(conv.fecha_publicacion)}</dd>
         </div>
-        <div className="rounded border border-[#e5e5e5] bg-[#f3f5f6] p-4">
-          <dt className="text-sm font-semibold uppercase text-[#595959]">Fin de plazo</dt>
-          <dd className="text-base text-[#1a1a1a]">{fmtFecha(conv.fecha_fin_plazo)}</dd>
+        <div className="rounded border border-border bg-cream p-4">
+          <dt className="text-sm font-semibold uppercase text-slate">Fin de plazo</dt>
+          <dd className="text-base text-ink">{fmtFecha(conv.fecha_fin_plazo)}</dd>
         </div>
       </dl>
 
@@ -161,13 +161,13 @@ export default async function ConvocatoriaPage({
           href={conv.url_oficial}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center rounded bg-[#01689b] px-6 py-3 text-base font-semibold text-white no-underline hover:bg-[#154273] hover:text-white"
+          className="inline-flex items-center rounded bg-gold px-6 py-3 text-base font-semibold text-white no-underline hover:bg-navy hover:text-white"
         >
           Ver convocatoria oficial
         </a>
         <Link
           href="/"
-          className="inline-flex items-center rounded border border-[#e5e5e5] bg-white px-6 py-3 text-base font-semibold text-[#01689b] no-underline hover:border-[#01689b]"
+          className="inline-flex items-center rounded border border-border bg-white px-6 py-3 text-base font-semibold text-navy-700 no-underline hover:border-gold"
         >
           Volver al buscador
         </Link>

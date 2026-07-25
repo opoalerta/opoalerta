@@ -20,7 +20,7 @@ const AMBITO_LABEL: Record<string, string> = {
 };
 
 const selectClass =
-  "rounded border border-[#cccccc] bg-white px-3 py-2.5 text-base text-[#1a1a1a] focus:border-[#01689b] focus:ring-2 focus:ring-[#01689b] focus:ring-offset-1";
+  "rounded border border-border-strong bg-white px-3 py-2.5 text-base text-ink focus:border-gold focus:ring-2 focus:ring-gold focus:ring-offset-1";
 
 const PASO = 12;
 
@@ -87,8 +87,8 @@ export function ConvocatoriaSearch({
   const chipClass = (activo: boolean) =>
     `rounded-full border px-3 py-1.5 text-sm font-medium transition ${
       activo
-        ? "border-[#01689b] bg-[#01689b] text-white"
-        : "border-[#cccccc] bg-white text-[#01689b] hover:bg-[#f3f5f6]"
+        ? "border-gold bg-gold text-white"
+        : "border-border-strong bg-white text-navy-700 hover:bg-cream"
     }`;
 
   return (
@@ -127,7 +127,7 @@ export function ConvocatoriaSearch({
             value={query}
             onChange={(e) => cambiarQuery(e.target.value)}
             placeholder="Busca por puesto, organismo o fuente…"
-            className="w-full rounded border border-[#cccccc] bg-white px-4 py-2.5 text-base text-[#1a1a1a] placeholder:text-[#999999] focus:border-[#01689b] focus:ring-2 focus:ring-[#01689b] focus:ring-offset-1"
+            className="w-full rounded border border-border-strong bg-white px-4 py-2.5 text-base text-ink placeholder:text-slate focus:border-gold focus:ring-2 focus:ring-gold focus:ring-offset-1"
           />
         </div>
 
@@ -169,14 +169,14 @@ export function ConvocatoriaSearch({
           <button
             type="button"
             onClick={reset}
-            className="shrink-0 rounded border border-[#cccccc] bg-white px-4 py-2.5 text-sm font-medium text-[#01689b] hover:bg-[#f3f5f6]"
+            className="shrink-0 rounded border border-border-strong bg-white px-4 py-2.5 text-sm font-medium text-navy-700 hover:bg-cream"
           >
             Limpiar
           </button>
         )}
       </div>
 
-      <div className="mb-4 flex items-center justify-between text-sm text-[#595959]">
+      <div className="mb-4 flex items-center justify-between text-sm text-slate">
         <span>
           {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
           {query && ` para “${query}”`}
@@ -214,14 +214,14 @@ export function ConvocatoriaSearch({
               <button
                 type="button"
                 onClick={() => setVisibles((v) => v + PASO)}
-                className="rounded bg-[#01689b] px-6 py-2.5 text-base font-semibold text-white hover:bg-[#154273]"
+                className="rounded bg-gold px-6 py-2.5 text-base font-semibold text-white hover:bg-navy"
               >
                 Ver más ({restantes} restantes)
               </button>
               <button
                 type="button"
                 onClick={() => setVisibles(filtered.length)}
-                className="rounded border border-[#cccccc] bg-white px-6 py-2.5 text-base font-medium text-[#01689b] hover:bg-[#f3f5f6]"
+                className="rounded border border-border-strong bg-white px-6 py-2.5 text-base font-medium text-navy-700 hover:bg-cream"
               >
                 Ver todas
               </button>

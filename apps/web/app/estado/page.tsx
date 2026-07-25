@@ -67,12 +67,12 @@ export default async function Estado() {
         </NoticeBox>
       ) : (
         <>
-          <div className="mb-4 flex flex-wrap items-center gap-4 text-sm text-[#595959]">
+          <div className="mb-4 flex flex-wrap items-center gap-4 text-sm text-slate">
             <span>
-              <strong className="text-[#1a1a1a]">{fuentes.length}</strong> fuentes configuradas
+              <strong className="text-ink">{fuentes.length}</strong> fuentes configuradas
             </span>
             <span>
-              <strong className="text-[#1a1a1a]">
+              <strong className="text-ink">
                 {fuentes.reduce((sum, f) => sum + f.total, 0)}
               </strong>{" "}
               convocatorias ingeridas en total

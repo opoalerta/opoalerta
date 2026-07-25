@@ -56,13 +56,13 @@ export async function POST(request: Request) {
 
   const html = `
     <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
-      <h1 style="color:#154273;font-size:20px">Confirma tu alerta de OpoAlerta</h1>
+      <h1 style="color:#1B3358;font-size:20px">Confirma tu alerta de OpoAlerta</h1>
       <p>Has pedido recibir avisos de nuevas convocatorias que coincidan con: <strong>${resumen}</strong>.</p>
       <p>Para activarla, confirma que este correo es tuyo:</p>
-      <p><a href="${confirmar}" style="display:inline-block;background:#01689b;color:#fff;text-decoration:none;padding:12px 20px;border-radius:4px;font-weight:600">Confirmar alerta</a></p>
-      <p style="color:#595959;font-size:13px">Si no has sido tú, ignora este correo y no recibirás nada. También puedes <a href="${baja}" style="color:#01689b">darte de baja</a> en cualquier momento.</p>
-      <hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0">
-      <p style="color:#999;font-size:12px">OpoAlerta · buscador cívico y gratuito de empleo público · datos oficiales</p>
+      <p><a href="${confirmar}" style="display:inline-block;background:#D9A62B;color:#fff;text-decoration:none;padding:12px 20px;border-radius:4px;font-weight:600">Confirmar alerta</a></p>
+      <p style="color:#8792A2;font-size:13px">Si no has sido tú, ignora este correo y no recibirás nada. También puedes <a href="${baja}" style="color:#33507A">darte de baja</a> en cualquier momento.</p>
+      <hr style="border:none;border-top:1px solid #E5E5E5;margin:24px 0">
+      <p style="color:#8792A2;font-size:12px">OpoAlerta · buscador cívico y gratuito de empleo público · datos oficiales</p>
     </div>`;
 
   const enviado = await sendEmail({

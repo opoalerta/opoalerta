@@ -72,7 +72,7 @@ export function SuscripcionForm({
 
   if (estado === "ok") {
     return (
-      <div className="mt-8 rounded-r border-l-4 border-l-[#39870c] bg-[#f4f9f0] p-5 text-sm text-[#1a1a1a]">
+      <div className="mt-8 rounded-r border-l-4 border-l-success bg-success-bg p-5 text-sm text-ink">
         <p className="font-semibold">Casi listo: revisa tu correo.</p>
         <p className="mt-1">
           Te hemos enviado un email para <strong>confirmar</strong> la alerta.
@@ -83,11 +83,11 @@ export function SuscripcionForm({
   }
 
   return (
-    <div className="mt-8 rounded border border-[#e5e5e5] bg-[#f3f5f6] p-6">
-      <h3 className="text-lg font-semibold text-[#154273]">
+    <div className="mt-8 rounded border border-border bg-cream p-6">
+      <h3 className="text-lg font-semibold text-navy">
         Recibe estas convocatorias por email
       </h3>
-      <p className="mt-1 text-sm text-[#595959]">
+      <p className="mt-1 text-sm text-slate">
         Te avisamos cuando salga una nueva que coincida con
         {criterios.length ? (
           <> tu búsqueda ({criterios.join(", ")}).</>
@@ -107,23 +107,23 @@ export function SuscripcionForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="tu@correo.es"
-          className="grow rounded border border-[#cccccc] bg-white px-4 py-2.5 text-base text-[#1a1a1a] placeholder:text-[#999999] focus:border-[#01689b] focus:ring-2 focus:ring-[#01689b] focus:ring-offset-1"
+          className="grow rounded border border-border-strong bg-white px-4 py-2.5 text-base text-ink placeholder:text-slate focus:border-gold focus:ring-2 focus:ring-gold focus:ring-offset-1"
         />
         <button
           type="submit"
           disabled={estado === "enviando"}
-          className="shrink-0 rounded bg-[#01689b] px-6 py-2.5 text-base font-semibold text-white hover:bg-[#154273] disabled:opacity-60"
+          className="shrink-0 rounded bg-gold px-6 py-2.5 text-base font-semibold text-white hover:bg-navy disabled:opacity-60"
         >
           {estado === "enviando" ? "Enviando…" : "Avisadme"}
         </button>
       </form>
       <div className="mt-4 flex items-center gap-3">
-        <span className="text-sm text-[#595959]">o si lo prefieres</span>
+        <span className="text-sm text-slate">o si lo prefieres</span>
         <button
           type="button"
           onClick={suscribirTelegram}
           disabled={tgEstado === "enviando"}
-          className="inline-flex items-center gap-2 rounded border border-[#01689b] bg-white px-4 py-2 text-sm font-semibold text-[#01689b] hover:bg-[#eaf3f8] disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded border border-navy-700 bg-white px-4 py-2 text-sm font-semibold text-navy-700 hover:bg-cream disabled:opacity-60"
         >
           <span aria-hidden="true">✈️</span>
           {tgEstado === "enviando" ? "Abriendo…" : "Recibir por Telegram"}
@@ -131,9 +131,9 @@ export function SuscripcionForm({
       </div>
 
       {(estado === "error" || tgEstado === "error") && (
-        <p className="mt-2 text-sm text-[#d52b1e]">{mensaje}</p>
+        <p className="mt-2 text-sm text-danger">{mensaje}</p>
       )}
-      <p className="mt-2 text-xs text-[#595959]">
+      <p className="mt-2 text-xs text-slate">
         Al suscribirte aceptas recibir avisos por email o Telegram. Guardamos solo
         tu contacto y los filtros; puedes darte de baja cuando quieras.
       </p>
