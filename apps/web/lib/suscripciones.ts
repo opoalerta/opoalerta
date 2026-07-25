@@ -93,16 +93,32 @@ export async function crearSuscripcionTelegram(
  * Vincula una suscripción de Telegram (por token) a un chat y la confirma.
  * La invoca el webhook al recibir "/start <token>".
  */
-export async function vincularTelegram(token: string, chatId: number): Promise<boolean> {
+export async function vincularTelegram(
+  token: string,
+  chatId: number
+): Promise<FiltrosSuscripcion | null> {
   const sql = client();
-  if (!sql) return false;
+  if (!sql) return null;
   const rows = await sql`
     UPDATE suscripciones
     SET telegram_chat_id = ${chatId}, confirmada = TRUE, confirmada_en = now()
     WHERE token = ${token} AND canal = 'telegram'
-    RETURNING id
+    RETURNING q, ccaa, ambito, fuente_codigo
   `;
-  return rows.length > 0;
+  if (rows.length === 0) return null;
+  const r = rows[0] as FiltrosSuscripcion;
+  return { q: r.q, ccaa: r.ccaa, ambito: r.ambito, fuente_codigo: r.fuente_codigo };
+}
+
+/** Resumen legible de los filtros guardados, para mensajes al usuario. */
+export function resumenFiltros(f: FiltrosSuscripcion): string {
+  const partes = [
+    f.q && `“${f.q}”`,
+    f.fuente_codigo && f.fuente_codigo.toUpperCase(),
+    f.ambito,
+    f.ccaa,
+  ].filter(Boolean);
+  return partes.length ? partes.join(", ") : "todas las convocatorias";
 }
 
 /** Baja de todas las suscripciones de un chat de Telegram (comando /stop). */
