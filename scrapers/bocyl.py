@@ -22,15 +22,13 @@ import sys
 from datetime import UTC, datetime
 from typing import Any
 
-import httpx
-
 from common.base import BaseScraper
+from common.http import get as http_get
 from common.runner import execute
 
 HOME_URL = "https://bocyl.jcyl.es/"
 BOLETIN_URL = "https://bocyl.jcyl.es/boletin.do?fechaBoletin={fecha}"
 BASE = "https://bocyl.jcyl.es/"
-USER_AGENT = "OpoAlerta/0.1 (+https://opoalerta.es; civic open-data scraper)"
 
 _FECHA_LINK_RE = re.compile(r"boletin\.do\?fechaBoletin=(\d{2}/\d{2}/\d{4})")
 _SECCION_RE = re.compile(r"B\.2\.\s*Oposiciones y Concursos\s*</h4>")
@@ -48,19 +46,13 @@ class BocylScraper(BaseScraper):
     licencia = "Reutilización de datos públicos citando fuente (aviso legal JCyL)"
 
     def fetch(self) -> str:
-        headers = {"User-Agent": USER_AGENT}
-        home = httpx.get(HOME_URL, headers=headers, timeout=30, follow_redirects=True)
-        home.raise_for_status()
+        home = http_get(HOME_URL)
         fechas = _FECHA_LINK_RE.findall(home.text)
         if not fechas:
             raise ValueError("No se encontró ningún boletín en la portada del BOCYL")
         # Fecha más reciente (DD/MM/YYYY → clave YYYYMMDD).
         ultima = max(fechas, key=lambda f: f[6:] + f[3:5] + f[0:2])
-        resp = httpx.get(
-            BOLETIN_URL.format(fecha=ultima), headers=headers, timeout=30, follow_redirects=True
-        )
-        resp.raise_for_status()
-        return resp.text
+        return http_get(BOLETIN_URL.format(fecha=ultima)).text
 
     def parse(self, raw: str) -> list[dict[str, Any]]:
         if "BOCYL" not in raw:

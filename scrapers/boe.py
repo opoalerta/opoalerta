@@ -19,14 +19,12 @@ import sys
 from datetime import UTC, date, datetime
 from typing import Any
 
-import httpx
-
 from common.base import BaseScraper
+from common.http import get as http_get
 from common.runner import execute
 
 API_URL = "https://www.boe.es/datosabiertos/api/boe/sumario/{fecha}"
 SECCION_OPOSICIONES = "2B"
-USER_AGENT = "OpoAlerta/0.1 (+https://opoalerta.es; civic open-data scraper)"
 
 
 def _as_list(value: Any) -> list[Any]:
@@ -43,10 +41,7 @@ class BoeScraper(BaseScraper):
 
     def fetch(self) -> dict[str, Any]:
         url = API_URL.format(fecha=self.fecha.strftime("%Y%m%d"))
-        headers = {"Accept": "application/json", "User-Agent": USER_AGENT}
-        resp = httpx.get(url, headers=headers, timeout=30, follow_redirects=True)
-        resp.raise_for_status()
-        return resp.json()
+        return http_get(url, headers={"Accept": "application/json"}).json()
 
     def parse(self, raw: dict[str, Any]) -> list[dict[str, Any]]:
         registros: list[dict[str, Any]] = []
