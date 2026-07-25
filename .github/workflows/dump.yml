@@ -1,0 +1,42 @@
+name: Dump de datos
+
+on:
+  schedule:
+    - cron: "0 4 1 * *" # día 1 de cada mes, 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scrapers
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[db]"
+
+      - name: Exportar convocatorias
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m exportar --out ../out
+
+      - name: Publicar dump en Releases
+        if: ${{ hashFiles('out/convocatorias.json') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="datos-$(date -u +%Y-%m)"
+          NOTES="Volcado mensual de convocatorias normalizadas de OpoAlerta. Licencia ODbL-1.0 (data/LICENSE), con atribución a las fuentes oficiales (BOE y boletines autonómicos)."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" ../out/convocatorias.csv ../out/convocatorias.json --clobber
+          else
+            gh release create "$TAG" ../out/convocatorias.csv ../out/convocatorias.json \
+              --title "Datos $(date -u +%Y-%m)" --notes "$NOTES"
+          fi
