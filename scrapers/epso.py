@@ -56,6 +56,18 @@ def _id_ref(ref: str, url: str) -> str:
     return slug or url.rstrip("/").rsplit("/", 1)[-1]
 
 
+def _fecha_pub(ref: str) -> str:
+    """Fecha estable derivada del año de la referencia (la lista no da fecha).
+    Evita usar 'hoy', que haría que EPSO copara el orden del listado por fecha."""
+    seg = ref.split("/")[-1].split("-")[0].strip() if ref else ""
+    if seg.isdigit():
+        year = int(seg)
+        if year < 100:
+            year += 2000
+        return f"{year}-01-01"
+    return date.today().isoformat()
+
+
 class EpsoScraper(BaseScraper):
     codigo = "epso"
     nombre = "Oposiciones de la Unión Europea (EPSO)"
@@ -97,8 +109,7 @@ class EpsoScraper(BaseScraper):
             "ambito": "europeo",
             "ccaa": None,
             "tipo_acceso": _tipo(ref),
-            # La lista no da fecha; usamos la de primera ingesta (el upsert la preserva).
-            "fecha_publicacion": date.today().isoformat(),
+            "fecha_publicacion": _fecha_pub(ref),
             "url_oficial": registro["url"],
             "fuente": self.fuente(),
             "fecha_ingesta": datetime.now(UTC).isoformat(),
