@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import type { Convocatoria } from "@/lib/db";
 import { ConvocatoriaCard } from "./ConvocatoriaCard";
 import { NoticeBox } from "./NoticeBox";
+import { SuscripcionForm } from "./SuscripcionForm";
 
 function normalize(str: string): string {
   return str.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
@@ -155,6 +156,10 @@ export function ConvocatoriaSearch({
             </li>
           ))}
         </ul>
+      )}
+
+      {convocatorias.length > 0 && (
+        <SuscripcionForm q={query} fuente={fuente} ambito={ambito} />
       )}
     </div>
   );
