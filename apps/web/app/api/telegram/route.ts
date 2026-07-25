@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { vincularTelegram, bajaTelegram } from "@/lib/suscripciones";
+import { vincularTelegram, bajaTelegram, resumenFiltros } from "@/lib/suscripciones";
 import { sendTelegram } from "@/lib/telegram";
 
 export const runtime = "nodejs";
@@ -30,10 +30,11 @@ export async function POST(request: Request) {
 
   if (chatId && text.startsWith("/start")) {
     const token = text.split(/\s+/)[1];
-    if (token && (await vincularTelegram(token, chatId))) {
+    const filtros = token ? await vincularTelegram(token, chatId) : null;
+    if (filtros) {
       await sendTelegram(
         chatId,
-        "✅ <b>Alerta activada.</b> Te avisaré por aquí cuando salga una convocatoria que coincida con tu búsqueda.\n\nPara darte de baja, escribe /stop."
+        `✅ <b>Alerta activada.</b> Te avisaré cuando salga una convocatoria de: <b>${resumenFiltros(filtros)}</b>.\n\nPara cambiar los criterios, vuelve a opoalerta.es y suscríbete con otra búsqueda. Para darte de baja, escribe /stop.`
       );
     } else {
       await sendTelegram(
