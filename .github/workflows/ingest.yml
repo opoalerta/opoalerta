@@ -82,13 +82,14 @@ jobs:
           cache: pip
       - run: pip install -e ".[db]"
 
-      - name: Enviar alertas por email
+      - name: Enviar alertas (email y Telegram)
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           ALERTAS_FROM: ${{ vars.ALERTAS_FROM }}
           SITE_URL: ${{ vars.SITE_URL }}
         run: |
           ARGS=""
-          if [ -z "$RESEND_API_KEY" ]; then ARGS="--dry-run"; fi
+          if [ -z "$RESEND_API_KEY" ] && [ -z "$TELEGRAM_BOT_TOKEN" ]; then ARGS="--dry-run"; fi
           python -m notificar $ARGS

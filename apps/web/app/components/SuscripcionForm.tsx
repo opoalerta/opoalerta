@@ -15,7 +15,31 @@ export function SuscripcionForm({
 }) {
   const [email, setEmail] = useState("");
   const [estado, setEstado] = useState<Estado>("idle");
+  const [tgEstado, setTgEstado] = useState<Estado>("idle");
   const [mensaje, setMensaje] = useState("");
+
+  async function suscribirTelegram() {
+    setTgEstado("enviando");
+    setMensaje("");
+    try {
+      const resp = await fetch("/api/suscribir-telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ q, ambito, fuente_codigo: fuente }),
+      });
+      const data = await resp.json();
+      if (resp.ok && data.ok && data.url) {
+        window.open(data.url, "_blank", "noopener");
+        setTgEstado("idle");
+      } else {
+        setTgEstado("error");
+        setMensaje(data.error ?? "No se pudo abrir Telegram.");
+      }
+    } catch {
+      setTgEstado("error");
+      setMensaje("Error de red. Inténtalo de nuevo.");
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -93,12 +117,25 @@ export function SuscripcionForm({
           {estado === "enviando" ? "Enviando…" : "Avisadme"}
         </button>
       </form>
-      {estado === "error" && (
+      <div className="mt-4 flex items-center gap-3">
+        <span className="text-sm text-slate">o si lo prefieres</span>
+        <button
+          type="button"
+          onClick={suscribirTelegram}
+          disabled={tgEstado === "enviando"}
+          className="inline-flex items-center gap-2 rounded border border-navy-700 bg-white px-4 py-2 text-sm font-semibold text-navy-700 hover:bg-cream disabled:opacity-60"
+        >
+          <span aria-hidden="true">✈️</span>
+          {tgEstado === "enviando" ? "Abriendo…" : "Recibir por Telegram"}
+        </button>
+      </div>
+
+      {(estado === "error" || tgEstado === "error") && (
         <p className="mt-2 text-sm text-danger">{mensaje}</p>
       )}
       <p className="mt-2 text-xs text-slate">
-        Al suscribirte aceptas recibir avisos por email. Guardamos solo tu correo
-        y los filtros; puedes darte de baja desde cualquier email.
+        Al suscribirte aceptas recibir avisos por email o Telegram. Guardamos solo
+        tu contacto y los filtros; puedes darte de baja cuando quieras.
       </p>
     </div>
   );
