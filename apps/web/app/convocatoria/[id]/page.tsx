@@ -35,6 +35,11 @@ function fmtFecha(iso: string | null): string {
   return `${d}/${m}/${y}`;
 }
 
+function getAmbito(conv: NonNullable<Awaited<ReturnType<typeof getConvocatoriaById>>>) {
+  if (conv.ambito === "estatal") return "Estatal";
+  return CCAA_NOMBRE[conv.ccaa ?? ""] ?? conv.ambito ?? "—";
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -50,8 +55,9 @@ export async function generateMetadata({
   }
 
   const baseUrl = getBaseUrl();
-  const title = `${conv.titulo} — OpoAlerta`;
-  const description = `Convocatoria de empleo público publicada en ${conv.fuente_codigo}: ${conv.titulo}. Organismo: ${conv.organismo}. Consulta plazos, requisitos y enlace oficial en OpoAlerta.`;
+  const ambito = getAmbito(conv);
+  const title = `Convocatoria de empleo público: ${conv.titulo} — ${conv.organismo} | OpoAlerta`;
+  const description = `Convocatoria de empleo público publicada en ${conv.fuente_codigo}: ${conv.titulo}. Organismo: ${conv.organismo}. Ámbito: ${ambito}. Consulta plazos, requisitos y enlace oficial en OpoAlerta.`;
 
   return {
     title,
@@ -78,10 +84,7 @@ export default async function ConvocatoriaPage({
   if (!conv) notFound();
 
   const baseUrl = getBaseUrl();
-  const ambito =
-    conv.ambito === "estatal"
-      ? "Estatal"
-      : CCAA_NOMBRE[conv.ccaa ?? ""] ?? conv.ambito ?? "—";
+  const ambito = getAmbito(conv);
 
   const jobPosting = {
     "@context": "https://schema.org",
@@ -111,9 +114,28 @@ export default async function ConvocatoriaPage({
     },
   };
 
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Convocatoria",
+        item: `${baseUrl}/convocatoria/${id}`,
+      },
+    ],
+  };
+
   return (
     <Container className="py-12">
-      <JsonLd data={jobPosting} />
+      <JsonLd data={[breadcrumb, jobPosting]} />
 
       <nav aria-label="Breadcrumb" className="mb-4 text-sm text-slate">
         <Link href="/" className="text-navy-700 no-underline hover:underline">
