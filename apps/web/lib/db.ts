@@ -89,6 +89,16 @@ export async function getEstado(): Promise<EstadoFuente[]> {
 export async function getConvocatoriaById(id: string): Promise<Convocatoria | null> {
   const sql = client();
   if (!sql) return null;
+  // Next 16 puede entregar el param de ruta aún URL-codificado (p. ej. "boib%3A..."),
+  // de forma inconsistente entre generateMetadata y el componente. Los ids nunca
+  // llevan "%" literal, así que decodificar es seguro y normaliza ambos casos.
+  let clave = id;
+  try {
+    const decoded = decodeURIComponent(id);
+    if (decoded !== id) clave = decoded;
+  } catch {
+    // id malformado: se usa tal cual
+  }
   try {
     const rows = await sql`
       SELECT id, titulo, organismo, ambito, ccaa,
@@ -96,13 +106,9 @@ export async function getConvocatoriaById(id: string): Promise<Convocatoria | nu
              fecha_fin_plazo::text AS fecha_fin_plazo,
              url_oficial, fuente_codigo
       FROM convocatorias
-      WHERE id = ${id}
+      WHERE id = ${clave}
       LIMIT 1
     `;
-    console.log(
-      "DIAG getConvocatoriaById",
-      JSON.stringify({ id, len: id.length, found: rows.length })
-    );
     return (rows[0] as Convocatoria | undefined) ?? null;
   } catch (err) {
     console.error("getConvocatoriaById:", err);
