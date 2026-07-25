@@ -86,6 +86,27 @@ export async function getEstado(): Promise<EstadoFuente[]> {
   }
 }
 
+export async function getConvocatoriasEuropeas(limit = 9): Promise<Convocatoria[]> {
+  const sql = client();
+  if (!sql) return [];
+  try {
+    const rows = await sql`
+      SELECT id, titulo, organismo, ambito, ccaa,
+             fecha_publicacion::text AS fecha_publicacion,
+             fecha_fin_plazo::text AS fecha_fin_plazo,
+             url_oficial, fuente_codigo
+      FROM convocatorias
+      WHERE ambito = 'europeo'
+      ORDER BY fecha_ingesta DESC
+      LIMIT ${limit}
+    `;
+    return rows as Convocatoria[];
+  } catch (err) {
+    console.error("getConvocatoriasEuropeas:", err);
+    return [];
+  }
+}
+
 export async function getConvocatoriaById(id: string): Promise<Convocatoria | null> {
   const sql = client();
   if (!sql) return null;

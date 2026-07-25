@@ -1,6 +1,7 @@
 import { getBaseUrl } from "@/lib/site";
-import { getConvocatorias, getEstado } from "@/lib/db";
+import { getConvocatorias, getConvocatoriasEuropeas, getEstado } from "@/lib/db";
 import { Container } from "./components/Container";
+import { ConvocatoriaCard } from "./components/ConvocatoriaCard";
 import { ConvocatoriaSearch } from "./components/ConvocatoriaSearch";
 import { FeatureBlock } from "./components/FeatureBlock";
 import { JsonLd } from "./components/JsonLd";
@@ -53,6 +54,7 @@ const FAQ = [
 
 export default async function Home() {
   const convocatorias = await getConvocatorias(80);
+  const europeas = await getConvocatoriasEuropeas(9);
   const estado = await getEstado();
 
   const activas = estado.filter((e) => e.estado === "ok").length;
@@ -188,6 +190,29 @@ export default async function Home() {
           <ConvocatoriaSearch convocatorias={convocatorias} />
         </Container>
       </section>
+
+      {europeas.length > 0 && (
+        <section className="border-t border-border bg-cream py-12">
+          <Container>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-navy">
+                <span aria-hidden="true">🇪🇺</span> Oposiciones de la Unión Europea
+              </h2>
+              <p className="mt-1 text-slate">
+                Convocatorias de las instituciones de la UE (EPSO), abiertas a
+                nacionales de cualquier país de la UE — también a los españoles.
+              </p>
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {europeas.map((c) => (
+                <li key={c.id}>
+                  <ConvocatoriaCard convocatoria={c} />
+                </li>
+              ))}
+            </ul>
+          </Container>
+        </section>
+      )}
 
       <section className="bg-cream py-16">
         <Container>
