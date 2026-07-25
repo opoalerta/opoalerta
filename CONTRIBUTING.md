@@ -8,7 +8,7 @@ Este proyecto sigue el [Código de Conducta](CODE_OF_CONDUCT.md). Al participar,
 
 ## Entorno en 10 minutos
 
-Requisitos: **Python ≥ 3.12** y **Node ≥ 20** con `pnpm`.
+Requisitos: **Python ≥ 3.12** y **Node ≥ 22** con `pnpm`.
 
 ```bash
 git clone https://github.com/opoalerta/opoalerta.git

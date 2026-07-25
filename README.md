@@ -56,7 +56,7 @@ pip install -e ".[dev]"
 python -m boe --dry-run          # ingesta del sumario BOE de hoy, sin base de datos
 pytest                            # tests offline con fixtures
 
-# Web (Node ≥ 20, pnpm)
+# Web (Node ≥ 22, pnpm)
 cd apps/web
 pnpm install
 pnpm dev
