@@ -1,0 +1,25 @@
+name: Configurar webhook de Telegram
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: "URL base (vacío = https://opoalerta.es)"
+        required: false
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setWebhook
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then echo "::error::Falta TELEGRAM_BOT_TOKEN"; exit 1; fi
+          BASE="${{ inputs.site_url }}"
+          [ -z "$BASE" ] && BASE="${{ vars.SITE_URL }}"
+          [ -z "$BASE" ] && BASE="https://opoalerta.es"
+          echo "Webhook → ${BASE}/api/telegram"
+          curl -s "https://api.telegram.org/bot${TOKEN}/setWebhook" \
+            --data-urlencode "url=${BASE}/api/telegram" \
+            --data 'allowed_updates=["message"]' | tee /dev/stderr

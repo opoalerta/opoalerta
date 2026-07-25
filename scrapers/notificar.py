@@ -29,6 +29,7 @@ RESEND_ENDPOINT = "https://api.resend.com/emails"
 FROM = os.environ.get("ALERTAS_FROM", "OpoAlerta <onboarding@resend.dev>")
 SITE_URL = os.environ.get("SITE_URL", "https://opoalerta.es")
 VENTANA_HORAS = 25
+TELEGRAM_MAX_ITEMS = 20
 
 
 def _norm(s: str) -> str:
@@ -97,6 +98,39 @@ def _enviar(api_key: str, to: str, html: str, n: int) -> bool:
     return True
 
 
+def _escape_html(s: str) -> str:
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _render_telegram(convocatorias: list[dict[str, Any]]) -> str:
+    n = len(convocatorias)
+    lineas = [f"<b>{n} nueva{'s' if n != 1 else ''} convocatoria{'s' if n != 1 else ''}</b>", ""]
+    for c in convocatorias[:TELEGRAM_MAX_ITEMS]:
+        lineas.append(f'• <a href="{c["url_oficial"]}">{_escape_html(c["titulo"])}</a>')
+        lineas.append(f"  {_escape_html(c['organismo'])} · {c['fuente_codigo'].upper()}")
+    if n > TELEGRAM_MAX_ITEMS:
+        lineas.append(f"\n…y {n - TELEGRAM_MAX_ITEMS} más en {SITE_URL}")
+    lineas.append("\nPara darte de baja: /stop")
+    return "\n".join(lineas)
+
+
+def _enviar_telegram(bot_token: str, chat_id: int, text: str) -> bool:
+    resp = httpx.post(
+        f"https://api.telegram.org/bot{bot_token}/sendMessage",
+        json={
+            "chat_id": chat_id,
+            "text": text,
+            "parse_mode": "HTML",
+            "disable_web_page_preview": True,
+        },
+        timeout=30,
+    )
+    if resp.status_code >= 300:
+        print(f"  ERROR Telegram {resp.status_code}: {resp.text[:200]}", file=sys.stderr)
+        return False
+    return True
+
+
 def _fetch(conn) -> tuple[list[dict], list[dict]]:
     from datetime import UTC, datetime, timedelta
 
@@ -117,7 +151,8 @@ def _fetch(conn) -> tuple[list[dict], list[dict]]:
         nuevas = cur.fetchall()
         cur.execute(
             """
-            SELECT id, email, q, ccaa, ambito, fuente_codigo, token, ultima_notificada
+            SELECT id, email, canal, telegram_chat_id, q, ccaa, ambito,
+                   fuente_codigo, token, ultima_notificada
             FROM suscripciones
             WHERE confirmada = TRUE
               AND (ultima_notificada IS NULL OR ultima_notificada < now() - interval '12 hours')
@@ -127,8 +162,24 @@ def _fetch(conn) -> tuple[list[dict], list[dict]]:
     return nuevas, suscripciones
 
 
+def _notificar_una(susc: dict[str, Any], matches: list[dict], api_key, tg_token) -> bool:
+    """Envía por el canal de la suscripción. Devuelve True si se envió."""
+    canal = susc.get("canal", "email")
+    if canal == "telegram" and susc.get("telegram_chat_id"):
+        if not tg_token:
+            print("  (sin TELEGRAM_BOT_TOKEN, omito)", file=sys.stderr)
+            return False
+        return _enviar_telegram(tg_token, susc["telegram_chat_id"], _render_telegram(matches))
+    if canal == "email" and susc.get("email"):
+        if not api_key:
+            print("  (sin RESEND_API_KEY, omito)", file=sys.stderr)
+            return False
+        return _enviar(api_key, susc["email"], _render(matches, susc["token"]), len(matches))
+    return False
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Envío de alertas por email")
+    parser = argparse.ArgumentParser(description="Envío de alertas (email y Telegram)")
     parser.add_argument("--dry-run", action="store_true", help="No envía ni marca notificadas.")
     args = parser.parse_args(argv)
 
@@ -137,9 +188,7 @@ def main(argv: list[str] | None = None) -> int:
         print("Sin DATABASE_URL: nada que notificar.")
         return 0
     api_key = os.environ.get("RESEND_API_KEY")
-    if not api_key and not args.dry_run:
-        print("Sin RESEND_API_KEY: no se puede enviar (usa --dry-run para simular).")
-        return 0
+    tg_token = os.environ.get("TELEGRAM_BOT_TOKEN")
 
     import psycopg
 
@@ -151,11 +200,11 @@ def main(argv: list[str] | None = None) -> int:
             matches = [c for c in nuevas if coincide(c, susc)]
             if not matches:
                 continue
-            print(f"  {susc['email']}: {len(matches)} convocatorias")
+            destino = susc.get("email") or f"telegram:{susc.get('telegram_chat_id')}"
+            print(f"  [{susc.get('canal', 'email')}] {destino}: {len(matches)} convocatorias")
             if args.dry_run:
                 continue
-            html = _render(matches, susc["token"])
-            if _enviar(api_key, susc["email"], html, len(matches)):
+            if _notificar_una(susc, matches, api_key, tg_token):
                 with conn.cursor() as cur:
                     cur.execute(
                         "UPDATE suscripciones SET ultima_notificada = now() WHERE id = %s",
