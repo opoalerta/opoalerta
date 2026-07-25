@@ -29,7 +29,10 @@ export type EstadoFuente = {
 function client() {
   const url = process.env.DATABASE_URL;
   if (!url) return null;
-  return neon(url);
+  // Sin caché: el driver de Neon usa fetch(), que Next puede cachear en la Data
+  // Cache y servir resultados obsoletos (p. ej. una ficha pedida antes de existir
+  // la convocatoria seguiría dando 404 tras ingerirla). Los datos son dinámicos.
+  return neon(url, { fetchOptions: { cache: "no-store" } });
 }
 
 export async function getConvocatorias(limit = 30): Promise<Convocatoria[]> {
