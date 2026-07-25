@@ -52,7 +52,7 @@ const FAQ = [
 ];
 
 export default async function Home() {
-  const convocatorias = await getConvocatorias(30);
+  const convocatorias = await getConvocatorias(80);
   const estado = await getEstado();
 
   const activas = estado.filter((e) => e.estado === "ok").length;
