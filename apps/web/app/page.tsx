@@ -1,4 +1,4 @@
-import { getConvocatorias } from "@/lib/db";
+import { getConvocatorias, getEstado } from "@/lib/db";
 import { Container } from "./components/Container";
 import { ConvocatoriaSearch } from "./components/ConvocatoriaSearch";
 import { FeatureBlock } from "./components/FeatureBlock";
@@ -41,6 +41,16 @@ const FAQ = [
 
 export default async function Home() {
   const convocatorias = await getConvocatorias(30);
+  const estado = await getEstado();
+
+  const totalFuentes = FUENTES.length;
+  const activas = estado.filter((e) => e.estado === "ok").length;
+  const porcentaje = Math.round((activas / totalFuentes) * 100);
+  const ultimaActualizacion = estado
+    .filter((e) => e.ultima_ingesta)
+    .map((e) => e.ultima_ingesta!)
+    .sort()
+    .at(-1);
 
   return (
     <>
@@ -60,7 +70,7 @@ export default async function Home() {
             <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#convocatorias"
-                className="inline-flex items-center rounded bg-[#01689b] px-6 py-3 text-base font-semibold text-white no-underline hover:bg-[#154273]"
+                className="inline-flex items-center rounded bg-[#01689b] px-6 py-3 text-base font-semibold text-white no-underline hover:bg-[#154273] hover:text-white"
               >
                 Buscar convocatorias
               </a>
@@ -72,10 +82,32 @@ export default async function Home() {
       <section className="py-12">
         <Container>
           <NoticeBox title="Estamos en Fase 1 · MVP" variant="info">
-            La ingesta del BOE ya está activa y corre cada día a las 06:00 UTC. Estamos
-            incorporando los boletines autonómicos (BOJA, BOCM, DOGV…) para cubrir más
-            del 50% de las convocatorias estatales. Si ves algo incorrecto, puedes{" "}
-            <a href="https://github.com/opoalerta/opoalerta/issues">abrir una incidencia</a>.
+            {activas > 0 ? (
+              <>
+                Tenemos <strong>{activas} de {totalFuentes} boletines</strong> activos ({porcentaje}%). La ingesta
+                corre cada día a las 06:00 UTC.{" "}
+                {ultimaActualizacion && (
+                  <>
+                    Última actualización:{" "}
+                    <time dateTime={ultimaActualizacion}>
+                      {new Date(ultimaActualizacion).toLocaleDateString("es-ES", {
+                        dateStyle: "medium",
+                      })}
+                    </time>
+                    .{" "}
+                  </>
+                )}
+                Si ves algo incorrecto, puedes{" "}
+                <a href="https://github.com/opoalerta/opoalerta/issues">abrir una incidencia</a>.
+              </>
+            ) : (
+              <>
+                La ingesta del BOE ya está activa y corre cada día a las 06:00 UTC. Estamos
+                incorporando los boletines autonómicos (BOJA, BOCM, DOGV…) para cubrir más
+                del 50% de las convocatorias estatales. Si ves algo incorrecto, puedes{" "}
+                <a href="https://github.com/opoalerta/opoalerta/issues">abrir una incidencia</a>.
+              </>
+            )}
           </NoticeBox>
         </Container>
       </section>

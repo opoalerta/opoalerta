@@ -30,14 +30,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-:where(a) {
-  color: var(--color-link);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
+@layer base {
+  :where(a) {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
 
-:where(a:hover) {
-  color: var(--color-link-hover);
+  :where(a:hover) {
+    color: var(--color-link-hover);
+  }
 }
 
 a:focus-visible,
