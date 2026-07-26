@@ -28,6 +28,7 @@ const FUENTES = [
   { codigo: "DOG", nombre: "Diario Oficial de Galicia", estado: "activo" },
   { codigo: "BOC", nombre: "Boletín Oficial de Canarias", estado: "activo" },
   { codigo: "DOCM", nombre: "Diario Oficial de Castilla-La Mancha", estado: "activo" },
+  { codigo: "DOE", nombre: "Diario Oficial de Extremadura", estado: "activo" },
   { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
 ];
 
