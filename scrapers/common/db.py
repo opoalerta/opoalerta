@@ -14,12 +14,12 @@ UPSERT_SQL = """
 INSERT INTO convocatorias (
     id, titulo, organismo, ambito, ccaa, cuerpo, grupo,
     titulacion_requerida, num_plazas, tipo_acceso,
-    fecha_publicacion, fecha_fin_plazo, url_oficial,
+    fecha_publicacion, fecha_fin_plazo, plazo_texto, url_oficial,
     fuente_codigo, fecha_ingesta, actualizada_en
 ) VALUES (
     %(id)s, %(titulo)s, %(organismo)s, %(ambito)s, %(ccaa)s, %(cuerpo)s, %(grupo)s,
     %(titulacion_requerida)s, %(num_plazas)s, %(tipo_acceso)s,
-    %(fecha_publicacion)s, %(fecha_fin_plazo)s, %(url_oficial)s,
+    %(fecha_publicacion)s, %(fecha_fin_plazo)s, %(plazo_texto)s, %(url_oficial)s,
     %(fuente_codigo)s, %(fecha_ingesta)s, now()
 )
 ON CONFLICT (id) DO UPDATE SET
@@ -33,7 +33,10 @@ ON CONFLICT (id) DO UPDATE SET
     num_plazas = EXCLUDED.num_plazas,
     tipo_acceso = EXCLUDED.tipo_acceso,
     fecha_publicacion = EXCLUDED.fecha_publicacion,
-    fecha_fin_plazo = EXCLUDED.fecha_fin_plazo,
+    -- El plazo lo rellena el pase de enriquecimiento (no los scrapers): si el
+    -- scraper trae null en la re-ingesta, se conserva lo ya enriquecido.
+    fecha_fin_plazo = COALESCE(EXCLUDED.fecha_fin_plazo, convocatorias.fecha_fin_plazo),
+    plazo_texto = COALESCE(EXCLUDED.plazo_texto, convocatorias.plazo_texto),
     url_oficial = EXCLUDED.url_oficial,
     actualizada_en = now()
 RETURNING (xmax = 0) AS insertada;
@@ -75,6 +78,7 @@ def _flatten(c: dict[str, Any]) -> dict[str, Any]:
         "num_plazas",
         "tipo_acceso",
         "fecha_fin_plazo",
+        "plazo_texto",
     ):
         row.setdefault(k, None)
     return row

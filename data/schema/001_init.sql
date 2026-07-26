@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS convocatorias (
     tipo_acceso           TEXT,
     fecha_publicacion     DATE NOT NULL,
     fecha_fin_plazo       DATE,
+    plazo_texto           TEXT,                       -- frase literal del plazo (texto oficial)
     url_oficial           TEXT NOT NULL,
     fuente_codigo         TEXT NOT NULL REFERENCES fuentes(codigo),
     fecha_ingesta         TIMESTAMPTZ NOT NULL DEFAULT now(),
