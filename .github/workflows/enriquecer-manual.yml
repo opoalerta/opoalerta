@@ -1,0 +1,31 @@
+name: Enriquecer plazos (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      reprocesar:
+        description: "Reevaluar las recientes (limpia plazo_texto y recalcula tras cambiar el extractor)"
+        type: boolean
+        default: false
+
+jobs:
+  enriquecer:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scrapers
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[db]"
+      - name: Enriquecer plazos
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PLAZO_BATCH: "150"
+        run: |
+          ARGS=""
+          if [ "${{ inputs.reprocesar }}" = "true" ]; then ARGS="--reprocesar"; fi
+          python -m enriquecer $ARGS

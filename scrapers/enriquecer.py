@@ -71,6 +71,11 @@ def _descargar_texto(url: str) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Enriquece el plazo de las convocatorias")
     parser.add_argument("--dry-run", action="store_true", help="No escribe; solo muestra.")
+    parser.add_argument(
+        "--reprocesar",
+        action="store_true",
+        help="Limpia plazo_texto/fecha_fin de las recientes y las reevalúa.",
+    )
     args = parser.parse_args(argv)
 
     dsn = os.environ.get("DATABASE_URL")
@@ -84,6 +89,14 @@ def main(argv: list[str] | None = None) -> int:
 
     enriquecidas = con_fecha = revisadas = 0
     with psycopg.connect(dsn) as conn:
+        if args.reprocesar and not args.dry_run:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE convocatorias SET plazo_texto = NULL, fecha_fin_plazo = NULL "
+                    "WHERE fecha_ingesta > now() - interval '45 days'"
+                )
+                print(f"Reprocesar: {cur.rowcount} convocatorias reseteadas.")
+            conn.commit()
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(SELECT_SQL, {"limit": limit})
             filas = cur.fetchall()
