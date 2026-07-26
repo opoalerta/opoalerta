@@ -35,7 +35,17 @@ function client() {
   return neon(url, { fetchOptions: { cache: "no-store" } });
 }
 
-export async function getConvocatorias(limit = 30): Promise<Convocatoria[]> {
+// Una convocatoria sigue "viva" en la web mientras no se sepa que su plazo
+// venció. Regla (idéntica en el WHERE de abajo):
+//   - Con fecha_fin_plazo y ya pasada        -> fuera (plazo agotado).
+//   - Con fecha_fin_plazo futura             -> se mantiene.
+//   - Sin fecha_fin_plazo (la mayoría, aún   -> se mantiene hasta 1 año desde
+//     no la extraen los scrapers)               su publicación y luego cae sola.
+//   - Ámbito europeo (EPSO): su fecha de     -> exento de la ventana; se mantiene
+//     publicación es artificial (01-01)         mientras el proceso siga en curso.
+// Así las convocatorias no desaparecen al llegar otras nuevas: solo se van al
+// vencer el plazo (o al cumplir el año estimado si no consta plazo).
+export async function getConvocatorias(limit = 500): Promise<Convocatoria[]> {
   const sql = client();
   if (!sql) return [];
   try {
@@ -45,6 +55,12 @@ export async function getConvocatorias(limit = 30): Promise<Convocatoria[]> {
              fecha_fin_plazo::text AS fecha_fin_plazo,
              url_oficial, fuente_codigo
       FROM convocatorias
+      WHERE (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE)
+        AND (
+          fecha_fin_plazo IS NOT NULL
+          OR ambito = 'europeo'
+          OR fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year'
+        )
       ORDER BY fecha_publicacion DESC, fecha_ingesta DESC
       LIMIT ${limit}
     `;
@@ -97,6 +113,7 @@ export async function getConvocatoriasEuropeas(limit = 9): Promise<Convocatoria[
              url_oficial, fuente_codigo
       FROM convocatorias
       WHERE ambito = 'europeo'
+        AND (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE)
       ORDER BY fecha_ingesta DESC
       LIMIT ${limit}
     `;
