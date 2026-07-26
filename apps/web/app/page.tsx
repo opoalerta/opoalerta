@@ -10,7 +10,7 @@ import { NoticeBox } from "./components/NoticeBox";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Inicio",
+  title: "OpoAlerta — Convocatorias de empleo público en España",
   description:
     "Buscador gratuito de convocatorias de empleo público, oposiciones y ofertas de empleo en España. Datos oficiales del BOE y boletines autonómicos, con alertas por email.",
   alternates: { canonical: "/" },
@@ -27,6 +27,7 @@ const FUENTES = [
   { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "previsto" },
   { codigo: "DOG", nombre: "Diario Oficial de Galicia", estado: "activo" },
   { codigo: "BOC", nombre: "Boletín Oficial de Canarias", estado: "activo" },
+  { codigo: "DOCM", nombre: "Diario Oficial de Castilla-La Mancha", estado: "activo" },
   { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
 ];
 
