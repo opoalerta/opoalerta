@@ -21,7 +21,7 @@ import argparse
 import html
 import re
 import sys
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from common.base import BaseScraper
@@ -51,10 +51,24 @@ class BoaScraper(BaseScraper):
     nombre = "Boletín Oficial de Aragón"
     licencia = "Reutilización de datos públicos citando fuente (aviso legal Gobierno de Aragón)"
 
+    #: Días hacia atrás que se prueban buscando el último boletín publicado.
+    RETROCESO_MAX = 6
+
     def fetch(self) -> str:
-        resp = http_get(LISTA_URL.format(fecha=self.fecha.strftime("%Y%m%d")))
-        resp.encoding = "iso-8859-15"
-        return resp.text
+        # El BOA del día puede no estar publicado aún a las 06:00 UTC (o ser fin
+        # de semana), así que retrocedemos hasta dar con el último boletín que
+        # trae documentos en la sección de oposiciones (SEC=OPRSS).
+        base = self.fecha
+        for retroceso in range(self.RETROCESO_MAX):
+            f = base - timedelta(days=retroceso)
+            resp = http_get(LISTA_URL.format(fecha=f.strftime("%Y%m%d")))
+            resp.encoding = "iso-8859-15"
+            texto = resp.text
+            if "DOCR=" in texto:  # ese día hay documentos publicados
+                self.fecha = f
+                return texto
+        self.fecha = base
+        return ""  # sin boletín con oposiciones en los últimos días
 
     def parse(self, raw: str) -> list[dict[str, Any]]:
         registros: list[dict[str, Any]] = []
