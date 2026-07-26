@@ -7,16 +7,16 @@ publicación..."). Este módulo:
   - `extraer_plazo(texto)` -> localiza la frase y devuelve la frase literal, el
     número de días y el tipo (naturales/hábiles). Riesgo cero: la frase se
     guarda tal cual.
-  - `calcular_fin(fecha_pub, plazo)` -> calcula la fecha de fin SOLO para plazos
-    en días **naturales** (exacto). Para **hábiles** devuelve None a propósito:
-    calcularlo sin el calendario de festivos daría fechas erróneas, y una fecha
-    de vencimiento equivocada es peor que ninguna. La frase (`plazo_texto`)
-    queda disponible igualmente.
+  - `calcular_fin(fecha_pub, plazo)` -> `(fecha | None, aprox)`. En días
+    **naturales** la fecha es exacta (`aprox=False`). En días **hábiles** cuenta
+    saltando sábados, domingos y festivos NACIONALES; como no incluye festivos
+    autonómicos/locales, la fecha es aproximada (`aprox=True`, puede quedarse
+    1-2 días corta). La frase (`plazo_texto`) se guarda siempre.
 
 Uso típico (pase de enriquecimiento):
     p = extraer_plazo(texto_disposicion)
     if p:
-        fin = calcular_fin(fecha_publicacion, p)  # date | None
+        fin, aprox = calcular_fin(fecha_publicacion, p)
 """
 
 from __future__ import annotations
@@ -119,13 +119,56 @@ def extraer_plazo(texto: str) -> dict | None:
     return None
 
 
-def calcular_fin(fecha_pub: date, plazo: dict) -> date | None:
-    """Fecha de fin del plazo. Solo para 'naturales' (exacto); 'hábiles' -> None.
+# Festivos nacionales de España (fijos) + Viernes Santo (movible). No incluye
+# festivos autonómicos ni locales, así que la fecha en días hábiles es
+# aproximada (puede quedarse 1-2 días corta). Se marca como aprox en la web.
+_FESTIVOS_FIJOS = {
+    (1, 1),
+    (1, 6),
+    (5, 1),
+    (8, 15),
+    (10, 12),
+    (11, 1),
+    (12, 6),
+    (12, 8),
+    (12, 25),
+}
+_VIERNES_SANTO = {
+    2024: date(2024, 3, 29),
+    2025: date(2025, 4, 18),
+    2026: date(2026, 4, 3),
+    2027: date(2027, 3, 26),
+    2028: date(2028, 4, 14),
+}
 
-    El plazo cuenta desde el día siguiente a la publicación, así que el último
-    día es `fecha_pub + N` (día 1 = fecha_pub + 1, ..., día N = fecha_pub + N).
+
+def _es_festivo_nacional(d: date) -> bool:
+    return (d.month, d.day) in _FESTIVOS_FIJOS or _VIERNES_SANTO.get(d.year) == d
+
+
+def _es_habil(d: date) -> bool:
+    # Ley 39/2015: sábados, domingos y festivos NO son hábiles.
+    return d.weekday() < 5 and not _es_festivo_nacional(d)
+
+
+def calcular_fin(fecha_pub: date, plazo: dict) -> tuple[date | None, bool]:
+    """Fecha de fin del plazo y si es aproximada.
+
+    El plazo cuenta desde el día siguiente a la publicación (día 1 = pub + 1).
+    - Naturales: `pub + N`, exacto -> (fecha, False).
+    - Hábiles: cuenta N días saltando sábados, domingos y festivos nacionales.
+      Como no incluye festivos autonómicos/locales, es aproximada -> (fecha, True).
+    Sin número de días -> (None, False).
     """
     dias = plazo.get("dias")
-    if dias is None or plazo.get("tipo") != "naturales":
-        return None
-    return fecha_pub + timedelta(days=dias)
+    if dias is None:
+        return None, False
+    if plazo.get("tipo") == "naturales":
+        return fecha_pub + timedelta(days=dias), False
+    cursor = fecha_pub
+    contados = 0
+    while contados < dias:
+        cursor += timedelta(days=1)
+        if _es_habil(cursor):
+            contados += 1
+    return cursor, True

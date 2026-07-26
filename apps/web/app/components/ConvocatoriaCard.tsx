@@ -38,20 +38,6 @@ export function ConvocatoriaCard({ convocatoria }: { convocatoria: Convocatoria 
         {convocatoria.titulo}
       </h3>
       <p className="text-sm text-slate">{convocatoria.organismo}</p>
-      <p className="mt-2 text-xs">
-        {convocatoria.fecha_fin_plazo ? (
-          <span className="font-semibold text-navy-700">
-            Plazo hasta {fmtFecha(convocatoria.fecha_fin_plazo)}
-          </span>
-        ) : convocatoria.plazo_texto ? (
-          <span className="text-navy-700">
-            Plazo: {convocatoria.plazo_texto.slice(0, 90)}
-            {convocatoria.plazo_texto.length > 90 ? "…" : ""}
-          </span>
-        ) : (
-          <span className="text-slate">Fin de plazo no indicado</span>
-        )}
-      </p>
     </Link>
   );
 }

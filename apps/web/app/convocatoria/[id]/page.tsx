@@ -177,14 +177,18 @@ export default async function ConvocatoriaPage({
           <dt className="text-sm font-semibold uppercase text-slate">Fin de plazo</dt>
           <dd className="text-base text-ink">
             {conv.fecha_fin_plazo
-              ? fmtFecha(conv.fecha_fin_plazo)
+              ? `${conv.fecha_fin_aprox ? "≈ " : ""}${fmtFecha(conv.fecha_fin_plazo)}${
+                  conv.fecha_fin_aprox ? " (aprox.)" : ""
+                }`
               : conv.plazo_texto
                 ? conv.plazo_texto
                 : "—"}
           </dd>
-          {!conv.fecha_fin_plazo && conv.plazo_texto && (
+          {(conv.fecha_fin_aprox || (!conv.fecha_fin_plazo && conv.plazo_texto)) && (
             <p className="mt-1 text-xs text-slate">
-              Plazo según el texto oficial; confirma la fecha exacta en la convocatoria.
+              {conv.fecha_fin_aprox
+                ? "Fecha estimada en días hábiles (sin festivos autonómicos); confirma en la convocatoria."
+                : "Plazo según el texto oficial; confirma la fecha exacta en la convocatoria."}
             </p>
           )}
         </div>
