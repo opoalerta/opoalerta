@@ -67,9 +67,17 @@ _PALABRAS: dict[str, int] = {
 
 # "plazo ... de N días hábiles|naturales". Tolera texto entre "plazo" y "de".
 _PLAZO_RE = re.compile(
-    r"plazo[^.]{0,40}?\bde\s+(?P<num>\d{1,3}|[a-záéíóú]+)\s+d[íi]as\s+"
+    r"plazo[^.]{0,40}?\bde\s+(?P<num>\d{1,3}|[a-záéíóúñ]+)\s+d[íi]as\s+"
     r"(?P<tipo>h[áa]biles|naturales)",
     re.IGNORECASE,
+)
+# La frase debe hablar de presentar solicitudes (el plazo que le importa al
+# opositor), no de otro plazo de la misma disposición.
+_SOLICITUD_RE = re.compile(r"solicitud|presentaci[óo]n|present[ae]|instancia", re.IGNORECASE)
+# Plazos que NO son el de presentación: subsanación, exclusiones, alegaciones,
+# recursos, reclamaciones, impugnaciones… Si la frase es de estos, se descarta.
+_OTRO_PLAZO_RE = re.compile(
+    r"subsan|exclu[iy]|omitid|alegac|reclamac|recurs|impugna|baremaci", re.IGNORECASE
 )
 
 
@@ -91,21 +99,24 @@ def _frase(texto: str, inicio: int) -> str:
 
 
 def extraer_plazo(texto: str) -> dict | None:
-    """Localiza el plazo en el texto. Devuelve dict o None si no lo encuentra.
+    """Localiza el plazo de presentación de solicitudes en el texto.
+
+    Devuelve dict o None. Entre los varios "plazo de N días" que puede haber en
+    una disposición, elige el que habla de presentar solicitudes y descarta los
+    de subsanación/exclusiones/recursos. Si ninguno es claramente el de
+    presentación, devuelve None (mejor sin dato que un plazo equivocado).
 
     dict: {"plazo_texto": str, "dias": int | None, "tipo": "naturales"|"habiles"}
     """
     if not texto:
         return None
-    m = _PLAZO_RE.search(texto)
-    if not m:
-        return None
-    tipo = "habiles" if "bil" in m.group("tipo").lower() else "naturales"
-    return {
-        "plazo_texto": _frase(texto, m.start()),
-        "dias": _a_numero(m.group("num")),
-        "tipo": tipo,
-    }
+    for m in _PLAZO_RE.finditer(texto):
+        frase = _frase(texto, m.start())
+        if not _SOLICITUD_RE.search(frase) or _OTRO_PLAZO_RE.search(frase):
+            continue
+        tipo = "habiles" if "bil" in m.group("tipo").lower() else "naturales"
+        return {"plazo_texto": frase, "dias": _a_numero(m.group("num")), "tipo": tipo}
+    return None
 
 
 def calcular_fin(fecha_pub: date, plazo: dict) -> date | None:
