@@ -54,7 +54,7 @@ const FAQ = [
 ];
 
 export default async function Home() {
-  const convocatorias = await getConvocatorias(80);
+  const convocatorias = await getConvocatorias();
   const europeas = await getConvocatoriasEuropeas(9);
   const estado = await getEstado();
 
