@@ -73,6 +73,10 @@
       "format": "date",
       "description": "Último día de plazo de presentación de solicitudes, si se puede extraer."
     },
+    "plazo_texto": {
+      "type": ["string", "null"],
+      "description": "Frase literal del plazo tal como aparece en el texto oficial (p. ej. 'veinte días hábiles a partir del día siguiente…')."
+    },
     "url_oficial": {
       "type": "string",
       "format": "uri",

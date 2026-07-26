@@ -175,7 +175,18 @@ export default async function ConvocatoriaPage({
         </div>
         <div className="rounded border border-border bg-cream p-4">
           <dt className="text-sm font-semibold uppercase text-slate">Fin de plazo</dt>
-          <dd className="text-base text-ink">{fmtFecha(conv.fecha_fin_plazo)}</dd>
+          <dd className="text-base text-ink">
+            {conv.fecha_fin_plazo
+              ? fmtFecha(conv.fecha_fin_plazo)
+              : conv.plazo_texto
+                ? conv.plazo_texto
+                : "—"}
+          </dd>
+          {!conv.fecha_fin_plazo && conv.plazo_texto && (
+            <p className="mt-1 text-xs text-slate">
+              Plazo según el texto oficial; confirma la fecha exacta en la convocatoria.
+            </p>
+          )}
         </div>
       </dl>
 

@@ -67,6 +67,26 @@ jobs:
             --label scraper-roto \
             --body "El workflow de ingesta de ${FUENTE^^} falló. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
+  enriquecer:
+    needs: ingest
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scrapers
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[db]"
+      - name: Enriquecer plazos
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PLAZO_BATCH: "80"
+        run: python -m enriquecer
+
   notificar:
     needs: ingest
     if: ${{ !cancelled() }}
