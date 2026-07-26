@@ -61,6 +61,7 @@ export default async function Home() {
   const estado = await getEstado();
 
   const activas = estado.filter((e) => e.estado === "ok").length;
+  const totalConvocatorias = estado.reduce((sum, e) => sum + e.total, 0);
   const ultimaActualizacion = estado
     .filter((e) => e.ultima_ingesta)
     .map((e) => e.ultima_ingesta!)
@@ -150,12 +151,19 @@ export default async function Home() {
 
       <section className="py-12">
         <Container>
-          <NoticeBox title="Estamos en Fase 2 · Cobertura nacional" variant="info">
+          <NoticeBox title="Cobertura nacional en expansión" variant="info">
             {activas > 0 ? (
               <>
-                Ya tenemos <strong>{activas} boletines</strong> activos (BOE y varias
-                comunidades autónomas) y vamos sumando el resto. La ingesta corre cada
-                día a las 06:00 UTC.{" "}
+                Ya rastreamos <strong>{activas} boletines oficiales</strong> (BOE, boletines
+                autonómicos y las oposiciones de la UE)
+                {totalConvocatorias > 0 && (
+                  <>
+                    {" "}
+                    con <strong>{totalConvocatorias} convocatorias</strong> abiertas
+                  </>
+                )}{" "}
+                y vamos sumando el resto de comunidades. La ingesta corre cada día a las
+                06:00 UTC.{" "}
                 {ultimaActualizacion && (
                   <>
                     Última actualización:{" "}
@@ -172,9 +180,9 @@ export default async function Home() {
               </>
             ) : (
               <>
-                La ingesta del BOE ya está activa y corre cada día a las 06:00 UTC. Estamos
-                incorporando los boletines autonómicos (BOJA, BOCM, DOGV…) para cubrir más
-                del 50% de las convocatorias estatales. Si ves algo incorrecto, puedes{" "}
+                La ingesta del BOE ya está activa y corre cada día a las 06:00 UTC. Vamos
+                incorporando los boletines autonómicos para cubrir toda España. Si ves algo
+                incorrecto, puedes{" "}
                 <a href="https://github.com/opoalerta/opoalerta/issues">abrir una incidencia</a>.
               </>
             )}
