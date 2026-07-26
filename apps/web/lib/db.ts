@@ -8,6 +8,7 @@ export type Convocatoria = {
   ccaa: string | null;
   fecha_publicacion: string;
   fecha_fin_plazo: string | null;
+  fecha_fin_aprox: boolean;
   plazo_texto: string | null;
   url_oficial: string;
   fuente_codigo: string;
@@ -53,10 +54,10 @@ export async function getConvocatorias(limit = 500): Promise<Convocatoria[]> {
     const rows = await sql`
       SELECT id, titulo, organismo, ambito, ccaa,
              fecha_publicacion::text AS fecha_publicacion,
-             fecha_fin_plazo::text AS fecha_fin_plazo, plazo_texto,
+             fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
              url_oficial, fuente_codigo
       FROM convocatorias
-      WHERE (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE)
+      WHERE (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END))
         AND (
           fecha_fin_plazo IS NOT NULL
           OR ambito = 'europeo'
@@ -110,11 +111,11 @@ export async function getConvocatoriasEuropeas(limit = 9): Promise<Convocatoria[
     const rows = await sql`
       SELECT id, titulo, organismo, ambito, ccaa,
              fecha_publicacion::text AS fecha_publicacion,
-             fecha_fin_plazo::text AS fecha_fin_plazo, plazo_texto,
+             fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
              url_oficial, fuente_codigo
       FROM convocatorias
       WHERE ambito = 'europeo'
-        AND (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE)
+        AND (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END))
       ORDER BY fecha_ingesta DESC
       LIMIT ${limit}
     `;
@@ -142,7 +143,7 @@ export async function getConvocatoriaById(id: string): Promise<Convocatoria | nu
     const rows = await sql`
       SELECT id, titulo, organismo, ambito, ccaa,
              fecha_publicacion::text AS fecha_publicacion,
-             fecha_fin_plazo::text AS fecha_fin_plazo, plazo_texto,
+             fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
              url_oficial, fuente_codigo
       FROM convocatorias
       WHERE id = ${clave}

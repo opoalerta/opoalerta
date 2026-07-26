@@ -15,19 +15,31 @@ def test_naturales_en_palabras():
     assert p["dias"] == 10
     assert p["tipo"] == "naturales"
     assert "diez días naturales" in p["plazo_texto"]
-    assert calcular_fin(date(2026, 7, 24), p) == date(2026, 8, 3)
+    # Naturales: exacto, no aproximado.
+    assert calcular_fin(date(2026, 7, 24), p) == (date(2026, 8, 3), False)
 
 
-def test_habiles_no_calcula_fecha():
+def test_habiles_cuenta_findes_y_festivos():
     txt = (
-        "El plazo de presentación de solicitudes será de veinte días hábiles "
+        "El plazo de presentación de solicitudes será de cinco días hábiles "
         "a partir del día siguiente."
     )
     p = extraer_plazo(txt)
-    assert p["dias"] == 20
+    assert p["dias"] == 5
     assert p["tipo"] == "habiles"
-    # Decisión de diseño: en hábiles NO calculamos fecha (evita fechas erróneas).
-    assert calcular_fin(date(2026, 7, 24), p) is None
+    # Publicación lunes 5-ene-2026. Cuenta desde el día siguiente saltando el
+    # martes 6 (Reyes, festivo) y el fin de semana 10-11 -> martes 13-ene.
+    fecha, aprox = calcular_fin(date(2026, 1, 5), p)
+    assert fecha == date(2026, 1, 13)
+    assert aprox is True  # sin festivos autonómicos, es aproximada
+
+
+def test_habiles_abarca_al_menos_n_dias_naturales():
+    txt = "Las solicitudes se presentarán en el plazo de veinte días hábiles."
+    p = extraer_plazo(txt)
+    fecha, aprox = calcular_fin(date(2026, 7, 24), p)
+    assert aprox is True
+    assert (fecha - date(2026, 7, 24)).days >= 20
 
 
 def test_numero_en_digitos():

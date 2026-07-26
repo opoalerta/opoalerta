@@ -48,6 +48,7 @@ UPDATE_SQL = """
     UPDATE convocatorias
     SET plazo_texto = %(plazo_texto)s,
         fecha_fin_plazo = COALESCE(%(fecha_fin)s, fecha_fin_plazo),
+        fecha_fin_aprox = %(aprox)s,
         actualizada_en = now()
     WHERE id = %(id)s
 """
@@ -92,8 +93,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.reprocesar and not args.dry_run:
             with conn.cursor() as cur:
                 cur.execute(
-                    "UPDATE convocatorias SET plazo_texto = NULL, fecha_fin_plazo = NULL "
-                    "WHERE fecha_ingesta > now() - interval '45 days'"
+                    "UPDATE convocatorias SET plazo_texto = NULL, fecha_fin_plazo = NULL, "
+                    "fecha_fin_aprox = FALSE WHERE fecha_ingesta > now() - interval '45 days'"
                 )
                 print(f"Reprocesar: {cur.rowcount} convocatorias reseteadas.")
             conn.commit()
@@ -112,17 +113,17 @@ def main(argv: list[str] | None = None) -> int:
             plazo = extraer_plazo(texto)
             if not plazo:
                 if not args.dry_run:
-                    _update(conn, f["id"], "", None)
+                    _update(conn, f["id"], "", None, False)
                 continue
-            fin = calcular_fin(f["fecha_publicacion"], plazo)
+            fin, aprox = calcular_fin(f["fecha_publicacion"], plazo)
             fin_iso = fin.isoformat() if fin else None
             enriquecidas += 1
             if fin_iso:
                 con_fecha += 1
-            marca = "FECHA " + fin_iso if fin_iso else "solo texto"
+            marca = f"FECHA {fin_iso}{' (aprox)' if aprox else ''}" if fin_iso else "solo texto"
             print(f"  {f['id']}: {marca} · {plazo['plazo_texto'][:80]}")
             if not args.dry_run:
-                _update(conn, f["id"], plazo["plazo_texto"], fin_iso)
+                _update(conn, f["id"], plazo["plazo_texto"], fin_iso, aprox)
         if not args.dry_run:
             conn.commit()
 
@@ -133,9 +134,12 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def _update(conn, id_: str, plazo_texto: str, fecha_fin: str | None) -> None:
+def _update(conn, id_: str, plazo_texto: str, fecha_fin: str | None, aprox: bool) -> None:
     with conn.cursor() as cur:
-        cur.execute(UPDATE_SQL, {"id": id_, "plazo_texto": plazo_texto, "fecha_fin": fecha_fin})
+        cur.execute(
+            UPDATE_SQL,
+            {"id": id_, "plazo_texto": plazo_texto, "fecha_fin": fecha_fin, "aprox": aprox},
+        )
 
 
 if __name__ == "__main__":
