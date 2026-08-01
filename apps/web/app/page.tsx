@@ -29,6 +29,7 @@ const FUENTES = [
   { codigo: "BOC", nombre: "Boletín Oficial de Canarias", estado: "activo" },
   { codigo: "DOCM", nombre: "Diario Oficial de Castilla-La Mancha", estado: "activo" },
   { codigo: "DOE", nombre: "Diario Oficial de Extremadura", estado: "activo" },
+  { codigo: "BOPA", nombre: "Boletín Oficial del Principado de Asturias", estado: "activo" },
   { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
 ];
 
