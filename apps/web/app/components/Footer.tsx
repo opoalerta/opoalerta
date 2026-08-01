@@ -42,6 +42,11 @@ export async function Footer() {
             </h3>
             <ul className="space-y-1 text-sm">
               <li>
+                <Link href="/sobre" className="text-white no-underline hover:text-gold-light">
+                  Sobre el proyecto
+                </Link>
+              </li>
+              <li>
                 <Link href="/estado" className="text-white no-underline hover:text-gold-light">
                   Estado del servicio
                 </Link>
