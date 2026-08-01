@@ -128,7 +128,7 @@ export default async function Home() {
       <section className="bg-cream py-16">
         <Container>
           <div className="max-w-3xl">
-            <p className="mb-4 inline-block rounded bg-gold px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+            <p className="mb-4 inline-block rounded bg-gold px-3 py-1 text-xs font-semibold uppercase tracking-wide text-navy">
               Proyecto cívico · Open source
             </p>
             <h1 className="text-4xl font-bold tracking-tight text-navy sm:text-5xl">

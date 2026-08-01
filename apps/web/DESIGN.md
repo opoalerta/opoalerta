@@ -204,3 +204,68 @@ Cuando se añadan nuevas páginas o secciones:
 3. Usar `NoticeBox` para avisos importantes.
 4. Mantener la paleta de colores; no introducir nuevos colores sin consenso.
 5. Asegurar que los nuevos componentes pasan `pnpm lint` y `pnpm build`.
+
+## Accesibilidad
+
+Checklist para cualquier componente nuevo o modificado. Los ratios están
+calculados sobre la paleta de `globals.css`; si cambias un token, recalcúlalos.
+
+### Contraste
+
+| Uso | Mínimo WCAG AA | Cómo cumplirlo aquí |
+| :--- | :--- | :--- |
+| Texto normal (< 18.66px o no negrita) | 4.5:1 | `text-ink` o `text-navy-700` sobre blanco/crema |
+| Texto grande (≥ 24px, o ≥ 18.66px negrita) | 3:1 | `text-slate` vale; por debajo de ese tamaño, no |
+| Borde de un control, iconos con significado | 3:1 | `border-border-strong`, nunca `border-border` |
+| Indicador de foco | 3:1 | `ring-focus` |
+
+**El dorado no admite texto blanco.** `#D9A62B` con blanco da 2.22:1, que no
+llega ni al mínimo de texto grande. Sobre dorado va `text-navy` (5.68:1). Si
+necesitas un botón dorado con texto claro, oscurece el fondo, no aclares el
+texto.
+
+Tres tokens se corrigieron por esto y conviene no revertirlos:
+
+- `--color-slate` pasó de `#8792A2` a `#5F6B7A`. El anterior daba 3.15:1 sobre
+  blanco y se usaba para el contador de resultados y los placeholder. El tono
+  claro sigue disponible como `--color-slate-light`, solo para decoración que
+  no transporte texto.
+- `--color-border-strong` pasó de `#cccccc` (1.61:1) a `#949494` (3.03:1). Es el
+  borde de todos los inputs y selects, y WCAG 1.4.11 le exige 3:1.
+- `--color-focus` pasó del dorado (2.22:1) al navy (12.64:1). Un indicador de
+  foco que no se distingue del fondo es justo el que necesita quien navega con
+  teclado.
+
+### Teclado
+
+- Todo control accionable con ratón lo es con `Tab` + `Enter`/`Espacio`. Usa
+  `<button type="button">`, no un `<div onClick>`.
+- Anillo de foco visible en **todos** los controles, incluidos los chips y los
+  botones de paginación: `focus:ring-2 focus:ring-focus focus:ring-offset-1
+  focus:outline-none`. Quitar el `outline` sin poner un `ring` deja la página
+  inutilizable con teclado.
+- El orden del DOM es el orden de tabulación. No reordenes visualmente con
+  `order-*` sin comprobarlo.
+
+### Estado y anuncios
+
+- Un botón que alterna un filtro lleva `aria-pressed`. El color no basta: sin
+  él, un lector de pantalla no distingue el chip activo del resto.
+- Un grupo de filtros va en `<div role="group" aria-label="…">`, para que se
+  anuncie como un conjunto y no como botones sueltos.
+- Si un cambio actualiza resultados **sin mover el foco ni navegar**, el
+  recuento va en `role="status" aria-live="polite"`. Filtrar en el buscador no
+  producía ninguna señal audible antes de esto.
+- Todo `<input>` y `<select>` lleva `<label>`, aunque sea `sr-only`. Un
+  `placeholder` no es una etiqueta: desaparece al escribir.
+
+### Cómo comprobarlo
+
+Sin dependencias nuevas:
+
+1. Navega la página entera con `Tab`. Si en algún punto no sabes dónde estás,
+   falta un anillo de foco.
+2. En las DevTools, panel Accessibility, revisa que los chips expongan
+   `pressed: true/false` y que el contador tenga `live: polite`.
+3. Para el contraste, calcula el ratio con los valores de `globals.css` en vez
+   de fiarte del ojo: el dorado sobre blanco parece legible y no lo es.

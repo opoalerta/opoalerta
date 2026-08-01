@@ -21,7 +21,7 @@ const AMBITO_LABEL: Record<string, string> = {
 };
 
 const selectClass =
-  "rounded border border-border-strong bg-white px-3 py-2.5 text-base text-ink focus:border-gold focus:ring-2 focus:ring-gold focus:ring-offset-1";
+  "rounded border border-border-strong bg-white px-3 py-2.5 text-base text-ink focus:border-focus focus:ring-2 focus:ring-focus focus:ring-offset-1";
 
 const PASO = 12;
 
@@ -86,9 +86,9 @@ export function ConvocatoriaSearch({
   const restantes = filtered.length - mostradas.length;
 
   const chipClass = (activo: boolean) =>
-    `rounded-full border px-3 py-1.5 text-sm font-medium transition ${
+    `rounded-full border px-3 py-1.5 text-sm font-medium transition focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none ${
       activo
-        ? "border-gold bg-gold text-white"
+        ? "border-gold-dark bg-gold text-navy"
         : "border-border-strong bg-white text-navy-700 hover:bg-cream"
     }`;
 
@@ -96,9 +96,17 @@ export function ConvocatoriaSearch({
     <div>
       {/* Filtros rápidos por fuente */}
       {fuentes.length > 1 && (
-        <div className="mb-4 flex flex-wrap gap-2">
+        // aria-pressed porque son interruptores, no enlaces: sin él, el estado
+        // activo lo transmitía solo el color y un lector de pantalla no podía
+        // saber qué filtro estaba puesto.
+        <div
+          role="group"
+          aria-label="Filtrar por fuente"
+          className="mb-4 flex flex-wrap gap-2"
+        >
           <button
             type="button"
+            aria-pressed={!fuente}
             onClick={() => cambiarFuente("")}
             className={chipClass(!fuente)}
           >
@@ -108,6 +116,7 @@ export function ConvocatoriaSearch({
             <button
               key={f}
               type="button"
+              aria-pressed={fuente === f}
               onClick={() => cambiarFuente(f)}
               className={chipClass(fuente === f)}
             >
@@ -128,7 +137,7 @@ export function ConvocatoriaSearch({
             value={query}
             onChange={(e) => cambiarQuery(e.target.value)}
             placeholder="Busca por puesto, organismo o fuente…"
-            className="w-full rounded border border-border-strong bg-white px-4 py-2.5 text-base text-ink placeholder:text-slate focus:border-gold focus:ring-2 focus:ring-gold focus:ring-offset-1"
+            className="w-full rounded border border-border-strong bg-white px-4 py-2.5 text-base text-ink placeholder:text-slate focus:border-focus focus:ring-2 focus:ring-focus focus:ring-offset-1"
           />
         </div>
 
@@ -170,14 +179,20 @@ export function ConvocatoriaSearch({
           <button
             type="button"
             onClick={reset}
-            className="shrink-0 rounded border border-border-strong bg-white px-4 py-2.5 text-sm font-medium text-navy-700 hover:bg-cream"
+            className="shrink-0 rounded border border-border-strong bg-white px-4 py-2.5 text-sm font-medium text-navy-700 hover:bg-cream focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none"
           >
             Limpiar
           </button>
         )}
       </div>
 
-      <div className="mb-4 flex items-center justify-between text-sm text-slate">
+      {/* Filtrar no mueve el foco ni recarga: sin aria-live, quien usa lector de
+          pantalla no recibía ninguna señal de que el resultado había cambiado. */}
+      <div
+        className="mb-4 flex items-center justify-between text-sm text-slate"
+        role="status"
+        aria-live="polite"
+      >
         <span>
           {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
           {query && ` para “${query}”`}
@@ -215,14 +230,14 @@ export function ConvocatoriaSearch({
               <button
                 type="button"
                 onClick={() => setVisibles((v) => v + PASO)}
-                className="rounded bg-gold px-6 py-2.5 text-base font-semibold text-white hover:bg-navy"
+                className="rounded bg-gold px-6 py-2.5 text-base font-semibold text-navy hover:bg-navy hover:text-white focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none"
               >
                 Ver más ({restantes} restantes)
               </button>
               <button
                 type="button"
                 onClick={() => setVisibles(filtered.length)}
-                className="rounded border border-border-strong bg-white px-6 py-2.5 text-base font-medium text-navy-700 hover:bg-cream"
+                className="rounded border border-border-strong bg-white px-6 py-2.5 text-base font-medium text-navy-700 hover:bg-cream focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none"
               >
                 Ver todas
               </button>
