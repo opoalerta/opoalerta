@@ -107,12 +107,12 @@ export function SuscripcionForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="tu@correo.es"
-          className="grow rounded border border-border-strong bg-white px-4 py-2.5 text-base text-ink placeholder:text-slate focus:border-gold focus:ring-2 focus:ring-gold focus:ring-offset-1"
+          className="grow rounded border border-border-strong bg-white px-4 py-2.5 text-base text-ink placeholder:text-slate focus:border-focus focus:ring-2 focus:ring-focus focus:ring-offset-1"
         />
         <button
           type="submit"
           disabled={estado === "enviando"}
-          className="shrink-0 rounded bg-gold px-6 py-2.5 text-base font-semibold text-white hover:bg-navy disabled:opacity-60"
+          className="shrink-0 rounded bg-gold px-6 py-2.5 text-base font-semibold text-navy hover:bg-navy hover:text-white disabled:opacity-60"
         >
           {estado === "enviando" ? "Enviando…" : "Avisadme"}
         </button>

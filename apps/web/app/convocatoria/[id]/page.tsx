@@ -199,7 +199,7 @@ export default async function ConvocatoriaPage({
           href={conv.url_oficial}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center rounded bg-gold px-6 py-3 text-base font-semibold text-white no-underline hover:bg-navy hover:text-white"
+          className="inline-flex items-center rounded bg-gold px-6 py-3 text-base font-semibold text-navy no-underline hover:bg-navy hover:text-white"
         >
           Ver convocatoria oficial
         </a>

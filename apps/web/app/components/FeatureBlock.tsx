@@ -12,7 +12,7 @@ export function FeatureBlock({
   return (
     <div className="flex gap-4">
       {number && (
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-base font-bold text-white">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-base font-bold text-navy">
           {number}
         </div>
       )}

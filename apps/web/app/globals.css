@@ -10,20 +10,33 @@
   --color-gold-dark: #C7941F;
   --color-gold-light: #F7C948;
   --color-cream: #F7F5F0;
-  --color-slate: #8792A2;
+  /* Era #8792A2, que sobre blanco da 3.15:1 y sobre crema 2.89:1 — por debajo
+     del 4.5:1 que WCAG AA pide para texto normal, y se usa para el contador de
+     resultados y los placeholder. #5F6B7A da 5.43 y 4.98. */
+  --color-slate: #5F6B7A;
+  /* El tono claro anterior, solo para decoración que no transporte texto. */
+  --color-slate-light: #8792A2;
 
   /* Neutros y semánticos */
   --color-ink: #1a1a1a;
   --color-white: #ffffff;
   --color-border: #e5e5e5;
-  --color-border-strong: #cccccc;
-  --color-success: #39870c;
+  /* Era #cccccc: 1.61:1 sobre blanco. WCAG 1.4.11 pide 3:1 para el contorno de
+     un control, y este es el borde de todos los inputs y selects. */
+  --color-border-strong: #949494;
+  /* Era #39870c: 4.23:1 sobre su propio fondo, justo por debajo del 4.5 que
+     pide el texto normal, y la insignia «activo» de la lista de fuentes es de
+     12px. #327a0b da 5.01. Danger y warning ya pasaban. */
+  --color-success: #327a0b;
   --color-success-bg: #f4f9f0;
   --color-danger: #d52b1e;
   --color-danger-bg: #fff4f4;
   --color-warning: #8a6d00;
   --color-warning-bg: #fff8e6;
-  --color-focus: #D9A62B;
+  /* Era el dorado: 2.22:1 sobre blanco, por debajo del 3:1 que WCAG 1.4.11
+     exige a un indicador de foco. Un foco que no se distingue del fondo es
+     justo el que necesita quien navega con teclado. */
+  --color-focus: #1B3358;
 
   /* Tipografía */
   --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
