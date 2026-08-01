@@ -7,8 +7,14 @@ El DOCM publica el sumario de cada día en HTML server-side:
 Las convocatorias están en la parte **"II.- AUTORIDADES Y PERSONAL"**,
 subcategoría **"OPOSICIONES Y CONCURSOS"**. Cada organismo va en un
 `<h4 class="tituloOrganismo">` y cada disposición en un `<p class="sumario">`
-con enlace `descargarArchivo.do?ruta=AÑO/MM/DD/pdf/AÑO_NNNN.pdf`. La portada
-del portal enlaza las fechas recientes como `cambiarBoletin.do?fecha=YYYYMMDD`.
+con enlace `descargarArchivo.do?ruta=AÑO/MM/DD/pdf/AÑO_NNNN.pdf`.
+
+La fecha del último boletín se deduce de esas rutas. La portada la enlazaba
+antes como `cambiarBoletin.do?fecha=YYYYMMDD`, pero el 1 de agosto de 2026 esos
+enlaces desaparecieron del portal y la ingesta empezó a fallar. Las rutas de los
+PDF llevan la fecha igual y son las mismas que el scraper ya leía del sumario,
+así que dependen de menos marcado.
+
 Licencia: reutilización de información pública citando la fuente (JCCM).
 
 Uso:
@@ -35,7 +41,6 @@ SECCION_PERSONAL = "AUTORIDADES Y PERSONAL"
 SECCION_SIGUIENTE = "OTRAS DISPOSICIONES"
 SUBSECCION = "OPOSICIONES Y CONCURSOS"
 
-_FECHA_RE = re.compile(r"cambiarBoletin\.do\?fecha=(\d{8})")
 _RUTA_RE = re.compile(r"ruta=(\d{4})/(\d{2})/(\d{2})/pdf/(\d{4}_\d+)\.pdf")
 # Alternancia en orden de documento: organismo (h4) o disposición (p.sumario).
 _ITEM_RE = re.compile(
@@ -71,7 +76,7 @@ class DocmScraper(BaseScraper):
 
     def fetch(self) -> str:
         home = http_get(HOME_URL).text
-        fechas = _FECHA_RE.findall(home)
+        fechas = {f"{a}{m}{d}" for a, m, d, _ in _RUTA_RE.findall(home)}
         if not fechas:
             raise ValueError("No se encontró ninguna fecha de DOCM en la portada")
         ultima = max(fechas)  # YYYYMMDD
