@@ -23,7 +23,7 @@ import argparse
 import html
 import re
 import sys
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from common.base import BaseScraper
@@ -43,7 +43,14 @@ _HEADERS = {
     "Accept-Language": "es-ES,es;q=0.9",
 }
 
-_FECHA_RE = re.compile(r"mostrardoe\.php\?fecha=(\d{8})")
+# Cuántos días atrás buscar el último boletín. El DOE no publica fines de semana
+# ni festivos, y una racha larga sin publicar es una anomalía que conviene que
+# falle a la vista en vez de silenciarse.
+DIAS_ATRAS = 10
+
+# Un sumario real trae bloques `DOE2` (organismos y epígrafes); un día sin
+# boletín devuelve la misma página de ~10 KB sin ninguno.
+_TIENE_CONTENIDO_RE = re.compile(r'class="DOE2"')
 _ITEM_RE = re.compile(
     r'<p\s*>\s*<span class="DOE2">(?P<org>[^<]+)</span\s*>\s*</p\s*>'
     r'|<div class="justificado"\s*>(?P<disp>.*?)</div\s*>',
@@ -64,7 +71,9 @@ def _tipo_acceso(titulo: str) -> str | None:
         return "concurso_oposicion"
     if "promoción interna" in t:
         return "promocion_interna"
-    if "proceso selectivo" in t or "oposición" in t or "oposiciones" in t:
+    # "Procesos selectivos" en plural es el epígrafe habitual del DOE y no
+    # casaba con el singular, así que estas convocatorias salían sin clasificar.
+    if "proceso selectivo" in t or "procesos selectivos" in t or "oposici" in t:
         return "oposicion"
     if "bolsa" in t or "lista de reserva" in t or "listas de empleo" in t:
         return "bolsa"
@@ -79,14 +88,28 @@ class DoeScraper(BaseScraper):
     licencia = "Reutilización de información pública citando fuente (Junta de Extremadura)"
 
     def fetch(self) -> str:
-        home = http_get(HOME_URL, headers=_HEADERS).content.decode("iso-8859-1", "replace")
-        fechas = _FECHA_RE.findall(home)
-        if not fechas:
-            raise ValueError("No se encontró ninguna fecha de DOE en la portada")
-        ultima = max(fechas)  # YYYYMMDD
-        self.fecha = date(int(ultima[:4]), int(ultima[4:6]), int(ultima[6:8]))
-        resp = http_get(SUMARIO_URL.format(fecha=ultima), headers={**_HEADERS, "Referer": HOME_URL})
-        return resp.content.decode("iso-8859-1", "replace")
+        """
+        Busca hacia atrás el último boletín publicado.
+
+        La portada enlazaba las fechas como `mostrardoe.php?fecha=YYYYMMDD`, y
+        el 1 de agosto de 2026 ese listado desapareció en un rediseño: quedó un
+        formulario de mes y año que ignora los parámetros por GET. Preguntar por
+        fecha sigue funcionando, así que se prueban los días recientes en vez de
+        depender de un marcado que ya se ha roto una vez.
+        """
+        hoy = date.today()
+        for dias in range(DIAS_ATRAS):
+            dia = hoy - timedelta(days=dias)
+            resp = http_get(
+                SUMARIO_URL.format(fecha=dia.strftime("%Y%m%d")),
+                headers={**_HEADERS, "Referer": HOME_URL},
+            )
+            raw = resp.content.decode("iso-8859-1", "replace")
+            if _TIENE_CONTENIDO_RE.search(raw):
+                self.fecha = dia
+                return raw
+
+        raise ValueError(f"El DOE no ha publicado ningún boletín en los últimos {DIAS_ATRAS} días")
 
     def parse(self, raw: str) -> list[dict[str, Any]]:
         if not raw:

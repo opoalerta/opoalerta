@@ -24,7 +24,7 @@ const FUENTES = [
   { codigo: "BOA", nombre: "Boletín Oficial de Aragón", estado: "activo" },
   { codigo: "BOIB", nombre: "Butlletí Oficial de les Illes Balears", estado: "activo" },
   { codigo: "EPSO", nombre: "Oposiciones de la Unión Europea (EPSO)", estado: "activo" },
-  { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "previsto" },
+  { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "activo" },
   { codigo: "DOG", nombre: "Diario Oficial de Galicia", estado: "activo" },
   { codigo: "BOC", nombre: "Boletín Oficial de Canarias", estado: "activo" },
   { codigo: "DOCM", nombre: "Diario Oficial de Castilla-La Mancha", estado: "activo" },

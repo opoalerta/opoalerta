@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from common.schema import is_valid
-from docm import DocmScraper
+from docm import _RUTA_RE, DocmScraper
 
 FIXTURE = Path(__file__).parent / "fixtures" / "docm-sumario.html"
 
@@ -49,3 +49,24 @@ def test_vacio_devuelve_vacio():
 def test_fragmento_incorrecto_falla():
     with pytest.raises(ValueError):
         DocmScraper().parse("<div>Otra cosa cualquiera</div>")
+
+
+def test_la_fecha_sale_de_las_rutas_de_los_pdf():
+    """
+    Regresión de #72.
+
+    La portada enlazaba las fechas como `cambiarBoletin.do?fecha=YYYYMMDD` y el
+    1 de agosto de 2026 esos enlaces desaparecieron, dejando la ingesta caída.
+    Las rutas de los PDF llevan la misma fecha y siguen ahí.
+    """
+    portada = (
+        '<a href="./descargarArchivo.do?ruta=2026/07/30/pdf/2026_5000.pdf&tipo=rutaDocm">a</a>'
+        '<a href="./descargarArchivo.do?ruta=2026/07/31/pdf/2026_5075.pdf&tipo=rutaDocm">b</a>'
+    )
+    fechas = {f"{a}{m}{d}" for a, m, d, _ in _RUTA_RE.findall(portada)}
+    assert max(fechas) == "20260731"
+
+
+def test_portada_sin_rutas_falla():
+    """Sin fecha no se puede pedir el sumario; mejor romper que adivinar."""
+    assert not _RUTA_RE.findall("<html>portal sin boletines</html>")
