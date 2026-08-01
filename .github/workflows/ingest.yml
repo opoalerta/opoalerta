@@ -50,22 +50,55 @@ jobs:
           path: out/
           if-no-files-found: ignore
 
-      - name: Abrir issue si el scraper falla
+      # Una issue por fuente, no una por día. El título llevaba la fecha, así
+      # que la deduplicación solo funcionaba dentro del mismo día: tres días de
+      # fallos dejaban tres issues. Cada fallo nuevo añade un comentario a la
+      # que ya está abierta.
+      - name: Abrir o actualizar issue si el scraper falla
         if: failure()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           FUENTE="${{ matrix.fuente }}"
-          TITLE="[scraper-roto] ${FUENTE^^} falló el $(date -u +%Y-%m-%d)"
-          EXISTING=$(gh issue list --label scraper-roto --state open --search "$TITLE" --json number --jq '.[0].number' || echo "")
+          TITLE="[scraper-roto] ${FUENTE^^}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Falló el $(date -u +%Y-%m-%d). Run: $RUN_URL"
+
+          EXISTING=$(gh issue list --label scraper-roto --state open \
+            --search "in:title \"$TITLE\"" --json number,title \
+            --jq "map(select(.title == \"$TITLE\")) | .[0].number // empty")
+
           if [ -n "$EXISTING" ]; then
-            echo "Issue #$EXISTING ya existe, no duplico."
-            exit 0
+            echo "Issue #$EXISTING ya abierta para $FUENTE; añado el fallo de hoy."
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create \
+              --title "$TITLE" \
+              --label scraper-roto \
+              --body "El scraper de ${FUENTE^^} está fallando.
+
+          $BODY"
           fi
-          gh issue create \
-            --title "$TITLE" \
-            --label scraper-roto \
-            --body "El workflow de ingesta de ${FUENTE^^} falló. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      # Sin esto nadie las cerraba: las cuatro issues abiertas el 31 de julio
+      # correspondían a roturas ya arregladas días antes.
+      - name: Cerrar la issue si el scraper vuelve a funcionar
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          FUENTE="${{ matrix.fuente }}"
+          TITLE="[scraper-roto] ${FUENTE^^}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          EXISTING=$(gh issue list --label scraper-roto --state open \
+            --search "in:title \"$TITLE\"" --json number,title \
+            --jq "map(select(.title == \"$TITLE\")) | .[0].number // empty")
+
+          if [ -n "$EXISTING" ]; then
+            gh issue close "$EXISTING" \
+              --comment "Recuperado: la ingesta de ${FUENTE^^} ha vuelto a completarse. Run: $RUN_URL"
+          fi
 
   enriquecer:
     needs: ingest
