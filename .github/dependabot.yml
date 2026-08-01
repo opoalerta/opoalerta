@@ -12,6 +12,20 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "chore(deps)"
+    # Un PR por dependencia deja cuatro abiertos cada semana y acaban
+    # acumulándose sin que nadie los mire. Agrupados son uno solo, y los
+    # `major` siguen aparte porque sí merecen decisión.
+    groups:
+      npm-menores:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # El runtime es Node 22 (CI y `engines: >=22.13`). Unos tipos de Node 26
+      # describen APIs que no existen ahí: compila y falla al ejecutar. Quitar
+      # esta regla cuando se suba `engines`.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
