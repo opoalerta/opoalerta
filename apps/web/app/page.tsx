@@ -1,5 +1,5 @@
 import { getBaseUrl } from "@/lib/site";
-import { getConvocatorias, getConvocatoriasEuropeas, getEstado } from "@/lib/db";
+import { buscarConvocatorias, getConvocatoriasEuropeas, getEstado, getFacetas } from "@/lib/db";
 import { Container } from "./components/Container";
 import { ConvocatoriaCard } from "./components/ConvocatoriaCard";
 import { ConvocatoriaSearch } from "./components/ConvocatoriaSearch";
@@ -57,7 +57,10 @@ const FAQ = [
 ];
 
 export default async function Home() {
-  const convocatorias = await getConvocatorias();
+  // Solo la primera tanda: el filtrado vive en Postgres, así que la página ya
+  // no tiene que cargar con todo el catálogo para poder buscar dentro de él.
+  const primeraTanda = await buscarConvocatorias();
+  const facetas = await getFacetas();
   const europeas = await getConvocatoriasEuropeas(9);
   const estado = await getEstado();
 
@@ -199,7 +202,12 @@ export default async function Home() {
               Consulta las últimas publicaciones o filtra por puesto, organismo o fuente.
             </p>
           </div>
-          <ConvocatoriaSearch convocatorias={convocatorias} />
+          <ConvocatoriaSearch
+            convocatorias={primeraTanda.items}
+            total={primeraTanda.total}
+            fuentes={facetas.fuentes}
+            ambitos={facetas.ambitos}
+          />
         </Container>
       </section>
 
