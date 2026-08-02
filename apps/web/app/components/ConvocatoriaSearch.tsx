@@ -1,14 +1,25 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Convocatoria } from "@/lib/db";
 import { ConvocatoriaCard } from "./ConvocatoriaCard";
 import { NoticeBox } from "./NoticeBox";
 import { SuscripcionForm } from "./SuscripcionForm";
 
-function normalize(str: string): string {
-  return str.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
-}
+/**
+ * Buscador de convocatorias.
+ *
+ * Filtraba en memoria, así que la página tenía que recibir todas las
+ * convocatorias y un `LIMIT 500` evitaba que creciera sin control. Con 797 en
+ * base de datos eso hacía que la web dijera «500 resultados» como si fueran
+ * todas, y como el orden es por fecha descendente lo que se perdía eran las más
+ * antiguas: justo las que llevan más tiempo con el plazo abierto.
+ *
+ * Ahora filtra Postgres. La página llega con la primera tanda ya renderizada en
+ * servidor —así funciona sin JavaScript y los buscadores la indexan— y a partir
+ * de ahí cada cambio de filtro pide la suya. El recuento es el real, no el
+ * número de tarjetas visibles.
+ */
 
 const AMBITO_LABEL: Record<string, string> = {
   estatal: "Estatal",
@@ -23,67 +34,83 @@ const AMBITO_LABEL: Record<string, string> = {
 const selectClass =
   "rounded border border-border-strong bg-white px-3 py-2.5 text-base text-ink focus:border-focus focus:ring-2 focus:ring-focus focus:ring-offset-1";
 
-const PASO = 12;
+// Lo que se pide en cada tanda. Coincide con POR_PAGINA del servidor.
+const PASO = 24;
 
-export function ConvocatoriaSearch({
-  convocatorias,
-}: {
+// Escribir dispararía una petición por pulsación sin esperar un poco.
+const ESPERA_MS = 300;
+
+type Props = {
+  /** Primera tanda, ya resuelta en servidor. */
   convocatorias: Convocatoria[];
-}) {
+  /** Total real que cumple los filtros vacíos. */
+  total: number;
+  /** Valores de los desplegables, sacados de la tabla y no del listado. */
+  fuentes: string[];
+  ambitos: string[];
+};
+
+export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos }: Props) {
   const [query, setQuery] = useState("");
   const [fuente, setFuente] = useState("");
   const [ambito, setAmbito] = useState("");
-  const [visibles, setVisibles] = useState(PASO);
 
-  const fuentes = useMemo(
-    () => Array.from(new Set(convocatorias.map((c) => c.fuente_codigo))).sort(),
-    [convocatorias]
-  );
-  const ambitos = useMemo(
-    () => Array.from(new Set(convocatorias.map((c) => c.ambito))).sort(),
-    [convocatorias]
+  const [items, setItems] = useState<Convocatoria[]>(convocatorias);
+  const [totalActual, setTotalActual] = useState(total);
+  const [cargando, setCargando] = useState(false);
+  const [fallo, setFallo] = useState(false);
+
+  // Distingue el primer render (ya servido) de los cambios de filtro, para no
+  // repetir en el cliente la petición que el servidor acaba de resolver.
+  const montado = useRef(false);
+  // Una respuesta lenta de un filtro viejo no debe pisar a otra más reciente.
+  const peticion = useRef(0);
+
+  const pedir = useCallback(
+    async (desde: number, acumular: boolean) => {
+      const mia = ++peticion.current;
+      setCargando(true);
+      setFallo(false);
+      try {
+        const p = new URLSearchParams({
+          q: query.trim(),
+          fuente,
+          ambito,
+          desde: String(desde),
+          cuantas: String(PASO),
+        });
+        const res = await fetch(`/api/convocatorias?${p}`);
+        if (!res.ok) throw new Error(String(res.status));
+        const datos = (await res.json()) as { items: Convocatoria[]; total: number };
+        if (mia !== peticion.current) return;
+        setItems((previos) => (acumular ? [...previos, ...datos.items] : datos.items));
+        setTotalActual(datos.total);
+      } catch {
+        if (mia === peticion.current) setFallo(true);
+      } finally {
+        if (mia === peticion.current) setCargando(false);
+      }
+    },
+    [query, fuente, ambito]
   );
 
-  const filtered = useMemo(() => {
-    const q = normalize(query.trim());
-    return convocatorias.filter((c) => {
-      if (fuente && c.fuente_codigo !== fuente) return false;
-      if (ambito && c.ambito !== ambito) return false;
-      if (
-        q &&
-        !normalize(c.titulo).includes(q) &&
-        !normalize(c.organismo).includes(q) &&
-        !normalize(c.fuente_codigo).includes(q)
-      )
-        return false;
-      return true;
-    });
-  }, [convocatorias, query, fuente, ambito]);
+  useEffect(() => {
+    if (!montado.current) {
+      montado.current = true;
+      return;
+    }
+    const t = setTimeout(() => pedir(0, false), ESPERA_MS);
+    return () => clearTimeout(t);
+  }, [pedir]);
 
   const hasFilters = Boolean(query || fuente || ambito);
+  const restantes = totalActual - items.length;
 
-  // Cualquier cambio de filtro vuelve a mostrar la primera página (sin effects).
-  const cambiarQuery = (v: string) => {
-    setQuery(v);
-    setVisibles(PASO);
-  };
-  const cambiarFuente = (v: string) => {
-    setFuente(v);
-    setVisibles(PASO);
-  };
-  const cambiarAmbito = (v: string) => {
-    setAmbito(v);
-    setVisibles(PASO);
-  };
-  const reset = () => {
+  function reset() {
     setQuery("");
     setFuente("");
     setAmbito("");
-    setVisibles(PASO);
-  };
-
-  const mostradas = filtered.slice(0, visibles);
-  const restantes = filtered.length - mostradas.length;
+  }
 
   const chipClass = (activo: boolean) =>
     `rounded-full border px-3 py-1.5 text-sm font-medium transition focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none ${
@@ -94,20 +121,14 @@ export function ConvocatoriaSearch({
 
   return (
     <div>
-      {/* Filtros rápidos por fuente */}
       {fuentes.length > 1 && (
         // aria-pressed porque son interruptores, no enlaces: sin él, el estado
-        // activo lo transmitía solo el color y un lector de pantalla no podía
-        // saber qué filtro estaba puesto.
-        <div
-          role="group"
-          aria-label="Filtrar por fuente"
-          className="mb-4 flex flex-wrap gap-2"
-        >
+        // activo lo transmitía solo el color.
+        <div role="group" aria-label="Filtrar por fuente" className="mb-4 flex flex-wrap gap-2">
           <button
             type="button"
             aria-pressed={!fuente}
-            onClick={() => cambiarFuente("")}
+            onClick={() => setFuente("")}
             className={chipClass(!fuente)}
           >
             Todas
@@ -117,7 +138,7 @@ export function ConvocatoriaSearch({
               key={f}
               type="button"
               aria-pressed={fuente === f}
-              onClick={() => cambiarFuente(f)}
+              onClick={() => setFuente(f)}
               className={chipClass(fuente === f)}
             >
               {f.toUpperCase()}
@@ -135,7 +156,7 @@ export function ConvocatoriaSearch({
             id="convocatoria-search"
             type="search"
             value={query}
-            onChange={(e) => cambiarQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Busca por puesto, organismo o fuente…"
             className="w-full rounded border border-border-strong bg-white px-4 py-2.5 text-base text-ink placeholder:text-slate focus:border-focus focus:ring-2 focus:ring-focus focus:ring-offset-1"
           />
@@ -147,7 +168,7 @@ export function ConvocatoriaSearch({
         <select
           id="filtro-fuente"
           value={fuente}
-          onChange={(e) => cambiarFuente(e.target.value)}
+          onChange={(e) => setFuente(e.target.value)}
           className={selectClass}
         >
           <option value="">Todas las fuentes</option>
@@ -164,7 +185,7 @@ export function ConvocatoriaSearch({
         <select
           id="filtro-ambito"
           value={ambito}
-          onChange={(e) => cambiarAmbito(e.target.value)}
+          onChange={(e) => setAmbito(e.target.value)}
           className={selectClass}
         >
           <option value="">Todos los ámbitos</option>
@@ -194,23 +215,30 @@ export function ConvocatoriaSearch({
         aria-live="polite"
       >
         <span>
-          {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
+          {cargando && items.length === 0
+            ? "Buscando…"
+            : `${totalActual} ${totalActual === 1 ? "convocatoria" : "convocatorias"}`}
           {query && ` para “${query}”`}
         </span>
-        {filtered.length > 0 && (
+        {items.length > 0 && (
           <span className="hidden sm:inline">
-            Mostrando {mostradas.length} de {filtered.length}
+            Mostrando {items.length} de {totalActual}
           </span>
         )}
       </div>
 
-      {convocatorias.length === 0 ? (
+      {fallo ? (
+        <NoticeBox title="No se pudo completar la búsqueda" variant="warning">
+          Ha fallado la conexión con el servidor. Vuelve a intentarlo en unos
+          segundos.
+        </NoticeBox>
+      ) : total === 0 && !hasFilters ? (
         <NoticeBox title="Sin convocatorias cargadas" variant="warning">
           Aún no hay convocatorias cargadas. La ingesta del BOE corre cada día a las
           06:00 UTC. Si acabas de desplegar, comprueba que{" "}
           <code>DATABASE_URL</code> está configurada en el entorno.
         </NoticeBox>
-      ) : filtered.length === 0 ? (
+      ) : items.length === 0 && !cargando ? (
         <NoticeBox title="Ninguna coincidencia" variant="info">
           No hemos encontrado convocatorias con esos criterios. Prueba con otro
           término, fuente o ámbito.
@@ -218,7 +246,7 @@ export function ConvocatoriaSearch({
       ) : (
         <>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {mostradas.map((c) => (
+            {items.map((c) => (
               <li key={c.id}>
                 <ConvocatoriaCard convocatoria={c} />
               </li>
@@ -226,29 +254,21 @@ export function ConvocatoriaSearch({
           </ul>
 
           {restantes > 0 && (
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-6 flex justify-center">
               <button
                 type="button"
-                onClick={() => setVisibles((v) => v + PASO)}
-                className="rounded bg-gold px-6 py-2.5 text-base font-semibold text-navy hover:bg-navy hover:text-white focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none"
+                onClick={() => pedir(items.length, true)}
+                disabled={cargando}
+                className="rounded bg-gold px-6 py-2.5 text-base font-semibold text-navy hover:bg-navy hover:text-white focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none disabled:opacity-60"
               >
-                Ver más ({restantes} restantes)
-              </button>
-              <button
-                type="button"
-                onClick={() => setVisibles(filtered.length)}
-                className="rounded border border-border-strong bg-white px-6 py-2.5 text-base font-medium text-navy-700 hover:bg-cream focus:ring-2 focus:ring-focus focus:ring-offset-1 focus:outline-none"
-              >
-                Ver todas
+                {cargando ? "Cargando…" : `Ver más (${restantes} restantes)`}
               </button>
             </div>
           )}
         </>
       )}
 
-      {convocatorias.length > 0 && (
-        <SuscripcionForm q={query} fuente={fuente} ambito={ambito} />
-      )}
+      {total > 0 && <SuscripcionForm q={query} fuente={fuente} ambito={ambito} />}
     </div>
   );
 }

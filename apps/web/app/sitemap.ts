@@ -7,7 +7,10 @@ export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
-  const [ids, posts] = await Promise.all([getConvocatoriaIds(500), getAllPosts()]);
+  // Sin recorte: el sitemap es lo que le dice a Google qué páginas existen, y
+  // pedir 500 de 797 dejaba fuera precisamente las más antiguas, que son las
+  // que la gente busca por nombre cuando ya no están en portada.
+  const [ids, posts] = await Promise.all([getConvocatoriaIds(), getAllPosts()]);
 
   const staticPages: MetadataRoute.Sitemap = [
     {
