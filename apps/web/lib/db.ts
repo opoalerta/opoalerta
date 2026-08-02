@@ -180,7 +180,14 @@ export async function getFacetas(): Promise<{ fuentes: string[]; ambitos: string
   }
 }
 
-export async function getConvocatorias(limit = 500): Promise<Convocatoria[]> {
+/**
+ * Listado plano y acotado. El límite es obligatorio a propósito: el valor por
+ * defecto era 500 y ese número, heredado sin pensarlo, es el que acabó
+ * decidiendo cuántas convocatorias veía el usuario. Quien llame que diga cuántas
+ * quiere y por qué. Para listar de verdad está `buscarConvocatorias`, que
+ * pagina y devuelve el total real.
+ */
+export async function getConvocatorias(limit: number): Promise<Convocatoria[]> {
   const sql = client();
   if (!sql) return [];
   try {
@@ -289,7 +296,19 @@ export async function getConvocatoriaById(id: string): Promise<Convocatoria | nu
   }
 }
 
-export async function getConvocatoriaIds(limit = 1000): Promise<string[]> {
+/**
+ * Ids para el sitemap. Van **todas**, también las de plazo cerrado: su página
+ * de detalle sigue existiendo (`getConvocatoriaById` no filtra por plazo) y es
+ * lo que encuentra quien busca en Google una convocatoria concreta meses
+ * después.
+ *
+ * El tope por defecto es el del propio protocolo de sitemaps —50.000 URLs por
+ * fichero—, no una cifra elegida a ojo. El anterior era 1.000, y la llamada del
+ * sitemap pasaba 500: con 797 filas en la tabla, Google veía 500 y las otras
+ * 297 no existían para el buscador. Si algún día se rebasan las 50.000 hará
+ * falta un índice de sitemaps, y entonces esto tendrá que partirse en varios.
+ */
+export async function getConvocatoriaIds(limit = 50_000): Promise<string[]> {
   const sql = client();
   if (!sql) return [];
   try {
