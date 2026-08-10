@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { LogoHorizontalDark } from "./Logo";
 
+// La cabecera sale en todas las páginas, así que es el enlace interno que más
+// pesa. Estaba gastada en /estado —una página de diagnóstico— y en un enlace
+// externo, mientras /sobre y /blog solo se alcanzaban desde el footer y el
+// archivo de convocatorias desde ningún sitio. El orden es el de importancia.
 const navItems = [
   { href: "/", label: "Inicio" },
-  { href: "/estado", label: "Estado del servicio" },
-  { href: "https://github.com/opoalerta/opoalerta", label: "Código en GitHub", external: true },
+  { href: "/convocatorias", label: "Convocatorias" },
+  { href: "/blog", label: "Blog" },
+  { href: "/sobre", label: "Sobre el proyecto" },
+  { href: "/estado", label: "Estado" },
+  { href: "https://github.com/opoalerta/opoalerta", label: "GitHub", external: true },
 ];
 
 export function Header() {

@@ -5,7 +5,10 @@ import { JsonLd } from "../components/JsonLd";
 import { NoticeBox } from "../components/NoticeBox";
 import { PageHeader } from "../components/PageHeader";
 
-export const dynamic = "force-dynamic";
+// De la página solo cambia la lista de fuentes activas, y eso lo mueve la
+// ingesta diaria. Con `force-dynamic` cada visita —también la de un rastreador—
+// pagaba una consulta a Postgres por un texto que es prácticamente fijo.
+export const revalidate = 3600;
 
 const DESCRIPCION =
   "Qué es OpoAlerta, de dónde salen las convocatorias, cómo se tratan los datos " +
@@ -43,7 +46,7 @@ const FAQ = [
   {
     question: "¿Cómo recibo avisos de convocatorias nuevas?",
     answer:
-      "Guarda una búsqueda con tus filtros desde la página principal y deja tu correo. Recibirás un aviso cuando aparezca una convocatoria que encaje. También hay un feed RSS si prefieres no dar tu email.",
+      "Guarda una búsqueda con tus filtros desde la página principal y deja tu correo. Recibirás un aviso cuando aparezca una convocatoria que encaje. Si prefieres no dar tu email, en /rss.xml tienes un feed con las últimas convocatorias.",
   },
   {
     question: "He visto un error en una convocatoria. ¿Qué hago?",
