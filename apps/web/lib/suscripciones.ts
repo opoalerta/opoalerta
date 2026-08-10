@@ -46,25 +46,39 @@ export async function crearSuscripcion(
   return { token: (rows[0] as { token: string }).token };
 }
 
+// Estas dos las invoca una persona que viene de un enlace del correo, así que
+// un fallo de la base no puede acabar en la pantalla de error de Next: quien
+// intenta darse de baja tiene que entender que el problema es nuestro y que
+// puede reintentarlo. El resto de lib/ ya trabaja así.
 export async function confirmarSuscripcion(token: string): Promise<boolean> {
   const sql = client();
   if (!sql) return false;
-  const rows = await sql`
-    UPDATE suscripciones
-    SET confirmada = TRUE, confirmada_en = now()
-    WHERE token = ${token}
-    RETURNING id
-  `;
-  return rows.length > 0;
+  try {
+    const rows = await sql`
+      UPDATE suscripciones
+      SET confirmada = TRUE, confirmada_en = now()
+      WHERE token = ${token}
+      RETURNING id
+    `;
+    return rows.length > 0;
+  } catch (err) {
+    console.error("confirmarSuscripcion:", err);
+    return false;
+  }
 }
 
 export async function bajaSuscripcion(token: string): Promise<boolean> {
   const sql = client();
   if (!sql) return false;
-  const rows = await sql`
-    DELETE FROM suscripciones WHERE token = ${token} RETURNING id
-  `;
-  return rows.length > 0;
+  try {
+    const rows = await sql`
+      DELETE FROM suscripciones WHERE token = ${token} RETURNING id
+    `;
+    return rows.length > 0;
+  } catch (err) {
+    console.error("bajaSuscripcion:", err);
+    return false;
+  }
 }
 
 /**
