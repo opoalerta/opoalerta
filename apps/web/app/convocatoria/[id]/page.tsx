@@ -5,7 +5,13 @@ import { getBaseUrl } from "@/lib/site";
 import { Container } from "../../components/Container";
 import { JsonLd } from "../../components/JsonLd";
 
-export const dynamic = "force-dynamic";
+// Una convocatoria publicada ya no cambia: el organismo, el plazo y el enlace
+// oficial son los del boletín. Con `force-dynamic` cada visita golpeaba Postgres
+// y Vercel respondía `no-store`, así que Googlebot pagaba el precio completo por
+// cada una de las ~1400 fichas y se le acababa el presupuesto de rastreo antes
+// de llegar a las viejas. La ingesta corre una vez al día; una hora de margen
+// sobra para recoger correcciones.
+export const revalidate = 3600;
 
 const CCAA_NOMBRE: Record<string, string> = {
   AN: "Andalucía",

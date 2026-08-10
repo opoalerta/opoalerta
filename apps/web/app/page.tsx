@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getBaseUrl } from "@/lib/site";
 import { buscarConvocatorias, getConvocatoriasEuropeas, getEstado, getFacetas } from "@/lib/db";
 import { Container } from "./components/Container";
@@ -208,6 +209,19 @@ export default async function Home() {
             fuentes={facetas.fuentes}
             ambitos={facetas.ambitos}
           />
+          {/*
+            El buscador filtra contra /api/convocatorias, que está en Disallow,
+            así que para un rastreador la portada acaba en las tarjetas que ve
+            renderizadas. Este enlace es la puerta al archivo completo.
+          */}
+          <p className="mt-8 text-center">
+            <Link
+              href="/convocatorias"
+              className="font-semibold text-navy-700 hover:text-navy"
+            >
+              Ver el archivo completo de convocatorias →
+            </Link>
+          </p>
         </Container>
       </section>
 
