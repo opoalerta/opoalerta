@@ -1,0 +1,70 @@
+name: Purga puntual (manual)
+
+# Ejecuta un fichero de data/purgas/ contra la base de datos. Son borrados de
+# datos de una sola vez, no migraciones de esquema: por eso no van en
+# db-migrate.yml, que reaplica data/schema/* enteros en cada ejecución.
+#
+# Por defecto hace un ensayo: cambia el COMMIT final por un ROLLBACK, así que
+# se ven los recuentos previos y cuántas filas borraría, sin tocar nada. Para
+# que el borrado sea real hay que escribir BORRAR en el segundo campo.
+
+on:
+  workflow_dispatch:
+    inputs:
+      fichero:
+        description: "Fichero SQL dentro de data/purgas/"
+        type: string
+        default: "001_boa_fuera_de_oposiciones.sql"
+      confirmar:
+        description: 'Escribe BORRAR para que el DELETE se confirme. Vacío = ensayo con ROLLBACK.'
+        type: string
+        default: ""
+
+concurrency:
+  group: db-purga
+  cancel-in-progress: false
+
+jobs:
+  purgar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Ejecutar la purga
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          FICHERO: ${{ inputs.fichero }}
+          CONFIRMAR: ${{ inputs.confirmar }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::Falta el secret DATABASE_URL"
+            exit 1
+          fi
+          # basename evita que un ../ del input saque la ruta de data/purgas/.
+          RUTA="data/purgas/$(basename "$FICHERO")"
+          if [ ! -f "$RUTA" ]; then
+            echo "::error::No existe $RUTA"
+            exit 1
+          fi
+
+          if [ "$CONFIRMAR" = "BORRAR" ]; then
+            echo "── Purga REAL: $RUTA"
+            psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$RUTA"
+          else
+            echo "── Ensayo (ROLLBACK al final): $RUTA"
+            echo "   Para borrar de verdad, relanza con confirmar=BORRAR."
+            sed 's/^COMMIT;/ROLLBACK;/' "$RUTA" \
+              | psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f -
+          fi
+
+      - name: Recuento del BOA tras la purga
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          psql "$DATABASE_URL" -c "
+            SELECT fuente_codigo, count(*) AS abiertas
+            FROM convocatorias
+            WHERE fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE
+            GROUP BY fuente_codigo
+            ORDER BY abiertas DESC;
+          "
