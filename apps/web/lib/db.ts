@@ -229,9 +229,41 @@ export async function getConvocatorias(limit: number): Promise<Convocatoria[]> {
   }
 }
 
+/**
+ * El estado de cada fuente. Hay dos puertas porque el layout entero depende de
+ * cuál se use.
+ *
+ * `getEstado` la llama el Footer, que vive en el layout raíz y por tanto se
+ * renderiza en **todas** las páginas. Mientras leía con `no-store`, ese único
+ * fetch marcaba como dinámico el árbol completo: daba igual el `revalidate` de
+ * cada página, en producción ni siquiera los artículos del blog —markdown puro,
+ * prerenderizados con `generateStaticParams`— llegaban cacheados. Vercel
+ * respondía `no-store` y `x-vercel-cache: MISS` en todo el sitio.
+ *
+ * En el build no se notaba: sin `DATABASE_URL`, `client()` devuelve null, no
+ * hay fetch y Next prerenderiza tan contento. El síntoma solo aparecía con la
+ * base conectada.
+ *
+ * Lo que el Footer saca de aquí es la etiqueta de fase del proyecto, que puede
+ * ir con una hora de retraso sin que pase nada. Quien necesita el dato al
+ * segundo es /estado, y para eso está `getEstadoEnVivo`.
+ */
+type ClienteNeon = NonNullable<ReturnType<typeof client>>;
+
 export async function getEstado(): Promise<EstadoFuente[]> {
+  const sql = clientCacheable();
+  if (!sql) return [];
+  return consultarEstado(sql);
+}
+
+/** Lectura sin caché, para el panel de estado del servicio. */
+export async function getEstadoEnVivo(): Promise<EstadoFuente[]> {
   const sql = client();
   if (!sql) return [];
+  return consultarEstado(sql);
+}
+
+async function consultarEstado(sql: ClienteNeon): Promise<EstadoFuente[]> {
   try {
     const rows = await sql`
       SELECT f.codigo AS fuente_codigo,
@@ -325,7 +357,9 @@ export async function getConvocatoriaById(id: string): Promise<Convocatoria | nu
  * falta un índice de sitemaps, y entonces esto tendrá que partirse en varios.
  */
 export async function getConvocatoriaIds(limit = 50_000): Promise<string[]> {
-  const sql = client();
+  // Cacheable: es la única consulta del sitemap, y con `no-store` su
+  // `revalidate` de seis horas no llegaba a aplicarse nunca en producción.
+  const sql = clientCacheable();
   if (!sql) return [];
   try {
     const rows = await sql`

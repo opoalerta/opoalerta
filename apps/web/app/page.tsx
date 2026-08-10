@@ -17,22 +17,21 @@ export const metadata = {
   alternates: { canonical: "/" },
 };
 
-const FUENTES = [
-  { codigo: "BOE", nombre: "Boletín Oficial del Estado", estado: "activo" },
-  { codigo: "BOJA", nombre: "Boletín Oficial de la Junta de Andalucía", estado: "activo" },
-  { codigo: "BOCM", nombre: "Boletín Oficial de la Comunidad de Madrid", estado: "activo" },
-  { codigo: "BOCYL", nombre: "Boletín Oficial de Castilla y León", estado: "activo" },
-  { codigo: "BOA", nombre: "Boletín Oficial de Aragón", estado: "activo" },
-  { codigo: "BOIB", nombre: "Butlletí Oficial de les Illes Balears", estado: "activo" },
-  { codigo: "EPSO", nombre: "Oposiciones de la Unión Europea (EPSO)", estado: "activo" },
-  { codigo: "DOGV", nombre: "Diari Oficial de la Generalitat Valenciana", estado: "activo" },
-  { codigo: "DOG", nombre: "Diario Oficial de Galicia", estado: "activo" },
-  { codigo: "BOC", nombre: "Boletín Oficial de Canarias", estado: "activo" },
-  { codigo: "DOCM", nombre: "Diario Oficial de Castilla-La Mancha", estado: "activo" },
-  { codigo: "DOE", nombre: "Diario Oficial de Extremadura", estado: "activo" },
-  { codigo: "BOPA", nombre: "Boletín Oficial del Principado de Asturias", estado: "activo" },
-  { codigo: "BORME", nombre: "Boletín Oficial del Registro Mercantil", estado: "no aplica" },
-];
+/**
+ * Etiqueta visible del estado de una fuente, a partir del que guarda la ingesta.
+ *
+ * Esta sección listaba catorce fuentes escritas a mano con su estado fijo en
+ * «activo». La tabla tiene trece —BORME nunca llegó a ingerirse— y un scraper
+ * roto seguía anunciándose como activo aunque el CI ya hubiera abierto su
+ * incidencia. Lo mismo que ya hace /sobre: preguntarle a la base.
+ */
+function estadoLabel(estado: string | null): { texto: string; clase: string } {
+  if (estado === "ok") return { texto: "activo", clase: "bg-success-bg text-success" };
+  if (estado === "error") {
+    return { texto: "con incidencia", clase: "bg-danger-bg text-danger" };
+  }
+  return { texto: "sin datos", clase: "bg-cream text-slate" };
+}
 
 const FAQ = [
   {
@@ -283,30 +282,27 @@ export default async function Home() {
             </p>
           </div>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FUENTES.map((f) => (
-              <li
-                key={f.codigo}
-                className="flex items-center justify-between rounded border border-border bg-white p-4"
-              >
-                <div>
-                  <span className="block text-base font-semibold text-navy-700">
-                    {f.codigo}
-                  </span>
-                  <span className="text-sm text-slate">{f.nombre}</span>
-                </div>
-                <span
-                  className={`rounded px-2 py-1 text-xs font-semibold uppercase ${
-                    f.estado === "activo"
-                      ? "bg-success-bg text-success"
-                      : f.estado === "previsto"
-                        ? "bg-cream text-slate"
-                        : "bg-danger-bg text-danger"
-                  }`}
+            {estado.map((f) => {
+              const etiqueta = estadoLabel(f.estado);
+              return (
+                <li
+                  key={f.fuente_codigo}
+                  className="flex items-center justify-between gap-3 rounded border border-border bg-white p-4"
                 >
-                  {f.estado}
-                </span>
-              </li>
-            ))}
+                  <div>
+                    <span className="block text-base font-semibold uppercase text-navy-700">
+                      {f.fuente_codigo}
+                    </span>
+                    <span className="text-sm text-slate">{f.nombre}</span>
+                  </div>
+                  <span
+                    className={`shrink-0 rounded px-2 py-1 text-xs font-semibold uppercase ${etiqueta.clase}`}
+                  >
+                    {etiqueta.texto}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
           <p className="mt-4 text-sm text-slate">
             El objetivo es cubrir los 19 boletines autonómicos. Si falta el tuyo, puedes{" "}

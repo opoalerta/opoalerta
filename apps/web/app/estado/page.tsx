@@ -1,4 +1,4 @@
-import { getEstado } from "@/lib/db";
+import { getEstadoEnVivo } from "@/lib/db";
 import { getBaseUrl } from "@/lib/site";
 import { Container } from "../components/Container";
 import { EstadoTable } from "../components/EstadoTable";
@@ -16,7 +16,7 @@ export const metadata = {
 };
 
 export default async function Estado() {
-  const fuentes = await getEstado();
+  const fuentes = await getEstadoEnVivo();
   const baseUrl = getBaseUrl();
 
   const structuredData = [
