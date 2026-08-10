@@ -37,6 +37,22 @@ function client() {
   return neon(url, { fetchOptions: { cache: "no-store" } });
 }
 
+/**
+ * Igual que `client()`, pero dejando que Next cachee el fetch.
+ *
+ * Solo para la ficha de convocatoria, que es contenido de archivo: una vez
+ * publicada en el boletín no cambia. `no-store` la obligaba a ser dinámica, y
+ * con ~1.400 fichas que Google tiene que rastrear eso significaba una consulta
+ * a Postgres y un `cache-control: no-store` por cada visita del robot. La
+ * página declara su propio `revalidate`, que es quien manda sobre la frescura
+ * —incluida la de un 404 servido antes de que la ingesta trajera la ficha.
+ */
+function clientCacheable() {
+  const url = process.env.DATABASE_URL;
+  if (!url) return null;
+  return neon(url);
+}
+
 // Una convocatoria sigue "viva" en la web mientras no se sepa que su plazo
 // venció. Regla (idéntica en el WHERE de abajo):
 //   - Con fecha_fin_plazo y ya pasada        -> fuera (plazo agotado).
@@ -267,7 +283,7 @@ export async function getConvocatoriasEuropeas(limit = 9): Promise<Convocatoria[
 }
 
 export async function getConvocatoriaById(id: string): Promise<Convocatoria | null> {
-  const sql = client();
+  const sql = clientCacheable();
   if (!sql) return null;
   // Next 16 puede entregar el param de ruta aún URL-codificado (p. ej. "boib%3A..."),
   // de forma inconsistente entre generateMetadata y el componente. Los ids nunca
@@ -322,5 +338,67 @@ export async function getConvocatoriaIds(limit = 50_000): Promise<string[]> {
   } catch (err) {
     console.error("getConvocatoriaIds:", err);
     return [];
+  }
+}
+
+/** Cuántas fichas lista cada página del archivo. */
+export const POR_PAGINA_ARCHIVO = 50;
+
+/**
+ * Una página del archivo completo: **todas** las convocatorias, también las de
+ * plazo cerrado, con el mismo criterio y el mismo orden que `getConvocatoriaIds`.
+ *
+ * El buscador de la portada filtra en el cliente contra `/api/convocatorias`,
+ * que está en `Disallow`. Eso dejaba las ~1.400 fichas sin un solo enlace que
+ * un rastreador pudiera seguir: existían en el sitemap y en ningún otro sitio,
+ * que es la señal de descubrimiento más débil que hay. Esta consulta es la que
+ * alimenta el índice paginado que sí las enlaza.
+ *
+ * Cachea (`clientCacheable`), porque la ruta que la usa declara `revalidate`.
+ */
+export async function listarArchivo(
+  pagina: number,
+  porPagina = POR_PAGINA_ARCHIVO,
+): Promise<Pagina> {
+  const sql = clientCacheable();
+  if (!sql) return { items: [], total: 0 };
+
+  const desde = Math.max(0, (pagina - 1) * porPagina);
+
+  try {
+    const [items, conteo] = await Promise.all([
+      sql`
+        SELECT id, titulo, organismo, ambito, ccaa,
+               fecha_publicacion::text AS fecha_publicacion,
+               fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
+               url_oficial, fuente_codigo
+        FROM convocatorias
+        ORDER BY fecha_publicacion DESC, fecha_ingesta DESC
+        LIMIT ${porPagina} OFFSET ${desde}
+      `,
+      sql`SELECT count(*)::int AS total FROM convocatorias`,
+    ]);
+
+    return {
+      items: items as Convocatoria[],
+      total: (conteo as { total: number }[])[0]?.total ?? 0,
+    };
+  } catch (err) {
+    console.error("listarArchivo:", err);
+    return { items: [], total: 0 };
+  }
+}
+
+/** Número de páginas del archivo, para el sitemap y los enlaces prev/next. */
+export async function contarPaginasArchivo(porPagina = POR_PAGINA_ARCHIVO): Promise<number> {
+  const sql = clientCacheable();
+  if (!sql) return 1;
+  try {
+    const rows = await sql`SELECT count(*)::int AS total FROM convocatorias`;
+    const total = (rows as { total: number }[])[0]?.total ?? 0;
+    return Math.max(1, Math.ceil(total / porPagina));
+  } catch (err) {
+    console.error("contarPaginasArchivo:", err);
+    return 1;
   }
 }

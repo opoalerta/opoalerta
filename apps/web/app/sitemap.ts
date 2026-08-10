@@ -1,16 +1,22 @@
 import type { MetadataRoute } from "next";
-import { getConvocatoriaIds } from "@/lib/db";
+import { contarPaginasArchivo, getConvocatoriaIds } from "@/lib/db";
 import { getAllPosts } from "@/lib/blog";
 import { getBaseUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+// Regenerarlo en cada petición costaba ~1,6 s y 262 KB por rastreo, y el
+// contenido solo cambia cuando entra la ingesta diaria de las 06:00 UTC.
+export const revalidate = 21600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
   // Sin recorte: el sitemap es lo que le dice a Google qué páginas existen, y
   // pedir 500 de 797 dejaba fuera precisamente las más antiguas, que son las
   // que la gente busca por nombre cuando ya no están en portada.
-  const [ids, posts] = await Promise.all([getConvocatoriaIds(), getAllPosts()]);
+  const [ids, posts, paginasArchivo] = await Promise.all([
+    getConvocatoriaIds(),
+    getAllPosts(),
+    contarPaginasArchivo(),
+  ]);
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -39,6 +45,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  // El archivo paginado también va al sitemap: son las páginas que llevan a las
+  // fichas, así que interesa que Google las rastree pronto y a menudo.
+  const archivoPages: MetadataRoute.Sitemap = Array.from(
+    { length: paginasArchivo },
+    (_, i) => ({
+      url: i === 0 ? `${baseUrl}/convocatorias` : `${baseUrl}/convocatorias/pagina/${i + 1}`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: i === 0 ? 0.9 : 0.6,
+    }),
+  );
+
   const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),
@@ -53,5 +71,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...blogPages, ...convocatoriaPages];
+  return [...staticPages, ...archivoPages, ...blogPages, ...convocatoriaPages];
 }
