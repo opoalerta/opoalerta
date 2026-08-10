@@ -65,6 +65,11 @@ export async function Footer() {
                 </Link>
               </li>
               <li>
+                <a href="/rss.xml" className="text-white no-underline hover:text-gold-light">
+                  Feed RSS
+                </a>
+              </li>
+              <li>
                 <a
                   href="https://github.com/opoalerta/opoalerta/blob/main/ROADMAP.md"
                   className="text-white no-underline hover:text-gold-light"

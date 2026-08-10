@@ -95,6 +95,19 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
+      {/*
+        El feed existía pero no lo anunciaba nadie: ni esta etiqueta, ni un
+        enlace en el footer, y la FAQ de /sobre lo prometía sin decir dónde.
+        Va aquí y no en `metadata.alternates` porque las páginas que declaran
+        su propio `alternates` para el canonical reemplazarían el del layout y
+        se llevarían el feed por delante. React 19 lo sube al <head>.
+      */}
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title="OpoAlerta — Convocatorias de empleo público"
+        href="/rss.xml"
+      />
       <body className={`${inter.variable} ${poppins.variable} flex min-h-screen flex-col font-sans`}>
         <Header />
         <main className="grow">{children}</main>
