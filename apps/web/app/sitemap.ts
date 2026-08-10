@@ -32,10 +32,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      // Estaba anunciada como «daily» y con más prioridad que el blog. Es una
+      // página de diagnóstico: cambia todos los días, así que Google volvía a
+      // por ella constantemente, y no responde a ninguna búsqueda.
       url: `${baseUrl}/estado`,
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8,
+      changeFrequency: "weekly",
+      priority: 0.3,
     },
     {
       url: `${baseUrl}/blog`,
