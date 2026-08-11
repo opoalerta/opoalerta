@@ -1,45 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sumario><metadatos>
+<sumario>
+  <metadatos>
     <diario>Boletín Oficial de la Comunidad de Madrid</diario>
     <publicacion>BOCM</publicacion>
-    <identificador>BOCM-20260724</identificador>
-    <numero>175</numero>
-    <fecha_publicacion>2026/07/23</fecha_publicacion>
-    <url_html_sumario>https://www.bocm.es/boletin/bocm-20260724-175</url_html_sumario>
-    <url_xml_sumario>https://www.bocm.es/boletin/CM_Boletin_BOCM/2026/07/23/BOCM-20260724175.xml</url_xml_sumario>
-    <url_pdf_sumario>https://www.bocm.es/boletin/CM_Boletin_BOCM/2026/07/24/BOCM-20260724175.PDF</url_pdf_sumario>
-    <url_pdf_diario>https://www.bocm.es/boletin/CM_Boletin_BOCM/2026/07/24/17500.PDF</url_pdf_diario>
-  </metadatos><seccion nombre="I. COMUNIDAD DE MADRID"><apartado nombre="B) Autoridades y Personal"><organismo nombre="CONSEJERÍA DE PRESIDENCIA, JUSTICIA  Y ADMINISTRACIÓN LOCAL"><disposicion numero="3">
-              <identificador>BOCM-20260724-3</identificador>
-              <rango>ORDEN</rango>
-              <titulo>Puesto libre designación
-– Orden de 15 de julio de 2026, de la Consejería de Presidencia, Justica y Administración Local, por la que se resuelve la Orden de 28 de abril de 2026, del Consejero de Presidencia, Justicia y Administración Local (BOLETÍN OFICIAL DE LA COMUNIDAD DE MADRID de 8 de mayo), por la que se aprobó convocatoria pública para la provisión de varios puestos de trabajo vacantes en la Consejería de Presidencia, Justicia y Administración Local por el procedimiento de Libre Designación</titulo>
-              <url_html>https://www.bocm.es/bocm-20260724-3</url_html>
-              <url_xml>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-3.xml</url_xml>
-              <url_json_ld>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-3.json</url_json_ld>
-              <url_pdf>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-3.PDF</url_pdf>
-              <url_epub>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-3.epub</url_epub>
+    <identificador>BOCM-20260810</identificador>
+    <numero>189</numero>
+    <fecha_publicacion>2026/08/10</fecha_publicacion>
+  </metadatos>
+  <diario numero="189">
+    <secciones>
+      <seccion nombre="I. COMUNIDAD DE MADRID">
+        <apartado nombre="B) Autoridades y Personal">
+          <organismo nombre="CONSEJERÍA DE ECONOMÍA, HACIENDA Y EMPLEO">
+            <disposicion>
+              <identificador>BOCM-20260810-1</identificador>
+              <titulo>Puesto libre designación – Orden de 28 de julio de 2026, de la Consejera de Economía, Hacienda y Empleo, por la que se aprueba convocatoria pública para la provisión de dos puestos de trabajo vacantes</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-1</url_html>
             </disposicion>
-          </organismo><organismo nombre="CONSEJERÍA DE ECONOMÍA, HACIENDA Y EMPLEO"><disposicion numero="4">
-              <identificador>BOCM-20260724-4</identificador>
-              <rango>ORDEN</rango>
-              <titulo>Puesto libre desiganción
-– Orden de 15 de julio de 2026, de la Consejera de Economía, Hacienda y Empleo, por la que se resuelve la convocatoria aprobada por Orden de 8 de mayo de 2026 (BOLETÍN OFICIAL DE LA COMUNIDAD DE MADRID de 19 de mayo), para la provisión de varios puestos de trabajo vacantes en la citada Consejería por el procedimiento de Libre Designación</titulo>
-              <url_html>https://www.bocm.es/bocm-20260724-4</url_html>
-              <url_xml>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-4.xml</url_xml>
-              <url_json_ld>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-4.json</url_json_ld>
-              <url_pdf>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-4.PDF</url_pdf>
-              <url_epub>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-4.epub</url_epub>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="I. COMUNIDAD DE MADRID">
+        <apartado nombre="B) Autoridades y Personal">
+          <organismo nombre="CONSEJERÍA DE ECONOMÍA, HACIENDA Y EMPLEO">
+            <disposicion>
+              <identificador>BOCM-20260810-2</identificador>
+              <titulo>Puesto libre designación – Orden de 28 de julio de 2026, de la Consejera de Economía, Hacienda y Empleo, por la que se aprueba convocatoria pública para la provisión de un puesto de trabajo vacante en</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-2</url_html>
             </disposicion>
-          </organismo><organismo nombre="CONSEJERÍA DE ECONOMÍA, HACIENDA Y EMPLEO"><disposicion numero="5">
-              <identificador>BOCM-20260724-5</identificador>
-              <rango>RESOLUCIÓN</rango>
-              <titulo>Resolución proceso selectivo
-– Resolución del 14 de julio de 2026, de la Dirección General de Función Pública, por la que se resuelve el proceso selectivo para el personal laboral fijo de las categorías profesionales de Técnico Especialista I y Técnico Especialista II (Grupo III, Niveles 6 y 5, Área A), para la adquisición de la condición de personal funcionario de carrera del Cuerpo de Técnicos Auxiliares de Administración Especial, Escala Auxiliares de Archivos, Bibliotecas y Museos, Grupo C, Subgrupo C1, de la Comunidad de Madrid</titulo>
-              <url_html>https://www.bocm.es/bocm-20260724-5</url_html>
-              <url_xml>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-5.xml</url_xml>
-              <url_json_ld>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-5.json</url_json_ld>
-              <url_pdf>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-5.PDF</url_pdf>
-              <url_epub>https://www.bocm.es/boletin/CM_Orden_BOCM/2026/07/24/BOCM-20260724-5.epub</url_epub>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="I. COMUNIDAD DE MADRID">
+        <apartado nombre="B) Autoridades y Personal">
+          <organismo nombre="CONSEJERÍA DE ECONOMÍA, HACIENDA Y EMPLEO">
+            <disposicion>
+              <identificador>BOCM-20260810-3</identificador>
+              <titulo>Puesto libre designación – Orden de 28 de julio de 2026, de la Consejera de Economía, Hacienda y Empleo, por la que se aprueba convocatoria pública para la provisión de un puesto de trabajo vacante en</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-3</url_html>
             </disposicion>
-          </organismo></apartado></seccion></sumario>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="I. COMUNIDAD DE MADRID">
+        <apartado nombre="C) Otras Disposiciones">
+          <organismo nombre="CONSEJERÍA DE EDUCACIÓN, CIENCIA  Y UNIVERSIDADES">
+            <disposicion>
+              <identificador>BOCM-20260810-11</identificador>
+              <titulo>Autorización implantación enseñanzas – Orden 3091/2026, de 29 de julio, de la Consejera de Educación, Ciencia y Universidades, por la que se autoriza al colegio público de Educación Infantil y Primari</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-11</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="I. COMUNIDAD DE MADRID">
+        <apartado nombre="C) Otras Disposiciones">
+          <organismo nombre="CONSEJERÍA DE EDUCACIÓN, CIENCIA  Y UNIVERSIDADES">
+            <disposicion>
+              <identificador>BOCM-20260810-12</identificador>
+              <titulo>Concesión ayudas – Orden 3111/2026, de 30 de julio, de la Consejera de Educación, Ciencia y Universidades, por la que se resuelve la convocatoria de ayudas a ayuntamientos para la realización del prog</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-12</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="I. COMUNIDAD DE MADRID">
+        <apartado nombre="D) Anuncios">
+          <organismo nombre="CONSEJERÍA DE ECONOMÍA, HACIENDA Y EMPLEO">
+            <disposicion>
+              <identificador>BOCM-20260810-16</identificador>
+              <titulo>Notificación – Resolución de 29 de julio de 2026, de la Dirección General de Trabajo, por la que se procede a la publicación de una sanción administrativa impuesta por infracciones muy graves en mater</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-16</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="I. COMUNIDAD DE MADRID">
+        <apartado nombre="D) Anuncios">
+          <organismo nombre="CONSEJERÍA DE ECONOMÍA, HACIENDA Y EMPLEO">
+            <disposicion>
+              <identificador>BOCM-20260810-17</identificador>
+              <titulo>Convocatoria contrato – Resolución de 30 de julio de 2026, de la Secretaría General Técnica de la Consejería de Economía, Hacienda y Empleo de la Comunidad de Madrid, por la que se dispone ampliación </titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-17</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="MADRID">
+            <disposicion>
+              <identificador>BOCM-20260810-33</identificador>
+              <titulo>– Madrid. Urbanismo. Área de Gobierno de Obras y Equipamientos. Proyecto urbanización</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-33</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="AJALVIR">
+            <disposicion>
+              <identificador>BOCM-20260810-35</identificador>
+              <titulo>– Ajalvir. Régimen económico. Ordenanza fiscal</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-35</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="ALCORCÓN">
+            <disposicion>
+              <identificador>BOCM-20260810-36</identificador>
+              <titulo>– Alcorcón. Personal. Plantilla personal</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-36</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="MÓSTOLES">
+            <disposicion>
+              <identificador>BOCM-20260810-50</identificador>
+              <titulo>– Móstoles. Ofertas de empleo. Convocatoria proceso selectivo</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-50</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="SAN SEBASTIÁN DE LOS REYES">
+            <disposicion>
+              <identificador>BOCM-20260810-54</identificador>
+              <titulo>– San Sebastián de los Reyes. Ofertas de empleo. Proceso selectivo</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-54</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="COSLADA">
+            <disposicion>
+              <identificador>BOCM-20260807-53</identificador>
+              <titulo>– Coslada. Régimen económico. Convocatoria proceso selectivo</titulo>
+              <url_html>https://www.bocm.es/bocm-20260807-53</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+    </secciones>
+  </diario>
+</sumario>
