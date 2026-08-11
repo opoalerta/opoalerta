@@ -1,7 +1,7 @@
 ---
 title: "Cómo leemos trece boletines oficiales cada día con dos dependencias"
 slug: "como-scrapeamos-trece-boletines-oficiales"
-description: "La arquitectura de scraping de OpoAlerta: por qué no usamos BeautifulSoup ni Scrapy, cómo se detecta que un boletín ha cambiado de formato y qué pasa con los plazos en días hábiles."
+description: "La arquitectura de scraping de OpoAlerta: por qué no usamos BeautifulSoup ni Scrapy, cómo se detecta que un boletín ha cambiado de formato, las dos veces que un scraper siguió funcionando mientras guardaba lo que no debía, y qué pasa con los plazos en días hábiles."
 date: "2026-08-10"
 author: "Equipo OpoAlerta"
 tags:
@@ -46,6 +46,8 @@ Y `run()` los orquesta, validando cada convocatoria contra un JSON Schema antes 
 
 La separación entre `fetch` y `parse` parece burocracia hasta que escribes el primer test. Como `run()` acepta un `raw` opcional que salta la descarga, cada scraper se prueba contra un fixture guardado en disco: HTML real de un día real. Trece boletines, trece ficheros de tests, cero peticiones de red en CI.
 
+Con una trampa que tardamos semanas en ver, y que cuento más abajo: **un fixture solo prueba lo que contiene**. Si lo recortas dejando únicamente la sección que te interesa —que es lo natural, para que no ocupe— dejas de probar precisamente la parte que decide qué se queda fuera.
+
 Esa es también la razón de que sean 2.900 líneas y no muchas más. El scraper más corto ronda las 130 líneas y el más largo las 200. Todo lo compartido —descargas, esquema, plazos, persistencia, orquestación— vive en `common/` y ninguno de esos módulos pasa de 175 líneas.
 
 ## Reintentar no es opcional
@@ -85,6 +87,28 @@ Abrir incidencias automáticamente es la mitad fácil. Si no cierras las que se 
 
 El estado de cada scraper es público en [la página de estado del servicio](/estado): cuándo se leyó por última vez cada boletín y si su última ejecución fue bien.
 
+## La otra forma de romperse: seguir funcionando
+
+Todo lo anterior detecta que un scraper deja de traer nada. No detecta que traiga lo que no debe, ni que se deje algo por el camino. Nos han pasado las dos, y ninguna la vio ni el CI ni la página de estado.
+
+Un boletín oficial no publica solo empleo público. Publica subvenciones, expedientes ambientales, licitaciones, ordenanzas fiscales y modificaciones de crédito. Cada scraper se queda con la sección de oposiciones de su boletín —la `2B` del BOE, la `B.2` del BOCYL, la `II.b Oposiciones y concursos` del BOA— y descarta el resto. Ahí está el noventa por ciento del trabajo real de un scraper de boletines: no extraer, sino decidir qué no extraer.
+
+**El caso uno: un parámetro que no filtraba.** La URL con la que pedíamos el sumario del Boletín Oficial de Aragón llevaba un `SEC=OPRSS`, que en teoría pide la sección de oposiciones y personal. El servidor del BOA lo ignora y devuelve el boletín entero. Nunca lo comprobamos, porque el parámetro estaba ahí y parecía hacer su trabajo.
+
+Durante semanas, expedientes de información pública del Instituto Aragonés de Gestión Ambiental estuvieron guardados en nuestra tabla como si fueran ofertas de empleo. Aragón aparecía con 404 convocatorias abiertas, casi las mismas que el BOE, teniendo el 2,8 % de la población. La cifra real era 112.
+
+Basta pedir el mismo día con el parámetro y sin él y comparar las dos respuestas. Si son idénticas, no filtra.
+
+**El caso dos: un filtro correcto que se pasaba de largo.** El sumario del BOCM viene en XML, con los apartados etiquetados. Filtrábamos por el apartado «B) Autoridades y Personal» y funcionaba perfectamente… para la Comunidad de Madrid. La sección de ayuntamientos del mismo boletín trae sus apartados **sin nombre**, así que caía entera junto con los anuncios. Se perdían unas ocho o nueve convocatorias al día de Móstoles, Alcorcón, Coslada, Rivas o Pozuelo.
+
+Este es el peor de los dos, porque no deja rastro. Un dato de más lo ve cualquiera que mire el listado; un dato de menos no lo ve nadie. Nadie abre una incidencia por una convocatoria que no aparece: se limita a no enterarse de que existía.
+
+**Y lo que permitió que los dos vivieran tanto: nuestros propios tests.** Cada fixture se había recortado a mano dejando solo la sección de oposiciones, que es lo razonable para que no ocupe. Pero si el fixture solo contiene lo que el filtro debe aceptar, el filtro no se está probando: uno roto que dejara pasar el boletín entero daría exactamente el mismo resultado, y los tests seguirían en verde.
+
+Ahora los fixtures traen secciones que deben quedar fuera, y hay un test que neutraliza el filtro y comprueba que sin él salen más registros. Si esa diferencia desaparece, algo se rompió.
+
+Es una lección barata de contar y cara de aprender: **un test que pasa igual con el código roto no es un test.**
+
 ## Los plazos, o por qué guardamos la frase literal
 
 De todo el proyecto, la parte con más trampa es calcular hasta cuándo puedes presentar la solicitud.
@@ -115,4 +139,4 @@ Tres cosas, si vas a montar algo parecido:
 
 **Marca lo que no sabes con certeza.** Es más barato que fingir precisión, y mucho más fácil de defender cuando alguien te pregunta de dónde sale un dato.
 
-El código es AGPL-3.0 y está [en GitHub](https://github.com/opoalerta/opoalerta). Si quieres añadir el boletín de tu comunidad, [hay una guía paso a paso](https://github.com/opoalerta/opoalerta/blob/main/docs/guia-nueva-ccaa.md): son las tres funciones de arriba y un fichero de tests con un fixture. Faltan Cataluña, País Vasco, Murcia, Navarra, Cantabria y La Rioja.
+El código es AGPL-3.0 y está [en GitHub](https://github.com/opoalerta/opoalerta). Si quieres añadir el boletín de tu comunidad, [hay una guía paso a paso](https://github.com/opoalerta/opoalerta/blob/main/docs/guia-nueva-ccaa.md): son las tres funciones de arriba y un fichero de tests con un fixture que —esto ya lo hemos aprendido— traiga también las secciones que hay que descartar. Faltan Cataluña, País Vasco, Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla.

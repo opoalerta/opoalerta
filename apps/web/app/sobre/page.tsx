@@ -41,7 +41,12 @@ const FAQ = [
   {
     question: "¿Modificáis el texto de las convocatorias?",
     answer:
-      "No. El título y el organismo se guardan tal y como los publica el boletín. Lo único que se añade es clasificación: ámbito, comunidad autónoma, tipo de acceso y, cuando el documento lo dice explícitamente, el plazo de presentación.",
+      "Prácticamente no. El título se guarda tal y como lo publica el boletín; la única excepción son los boletines que anteponen un guion decorativo, que se quita. El organismo también es el del boletín, salvo cuando el sumario no lo trae y hay que deducirlo del propio título. Lo que sí se añade es clasificación: ámbito, comunidad autónoma, tipo de acceso y, cuando el documento lo dice explícitamente, el plazo de presentación.",
+  },
+  {
+    question: "¿Es fiable el filtro de ámbito?",
+    answer:
+      "Hoy no del todo, y preferimos decirlo. El ámbito se asigna según dónde se publicó la convocatoria, no según quién convoca, y el BOE publica muchos procesos selectivos de ayuntamientos que constan como estatales. Si buscas plazas de administración local, no te fíes solo del filtro «Local»: busca también por el nombre del municipio. Está abierto como incidencia y es de lo próximo que se arregla.",
   },
   {
     question: "¿Cómo recibo avisos de convocatorias nuevas?",
@@ -194,10 +199,25 @@ export default async function Sobre() {
         <h2 className="mb-3 text-2xl font-bold text-navy">Cómo se tratan</h2>
         <div className="prose max-w-3xl text-ink">
           <p>
-            El título y el organismo se guardan literalmente como los publica el boletín. Lo
-            que se añade es clasificación —ámbito, comunidad autónoma y tipo de acceso— y, un
-            paso aparte, el plazo de presentación cuando el documento lo indica de forma
+            De cada boletín se toma solo su sección de oposiciones, porque en el mismo
+            documento conviven subvenciones, expedientes ambientales y licitaciones que no
+            son ofertas de empleo. El título se guarda como lo publica el boletín, y el
+            organismo también salvo cuando el sumario no lo trae y hay que deducirlo del
+            título.
+          </p>
+          <p>
+            Lo que se añade es clasificación —ámbito, comunidad autónoma y tipo de acceso— y,
+            un paso aparte, el plazo de presentación cuando el documento lo indica de forma
             explícita. Si no lo dice, el campo se queda vacío en lugar de estimarlo.
+          </p>
+          <p>
+            El ámbito es hoy la clasificación menos fiable: se asigna según dónde se publicó
+            la convocatoria y no según quién la convoca, así que los procesos selectivos de
+            ayuntamientos publicados en el BOE constan como estatales. Está{" "}
+            <a href="https://github.com/opoalerta/opoalerta/issues/94">
+              abierto como incidencia
+            </a>
+            .
           </p>
           <p>
             Todo el proceso está en el repositorio y cualquiera puede revisarlo o replicarlo.

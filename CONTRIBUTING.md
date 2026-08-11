@@ -44,11 +44,13 @@ Abre una issue con la plantilla correspondiente (bug, scraper roto, nueva fuente
 
 ## La tarea estrella: añade tu comunidad autónoma
 
-Hay 19 boletines oficiales (17 CCAA + Ceuta y Melilla). Cada uno que falta es una contribución perfecta para empezar. Sigue [docs/guia-nueva-ccaa.md](docs/guia-nueva-ccaa.md). Checklist resumido:
+Hay 19 boletines oficiales (17 CCAA + Ceuta y Melilla) y ya funcionan 11 comunidades. Faltan Cataluña, País Vasco, Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla: cada uno es una contribución perfecta para empezar. Sigue [docs/guia-nueva-ccaa.md](docs/guia-nueva-ccaa.md). Checklist resumido:
 
 - [ ] Crea `scrapers/<boletin>.py` heredando de `BaseScraper`.
 - [ ] Implementa `fetch()`, `parse()` y `normalize()`; cada convocatoria debe validar contra `packages/normalizer/convocatoria.schema.json`.
+- [ ] **Quédate solo con la sección de oposiciones** del boletín, y comprueba que el parámetro de sección filtra de verdad: alguno los acepta y los ignora.
 - [ ] Guarda una respuesta real como fixture en `scrapers/tests/fixtures/` y escribe un test que parsee esa fixture **sin acceder a la red**.
+- [ ] **La fixture tiene que traer también secciones que no son la buena.** Si solo lleva la de oposiciones, un filtro roto da el mismo resultado que uno sano y ningún test se entera. Añade un test que compruebe que el filtro descarta algo.
 - [ ] Documenta la fuente y su licencia (la mostraremos junto a cada convocatoria).
 - [ ] Añade tu boletín a la matriz del workflow de ingesta.
 - [ ] `pytest` y `ruff check .` en verde.
@@ -62,7 +64,7 @@ Hay 19 boletines oficiales (17 CCAA + Ceuta y Melilla). Cada uno que falta es un
 
 ## Estándares
 
-- **Tests obligatorios** para todo scraper (offline, con fixture).
+- **Tests obligatorios** para todo scraper (offline, con fixture que incluya secciones descartadas).
 - **[Conventional Commits](https://www.conventionalcommits.org/es/)**: `feat(boja): añade scraper de Andalucía`, `fix(boe): ...`.
 - **Scraping respetuoso**: usa APIs/datos abiertos oficiales cuando existan, respeta rate limits, identifícate con un User-Agent claro, cita siempre la fuente.
 - Todo PR pasa CI (`ruff` + `pytest` + `pnpm lint` + `pnpm build`) y requiere revisión de al menos un mantenedor.
