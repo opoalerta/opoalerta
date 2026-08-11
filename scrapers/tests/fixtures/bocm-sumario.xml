@@ -5,7 +5,7 @@
     <publicacion>BOCM</publicacion>
     <identificador>BOCM-20260810</identificador>
     <numero>189</numero>
-    <fecha_publicacion>2026/08/09</fecha_publicacion>
+    <fecha_publicacion>2026/08/10</fecha_publicacion>
   </metadatos>
   <diario numero="189">
     <secciones>
@@ -90,17 +90,6 @@
         <apartado nombre="">
           <organismo nombre="MADRID">
             <disposicion>
-              <identificador>BOCM-20260810-32</identificador>
-              <titulo>– Madrid. Organización y funcionamiento. Área de Gobierno de Vicealcaldía, Portavoz, Seguridad y Emergencias. Reglamento</titulo>
-              <url_html>https://www.bocm.es/bocm-20260810-32</url_html>
-            </disposicion>
-          </organismo>
-        </apartado>
-      </seccion>
-      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
-        <apartado nombre="">
-          <organismo nombre="MADRID">
-            <disposicion>
               <identificador>BOCM-20260810-33</identificador>
               <titulo>– Madrid. Urbanismo. Área de Gobierno de Obras y Equipamientos. Proyecto urbanización</titulo>
               <url_html>https://www.bocm.es/bocm-20260810-33</url_html>
@@ -110,11 +99,55 @@
       </seccion>
       <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
         <apartado nombre="">
-          <organismo nombre="MADRID">
+          <organismo nombre="AJALVIR">
             <disposicion>
-              <identificador>BOCM-20260810-34</identificador>
-              <titulo>– Madrid. Otros anuncios. Área de Gobierno de Urbanismo, Medio Ambiente y Movilidad. Concesión subvenciones</titulo>
-              <url_html>https://www.bocm.es/bocm-20260810-34</url_html>
+              <identificador>BOCM-20260810-35</identificador>
+              <titulo>– Ajalvir. Régimen económico. Ordenanza fiscal</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-35</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="ALCORCÓN">
+            <disposicion>
+              <identificador>BOCM-20260810-36</identificador>
+              <titulo>– Alcorcón. Personal. Plantilla personal</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-36</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="MÓSTOLES">
+            <disposicion>
+              <identificador>BOCM-20260810-50</identificador>
+              <titulo>– Móstoles. Ofertas de empleo. Convocatoria proceso selectivo</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-50</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="SAN SEBASTIÁN DE LOS REYES">
+            <disposicion>
+              <identificador>BOCM-20260810-54</identificador>
+              <titulo>– San Sebastián de los Reyes. Ofertas de empleo. Proceso selectivo</titulo>
+              <url_html>https://www.bocm.es/bocm-20260810-54</url_html>
+            </disposicion>
+          </organismo>
+        </apartado>
+      </seccion>
+      <seccion nombre="III. ADMINISTRACIÓN LOCAL AYUNTAMIENTOS">
+        <apartado nombre="">
+          <organismo nombre="COSLADA">
+            <disposicion>
+              <identificador>BOCM-20260807-53</identificador>
+              <titulo>– Coslada. Régimen económico. Convocatoria proceso selectivo</titulo>
+              <url_html>https://www.bocm.es/bocm-20260807-53</url_html>
             </disposicion>
           </organismo>
         </apartado>
