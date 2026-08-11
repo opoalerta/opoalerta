@@ -1,6 +1,6 @@
 # ADR 0001 — Stack tecnológico y hosting
 
-- **Estado:** aceptado
+- **Estado:** aceptado, con una enmienda (ver «Actualizaciones»)
 - **Fecha:** 2026-07-25
 
 ## Contexto
@@ -36,3 +36,16 @@ todo con coste próximo a cero y sin infraestructura propia.
 - Dos lenguajes en el repo (Python + TypeScript); se asume por accesibilidad.
 - La integración git de Vercel Hobby con repos de organización puede requerir plan
   Pro; si ocurre, se despliega vía CLI con un `VERCEL_TOKEN` desde GitHub Actions.
+
+## Actualizaciones
+
+**2026-08-11 — Postgres en Neon, no en Supabase.** La auth integrada de Supabase, que
+era medio motivo de la elección, no se acabó usando: las alertas van por email y
+Telegram con doble confirmación propia, sin cuentas de usuario. Sin esa pieza, Neon
+salía mejor por el driver serverless (`@neondatabase/serverless`), que evita el problema
+de pool de conexiones desde funciones de Vercel.
+
+La decisión de fondo —**Postgres estándar para no quedar atados al proveedor**— es
+justo lo que hizo que el cambio fuera indoloro: el esquema de `data/schema/` no se
+tocó. El ADR se deja como estaba porque un ADR registra lo que se decidió entonces, no
+lo que hay hoy.

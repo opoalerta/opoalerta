@@ -130,24 +130,40 @@ apps/web/content/     Contenido estático del blog (Markdown + frontmatter)
 scrapers/             Python: un módulo por boletín + interfaz común + tests
 packages/normalizer/  Esquema común de convocatoria (JSON Schema)
 data/schema/          Esquema de base de datos (SQL, migraciones incrementales)
+data/purgas/          Correcciones puntuales de datos ya guardados (SQL, una sola vez)
 docs/                 Arquitectura, guía para añadir una CCAA, ADRs, diseño
 ```
 
+`data/schema/` y `data/purgas/` no son lo mismo y no se ejecutan igual. El esquema se
+reaplica entero en cada `db-migrate.yml`, así que tiene que ser idempotente. Una purga
+arregla datos concretos que ya están en la tabla, se corre una vez con
+`purga-manual.yml` —que por defecto hace un ensayo con `ROLLBACK`— y se queda en el
+repo como registro de qué se borró y por qué.
+
 ## Roadmap
 
-**Fuentes activas (6):** BOE · BOJA (Andalucía) · BOCM (Madrid) · BOCYL (Castilla y León) ·
-BOA (Aragón) · BOIB (Illes Balears).
+**Fuentes activas (13):** BOE · BOA (Aragón) · BOC (Canarias) · BOCM (Madrid) ·
+BOCYL (Castilla y León) · BOIB (Illes Balears) · BOJA (Andalucía) · BOPA (Asturias) ·
+DOCM (Castilla-La Mancha) · DOE (Extremadura) · DOG (Galicia) · DOGV (C. Valenciana) ·
+EPSO (Unión Europea).
+
+El estado en vivo de cada una —última ejecución, si su scraper está roto— está en
+[`/estado`](https://opoalerta.es/estado), que lo lee de la base de datos. Esta lista es
+la de la matriz de [`ingest.yml`](.github/workflows/ingest.yml).
 
 - [x] **Fase 0** — Fundación: licencias, CI, esquema común, scraper BOE.
 - [x] **Fase 1** — MVP: buscador con filtros, alertas por email, `/estado`, dominio.
 - [x] Alertas por **Telegram** (bot [@opoalertbot](https://t.me/opoalertbot)).
 - [x] **RSS** y **volcado mensual** de datos abiertos.
-- [ ] **Fase 2 — Cobertura nacional** (en curso): completar los 19 boletines autonómicos.
-  - [ ] Galicia (DOG) · Asturias (BOPA) · Cantabria (BOC) · País Vasco (BOPV)
-  - [ ] Navarra (BON) · La Rioja (BOR) · Murcia (BORM) · C. Valenciana (DOGV)
-  - [ ] Castilla-La Mancha (DOCM) · Extremadura (DOE) · Canarias (BOC) · Cataluña (DOGC)
-  - [ ] Ceuta y Melilla
-- [ ] Extracción de **fecha de fin de plazo** y vista de «plazos abiertos / próximos a cerrar».
+- [x] Extracción de **fecha de fin de plazo** (`scrapers/enriquecer.py`, en la ingesta diaria).
+- [ ] **Fase 2 — Cobertura nacional** (en curso): 11 de 17 comunidades + Ceuta y Melilla.
+  - [x] Andalucía (BOJA) · Aragón (BOA) · Asturias (BOPA) · Canarias (BOC)
+  - [x] Castilla-La Mancha (DOCM) · Castilla y León (BOCYL) · C. Valenciana (DOGV)
+  - [x] Extremadura (DOE) · Galicia (DOG) · Illes Balears (BOIB) · Madrid (BOCM)
+  - [ ] Cataluña (DOGC) · País Vasco (BOPV) · Murcia (BORM) · Navarra (BON)
+  - [ ] Cantabria (BOC Cantabria) · La Rioja (BOR) · Ceuta y Melilla
+- [ ] Ámbito según **quién convoca** y no según dónde se publicó
+  ([#94](https://github.com/opoalerta/opoalerta/issues/94)).
 - [ ] **Fase 3** — Universidades y diputaciones, histórico y estadísticas, API pública documentada.
 
 Detalle en [ROADMAP.md](ROADMAP.md).
