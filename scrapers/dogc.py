@@ -54,6 +54,7 @@ from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from common.base import BaseScraper
+from common.http import contexto_tls_legacy
 from common.http import post as http_post
 from common.runner import execute
 
@@ -134,7 +135,9 @@ _NUM_DOGC_RE = re.compile(r"numDOGC=(\d+)")
 
 
 def _api(endpoint: str, data: dict[str, str]) -> dict[str, Any]:
-    return http_post(f"{API}/{endpoint}", data=data, headers=HEADERS).json()
+    return http_post(
+        f"{API}/{endpoint}", data=data, headers=HEADERS, verify=contexto_tls_legacy()
+    ).json()
 
 
 def _calendario(mes: int, anio: int) -> dict[date, str]:
