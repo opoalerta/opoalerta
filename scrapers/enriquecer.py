@@ -3,7 +3,8 @@
 Los sumarios no traen el plazo de presentación; está en el cuerpo de cada
 disposición. Este pase, desacoplado de los scrapers, recorre las convocatorias
 sin plazo revisado, baja el texto de su `url_oficial`, extrae la frase del plazo
-(common.plazo) y actualiza:
+(common.plazo) y actualiza. El DOGC es la excepción: su página no trae el texto,
+así que va por su API (`_descargar_dogc`). Actualiza:
 
   - `plazo_texto`      -> la frase literal (siempre que se encuentre).
   - `fecha_fin_plazo`  -> solo si el plazo es en días naturales (exacto).
@@ -54,8 +55,39 @@ UPDATE_SQL = """
 """
 
 
-def _descargar_texto(url: str) -> str:
+#: El documento del DOGC lo pinta jQuery: su `url_oficial` sirve el mismo armazón
+#: de 31 KB para cualquier disposición, sin una línea del texto. El cuerpo está
+#: detrás de la misma API REST que usa el scraper.
+DOGC_API = "https://portaldogc.gencat.cat/eadop-rest/api/dogc/documentDOGC"
+DOGC_DOCUMENT_ID_RE = re.compile(r"documentId=(\d+)")
+
+
+def _texto_plano(fragmento: str) -> str:
+    return html.unescape(re.sub(r"<[^>]+>", " ", fragmento))
+
+
+def _descargar_dogc(url: str) -> str:
+    m = DOGC_DOCUMENT_ID_RE.search(url)
+    if not m:
+        return ""
+    resp = httpx.post(
+        DOGC_API,
+        data={"documentId": m.group(1), "language": "es"},
+        headers={
+            "User-Agent": BROWSER_UA,
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Referer": "https://dogc.gencat.cat/es/document-del-dogc/",
+        },
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return _texto_plano(resp.json().get("textDocument") or "")
+
+
+def _descargar_texto(url: str, fuente: str | None = None) -> str:
     """Devuelve el texto plano de la disposición. '' si es PDF o no es HTML."""
+    if fuente == "dogc":
+        return _descargar_dogc(url)
     resp = httpx.get(
         url,
         headers={"User-Agent": BROWSER_UA, "Accept": "text/html,application/xhtml+xml"},
@@ -66,7 +98,7 @@ def _descargar_texto(url: str) -> str:
     ctype = resp.headers.get("content-type", "").lower()
     if "pdf" in ctype or url.lower().endswith(".pdf"):
         return ""  # de momento no extraemos plazos de PDF
-    return html.unescape(re.sub(r"<[^>]+>", " ", resp.text))
+    return _texto_plano(resp.text)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -105,7 +137,7 @@ def main(argv: list[str] | None = None) -> int:
 
         for f in filas:
             try:
-                texto = _descargar_texto(f["url_oficial"])
+                texto = _descargar_texto(f["url_oficial"], f["fuente_codigo"])
             except Exception as exc:  # noqa: BLE001 — fallo de red: reintentar otro día
                 print(f"  skip {f['id']}: {type(exc).__name__}", file=sys.stderr)
                 continue

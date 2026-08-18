@@ -142,10 +142,10 @@ repo como registro de qué se borró y por qué.
 
 ## Roadmap
 
-**Fuentes activas (13):** BOE · BOA (Aragón) · BOC (Canarias) · BOCM (Madrid) ·
+**Fuentes activas (14):** BOE · BOA (Aragón) · BOC (Canarias) · BOCM (Madrid) ·
 BOCYL (Castilla y León) · BOIB (Illes Balears) · BOJA (Andalucía) · BOPA (Asturias) ·
-DOCM (Castilla-La Mancha) · DOE (Extremadura) · DOG (Galicia) · DOGV (C. Valenciana) ·
-EPSO (Unión Europea).
+DOCM (Castilla-La Mancha) · DOE (Extremadura) · DOG (Galicia) · DOGC (Cataluña) ·
+DOGV (C. Valenciana) · EPSO (Unión Europea).
 
 El estado en vivo de cada una —última ejecución, si su scraper está roto— está en
 [`/estado`](https://opoalerta.es/estado), que lo lee de la base de datos. Esta lista es
@@ -156,11 +156,12 @@ la de la matriz de [`ingest.yml`](.github/workflows/ingest.yml).
 - [x] Alertas por **Telegram** (bot [@opoalertbot](https://t.me/opoalertbot)).
 - [x] **RSS** y **volcado mensual** de datos abiertos.
 - [x] Extracción de **fecha de fin de plazo** (`scrapers/enriquecer.py`, en la ingesta diaria).
-- [ ] **Fase 2 — Cobertura nacional** (en curso): 11 de 17 comunidades + Ceuta y Melilla.
+- [ ] **Fase 2 — Cobertura nacional** (en curso): 12 de 17 comunidades + Ceuta y Melilla.
   - [x] Andalucía (BOJA) · Aragón (BOA) · Asturias (BOPA) · Canarias (BOC)
-  - [x] Castilla-La Mancha (DOCM) · Castilla y León (BOCYL) · C. Valenciana (DOGV)
-  - [x] Extremadura (DOE) · Galicia (DOG) · Illes Balears (BOIB) · Madrid (BOCM)
-  - [ ] Cataluña (DOGC) · País Vasco (BOPV) · Murcia (BORM) · Navarra (BON)
+  - [x] Castilla-La Mancha (DOCM) · Castilla y León (BOCYL) · Cataluña (DOGC)
+  - [x] C. Valenciana (DOGV) · Extremadura (DOE) · Galicia (DOG)
+  - [x] Illes Balears (BOIB) · Madrid (BOCM)
+  - [ ] País Vasco (BOPV) · Murcia (BORM) · Navarra (BON)
   - [ ] Cantabria (BOC Cantabria) · La Rioja (BOR) · Ceuta y Melilla
 - [ ] Ámbito según **quién convoca** y no según dónde se publicó
   ([#94](https://github.com/opoalerta/opoalerta/issues/94)).
