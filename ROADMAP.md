@@ -23,10 +23,10 @@
 
 ## Fase 2 — Cobertura nacional 🚧 (en curso)
 
-- **13 fuentes activas**: BOE, EPSO y once boletines autonómicos (Andalucía, Aragón,
-  Asturias, Canarias, Castilla-La Mancha, Castilla y León, C. Valenciana, Extremadura,
-  Galicia, Illes Balears, Madrid).
-- Faltan: Cataluña, País Vasco, Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla
+- **14 fuentes activas**: BOE, EPSO y doce boletines autonómicos (Andalucía, Aragón,
+  Asturias, Canarias, Castilla-La Mancha, Castilla y León, Cataluña, C. Valenciana,
+  Extremadura, Galicia, Illes Balears, Madrid).
+- Faltan: País Vasco, Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla
   (vía contribuciones de la comunidad).
 - Boletines provinciales.
 - ✅ Alertas por Telegram.

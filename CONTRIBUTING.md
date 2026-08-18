@@ -44,7 +44,7 @@ Abre una issue con la plantilla correspondiente (bug, scraper roto, nueva fuente
 
 ## La tarea estrella: añade tu comunidad autónoma
 
-Hay 19 boletines oficiales (17 CCAA + Ceuta y Melilla) y ya funcionan 11 comunidades. Faltan Cataluña, País Vasco, Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla: cada uno es una contribución perfecta para empezar. Sigue [docs/guia-nueva-ccaa.md](docs/guia-nueva-ccaa.md). Checklist resumido:
+Hay 19 boletines oficiales (17 CCAA + Ceuta y Melilla) y ya funcionan 12 comunidades. Faltan País Vasco, Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla: cada uno es una contribución perfecta para empezar. Sigue [docs/guia-nueva-ccaa.md](docs/guia-nueva-ccaa.md). Checklist resumido:
 
 - [ ] Crea `scrapers/<boletin>.py` heredando de `BaseScraper`.
 - [ ] Implementa `fetch()`, `parse()` y `normalize()`; cada convocatoria debe validar contra `packages/normalizer/convocatoria.schema.json`.

@@ -38,3 +38,35 @@ def get(
             if intento < retries - 1:
                 time.sleep(backoff * (intento + 1))
     raise last  # type: ignore[misc]
+
+
+def post(
+    url: str,
+    *,
+    data: dict[str, str] | None = None,
+    headers: dict[str, str] | None = None,
+    timeout: float = DEFAULT_TIMEOUT,
+    retries: int = 3,
+    backoff: float = 3.0,
+) -> httpx.Response:
+    """POST de formulario con reintentos. Mismo contrato que ``get``.
+
+    Lo pide el DOGC, cuya API sólo responde a POST con `application/x-www-form-urlencoded`.
+    """
+    merged = {"User-Agent": USER_AGENT}
+    if headers:
+        merged.update(headers)
+
+    last: Exception | None = None
+    for intento in range(retries):
+        try:
+            resp = httpx.post(
+                url, data=data, headers=merged, timeout=timeout, follow_redirects=True
+            )
+            resp.raise_for_status()
+            return resp
+        except httpx.TransportError as exc:  # timeouts y errores de red
+            last = exc
+            if intento < retries - 1:
+                time.sleep(backoff * (intento + 1))
+    raise last  # type: ignore[misc]
