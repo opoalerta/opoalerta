@@ -29,6 +29,7 @@ import sys
 
 import httpx
 
+from common.http import contexto_tls_legacy
 from common.plazo import calcular_fin, extraer_plazo
 
 BROWSER_UA = (
@@ -79,6 +80,9 @@ def _descargar_dogc(url: str) -> str:
             "Referer": "https://dogc.gencat.cat/es/document-del-dogc/",
         },
         timeout=30,
+        # El host del DOGC solo acepta una suite que OpenSSL no ofrece a partir
+        # del nivel de seguridad 2, el de los runners. Ver common.http.
+        verify=contexto_tls_legacy(),
     )
     resp.raise_for_status()
     return _texto_plano(resp.json().get("textDocument") or "")

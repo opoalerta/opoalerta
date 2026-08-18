@@ -1,5 +1,7 @@
 """Tests del helper HTTP con reintentos (sin red: se mockea httpx.get)."""
 
+import ssl
+
 import httpx
 import pytest
 
@@ -44,3 +46,23 @@ def test_pasa_user_agent_por_defecto(monkeypatch):
     monkeypatch.setattr(http.httpx, "get", fake_get)
     http.get("https://example.org")
     assert "OpoAlerta" in capturado.get("User-Agent", "")
+
+
+def test_contexto_tls_legacy_ofrece_la_suite_del_dogc():
+    """El contexto tiene que ofrecer `AES256-SHA`, la única que acepta el DOGC.
+
+    Es la comprobación que faltaba: en local (nivel de seguridad 1) esa suite
+    está en `DEFAULT` de todas formas, así que el scraper funcionaba, y en los
+    runners de Ubuntu 24.04 (nivel 2) OpenSSL no la ofrecía y el servidor cortaba
+    el saludo con `SSLV3_ALERT_HANDSHAKE_FAILURE`. Este test falla en el entorno
+    donde falló la ingesta, que es donde tiene que fallar.
+    """
+    ctx = http.contexto_tls_legacy()
+    assert "AES256-SHA" in {c["name"] for c in ctx.get_ciphers()}
+
+
+def test_contexto_tls_legacy_sigue_verificando_el_certificado():
+    """Bajar el nivel es solo para el cifrado: la verificación no se toca."""
+    ctx = http.contexto_tls_legacy()
+    assert ctx.check_hostname is True
+    assert ctx.verify_mode == ssl.CERT_REQUIRED
