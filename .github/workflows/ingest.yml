@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        fuente: [boe, boja, bocm, bocyl, boa, boib, epso, dog, boc, docm, doe, dogv, bopa, dogc]
+        fuente: [boe, boja, bocm, bocyl, boa, boib, epso, dog, boc, docm, doe, dogv, bopa, dogc, cido]
     runs-on: ubuntu-latest
     defaults:
       run:

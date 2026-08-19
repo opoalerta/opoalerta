@@ -1,0 +1,1819 @@
+[
+ {
+  "data": [
+   {
+    "id": "22083069",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Universitat Oberta de Catalunya (UOC)",
+     "latitud": 41.414853,
+     "longitud": 2.1334736,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.414853%202.1334736",
+     "idAmbit": 93,
+     "ambit": "Altres entitats públiques",
+     "titol": "1 plaça de Tècnic de Màrqueting (SEO/GEO Specialist)",
+     "borsaTreball": false,
+     "identificador": "20260805O61",
+     "expedient": null,
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-09-04",
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 2,
+     "sistemaSeleccio": "Concurs o valoració de mèrits",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": 1,
+     "grupTitulacio": "A1 - Grau universitari (correspondència amb llicenciatures)",
+     "titulacioRequerida": "Titulació universitària a nivell de grau, llicenciatura o equivalent, en Màrqueting, Publicitat, Comunicació, Multimèdia o similar",
+     "altresRequisits": null,
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://tauler.seu-e.cat/api/rss?ens=18",
+     "accesTramit": "https://selection.uoc.edu/web/profile/login.aspx",
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22083069",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260805O61",
+     "maxDataPublicacioDocument": "2026-08-05"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22043961",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083069/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22088151",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Fundació Hospital Universitari Vall d'Hebron - Institut de Recerca (HUVH IR)",
+     "latitud": 41.4267283,
+     "longitud": 2.1414058,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.4267283%202.1414058",
+     "idAmbit": 93,
+     "ambit": "Altres entitats públiques",
+     "titol": "1 plaça de Pre-Award Scientific Project Manager",
+     "borsaTreball": false,
+     "identificador": "20260811O25",
+     "expedient": null,
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-09-06",
+     "horaFinalitzacio": null,
+     "observacionsTermini": "Data orientativa; si teniu algun dubte, consulteu l'ens convocant",
+     "idSistemaSeleccio": 2,
+     "sistemaSeleccio": "Concurs o valoració de mèrits",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": 7,
+     "grupTitulacio": "A - Grau universitari",
+     "titulacioRequerida": "Grau en Ciències Biomèdiques o disciplines relacionades",
+     "altresRequisits": "Català i castellà",
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://vhir.vallhebron.com/ca/talent/ofertes-de-feina",
+     "accesTramit": "https://jobs.vhir.org/jobs/internal/5a9a9cda-63ba-4669-b3da-829f9d647ee7",
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22088151",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260811O25",
+     "maxDataPublicacioDocument": "2026-08-11"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22064840",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088151/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22086012",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Ajuntament de les Borges Blanques",
+     "latitud": 41.5206087,
+     "longitud": 0.8689949,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.5206087%200.8689949",
+     "idAmbit": 7,
+     "ambit": "Municipis província de Lleida i ens adscrits",
+     "titol": "1 plaça de Personal de suport (campanya agrària 2026)",
+     "borsaTreball": true,
+     "identificador": "20260817O23",
+     "expedient": null,
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-08-27",
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 2,
+     "sistemaSeleccio": "Concurs o valoració de mèrits",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": 5,
+     "grupTitulacio": "Agrupacions professionals",
+     "titulacioRequerida": "Sense requisits de titulació",
+     "altresRequisits": "Permís de conduir B",
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://www.lesborgesblanques.cat/ajuntament/oferta_de_treball",
+     "accesTramit": null,
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22086012",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260817O23",
+     "maxDataPublicacioDocument": "2026-08-17"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22085155",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22086012/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22071800",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Ministerio de Transportes y Movilidad Sostenible - Autoridad Portuaria de Tarragona",
+     "latitud": 41.108460592691,
+     "longitud": 1.2502018,
+     "urlGoogleMaps": "http://maps.google.esc/?q=41.108460592691,1.2502018",
+     "idAmbit": 10,
+     "ambit": "Cossos de l'Administració de l'Estat",
+     "titol": "1 plaça de Responsable de comunicació i imatge (arxiu)",
+     "borsaTreball": true,
+     "identificador": "20260731O142",
+     "expedient": "2026_06",
+     "anyOpo": 2025,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-09-30",
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 4,
+     "sistemaSeleccio": "Concurs oposició o valoració de mèrits i prova",
+     "idTipusPersonal": 10,
+     "tipusPersonal": "Laboral",
+     "idGrupTitulacio": 7,
+     "grupTitulacio": "A - Grau universitari",
+     "titulacioRequerida": "Estar en possessió d'una titulació universitària (Grau, diplomatura) o equivalents",
+     "altresRequisits": "Nivell C1 de català",
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://www.porttarragona.cat/ca/treballa-amb-nosaltres",
+     "accesTramit": null,
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22071800",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260731O142",
+     "maxDataPublicacioDocument": "2026-07-31"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22028215",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22071800/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22085177",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Diputació de Tarragona",
+     "latitud": 41.1185228,
+     "longitud": 1.2609588,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.1185228%201.2609588",
+     "idAmbit": 72,
+     "ambit": "Diputacions i els seus ens adscrits",
+     "titol": "1 plaça de Professor llenguatge musical a l'Escola i Conservatori de Música de Tortosa",
+     "borsaTreball": true,
+     "identificador": "20231214O215",
+     "expedient": "23-068",
+     "anyOpo": 2023,
+     "dataInici": null,
+     "dataFinalitzacio": null,
+     "horaFinalitzacio": null,
+     "observacionsTermini": "El termini s'obrirà l'endemà de la publicació de la convocatòria al DOGC i serà de 20 dies hàbils",
+     "idSistemaSeleccio": 4,
+     "sistemaSeleccio": "Concurs oposició o valoració de mèrits i prova",
+     "idTipusPersonal": 10,
+     "tipusPersonal": "Laboral",
+     "idGrupTitulacio": 1,
+     "grupTitulacio": "A1 - Grau universitari (correspondència amb llicenciatures)",
+     "titulacioRequerida": "Títol superior de música",
+     "altresRequisits": "Nivell C1 de català",
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": "Taxa específica / Plaça: L103072 / Jornada: temps parcial",
+     "urlWeb": "https://www.dipta.cat/convocatories",
+     "accesTramit": null,
+     "idEstat": 2,
+     "estat": "Pendent de termini",
+     "urlCido": "https://cido.diba.cat/oposicions/22085177",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20231214O215",
+     "maxDataPublicacioDocument": "2026-08-18"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22084566",
+        "type": "oposicions-documents"
+       },
+       {
+        "id": "22085185",
+        "type": "oposicions-documents"
+       },
+       {
+        "id": "22085186",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22085177/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22082735",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Consell Comarcal d'Osona - Onaigua, EPEL",
+     "latitud": 41.9276873,
+     "longitud": 2.2470653,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.9276873%202.2470653",
+     "idAmbit": 71,
+     "ambit": "Consells comarcals i els seus ens adscrits",
+     "titol": "Borsa de treball de places d'Operari de manteniment d'instal·lacions",
+     "borsaTreball": true,
+     "identificador": "20260817O4",
+     "expedient": null,
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-09-06",
+     "horaFinalitzacio": null,
+     "observacionsTermini": "Data orientativa; si teniu algun dubte, consulteu l'ens convocant",
+     "idSistemaSeleccio": 4,
+     "sistemaSeleccio": "Concurs oposició o valoració de mèrits i prova",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": 4,
+     "grupTitulacio": "C2 - ESO, graduat escolar, FP 1r grau, cicles formatius grau mitjà",
+     "titulacioRequerida": "Títol d'EGB o ESO",
+     "altresRequisits": "Nivell B2 de català / Permís de conduir B",
+     "numPlaces": 0,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://tauler.seu-e.cat/inici?idEns=8102494017",
+     "accesTramit": "https://seu-e.cat/ca/web/onaigua-epel/tramits-i-gestions",
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22082735",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260817O4",
+     "maxDataPublicacioDocument": "2026-08-17"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22080901",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082735/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22084962",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Ajuntament de Vilanova i la Geltrú",
+     "latitud": 41.2240806,
+     "longitud": 1.7259365,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.2240806%201.7259365",
+     "idAmbit": 5,
+     "ambit": "Municipis província de Barcelona i ens adscrits",
+     "titol": "Borsa de treball de places de Professor de l'especialitat de PIDOD i Interactiu a l'Escola Municipal d'Art i Disseny ",
+     "borsaTreball": true,
+     "identificador": "20260818O2",
+     "expedient": "2256/2026/eRH",
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-09-01",
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 4,
+     "sistemaSeleccio": "Concurs oposició o valoració de mèrits i prova",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": 1,
+     "grupTitulacio": "A1 - Grau universitari (correspondència amb llicenciatures)",
+     "titulacioRequerida": "Llicenciatura o Grau en Arquitectura",
+     "altresRequisits": "Nivell C1 de català",
+     "numPlaces": 0,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://seuelectronica.vilanova.cat/borses-treball",
+     "accesTramit": "https://seuelectronica.vilanova.cat/tramits/detall?id=17840",
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22084962",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260818O2",
+     "maxDataPublicacioDocument": "2026-08-18"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22084529",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22084962/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22082580",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Ajuntament de Parets del Vallès",
+     "latitud": 41.5730991,
+     "longitud": 2.2337937,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.5730991%202.2337937",
+     "idAmbit": 5,
+     "ambit": "Municipis província de Barcelona i ens adscrits",
+     "titol": "1 plaça de Gerent",
+     "borsaTreball": false,
+     "identificador": "20260817O2",
+     "expedient": " 709/2026",
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": null,
+     "horaFinalitzacio": null,
+     "observacionsTermini": "El termini s'obrirà l'endemà de la publicació de la convocatòria al DOGC i serà de 20 dies hàbils",
+     "idSistemaSeleccio": 15541162,
+     "sistemaSeleccio": "Lliure designació",
+     "idTipusPersonal": 5,
+     "tipusPersonal": "Funcionari",
+     "idGrupTitulacio": 1,
+     "grupTitulacio": "A1 - Grau universitari (correspondència amb llicenciatures)",
+     "titulacioRequerida": "Titulació de grau universitari, equivalent o superior, necessària per a cobrir un lloc de treball de TAG",
+     "altresRequisits": "Nivell C1 de català",
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": "Segons els requisits de participació, cal ser funcionari de carrera de qualsevol Administració Pública de cossos i escales del Grup A, Subgrup A1, escala d'administració general amb una antiguitat mínima de dos anys (mobilitat interadministrativa)",
+     "urlWeb": "https://paretsdelvalles.eadministracio.cat/board",
+     "accesTramit": null,
+     "idEstat": 2,
+     "estat": "Pendent de termini",
+     "urlCido": "https://cido.diba.cat/oposicions/22082580",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260817O2",
+     "maxDataPublicacioDocument": "2026-08-17"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22080919",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22082580/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22077197",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Ajuntament de Cervera",
+     "latitud": 41.66552,
+     "longitud": 1.27099,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.66552%201.27099",
+     "idAmbit": 7,
+     "ambit": "Municipis província de Lleida i ens adscrits",
+     "titol": "1 plaça d'Agent de la Policia Local",
+     "borsaTreball": false,
+     "identificador": "20260814O8",
+     "expedient": null,
+     "anyOpo": 2026,
+     "dataInici": null,
+     "dataFinalitzacio": null,
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 6,
+     "sistemaSeleccio": "Oposició o prova",
+     "idTipusPersonal": 5,
+     "tipusPersonal": "Funcionari",
+     "idGrupTitulacio": 3,
+     "grupTitulacio": "C1 - Batxillerat, FP 2n grau, cicles formatius grau superior",
+     "titulacioRequerida": null,
+     "altresRequisits": null,
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": null,
+     "accesTramit": null,
+     "idEstat": 1,
+     "estat": "Pendent de convocatòria",
+     "urlCido": "https://cido.diba.cat/oposicions/22077197",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260814O8",
+     "maxDataPublicacioDocument": "2026-08-17"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22075859",
+        "type": "oposicions-documents"
+       },
+       {
+        "id": "22083094",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22083022",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "RENFE",
+     "latitud": 41.3788545,
+     "longitud": 2.1401695,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.3788545%202.1401695",
+     "idAmbit": 93,
+     "ambit": "Altres entitats públiques",
+     "titol": "40 places d'Operador d'Entrada de Manteniment i Fabricació, especialitat manteniment de material rodant ferroviari",
+     "borsaTreball": false,
+     "identificador": "20260805O59",
+     "expedient": "POE26-07/3355",
+     "anyOpo": null,
+     "dataInici": "2026-08-05",
+     "dataFinalitzacio": "2026-09-13",
+     "horaFinalitzacio": null,
+     "observacionsTermini": "Data orientativa; si teniu algun dubte, consulteu l'ens convocant",
+     "idSistemaSeleccio": 4,
+     "sistemaSeleccio": "Concurs oposició o valoració de mèrits i prova",
+     "idTipusPersonal": 10,
+     "tipusPersonal": "Laboral",
+     "idGrupTitulacio": 4,
+     "grupTitulacio": "C2 - ESO, graduat escolar, FP 1r grau, cicles formatius grau mitjà",
+     "titulacioRequerida": "Títol de Formació Professional de Grau Mitjà en Manteniment de Material Rodant Ferroviari",
+     "altresRequisits": null,
+     "numPlaces": 40,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": "Places en diverses províncies de tot el territori estatal",
+     "urlWeb": "https://empleo.renfe.com/search/",
+     "accesTramit": "https://empleo.renfe.com/job/El-Pilar-POE26-073355-Operadora-de-Entrada-de-Mantenimiento-y-Fabricaci%C3%B3n%2C-esp_-Mto_-Material-Rodante-Ferr_-Vari/1368677257/",
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22083022",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260805O59",
+     "maxDataPublicacioDocument": "2026-08-05"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22044229",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22083022/ods"
+      }
+     }
+    }
+   }
+  ],
+  "links": {},
+  "meta": {
+   "totalResourceCount": 10
+  },
+  "included": [
+   {
+    "id": "22043961",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22043961"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-05",
+     "resum": "B---Tècnic/a de Màrqueting (SEO/GEO Specialist) - temporal",
+     "anunciant": ">UOC -- eTauler (AOC)</title><link rel=\"alternate\" href=\"https://tauler.seu-e.cat/api/rss?ens=18\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-17",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": null,
+     "urlPdf": "https://tauler.seu-e.cat/detall?idEns=18&idEdicte=643260",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22043961/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22043961/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22064840",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22064840"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-11",
+     "resum": "R---Pre-Award Scientific Project Manager",
+     "anunciant": "ml\">Vall d&apos;Hebron Institut de Recerca (VHIR) -- Ofertes de treball 1</title><link rel=\"alternate\" href=\"https://vhir.vallhebron.com/ca/talent/ofertes-de-feina\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-19",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": null,
+     "urlPdf": "https://jobs.vhir.org/jobs/internal/5a9a9cda-63ba-4669-b3da-829f9d647ee7",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22064840/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22064840/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22085155",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085155"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-17",
+     "resum": "B---Fer clic aquí per visualitzar el procés. 28 agost",
+     "anunciant": "Borges Blanques (les) -- Ofertes de treball</title><link rel=\"alternate\" href=\"https://www.lesborgesblanques.cat/ajuntament/oferta_de_treball\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-18",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": null,
+     "urlPdf": "https://lesborgesblanques.cat/node/2136",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085155/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085155/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22028215",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22028215"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-07-31",
+     "resum": "B---Proves selectives per a cobrir una plaça de Responsable Comunicació i Imatge (2026_06)",
+     "anunciant": "Autoritat Portuària de Tarragona -- Recursos Humans</title><link rel=\"alternate\" href=\"https://www.porttarragona.cat/ca/autoritat-portuaria-tarragona/organitzacio-rh/treballa-nosaltres\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-13",
+     "idFase": 99,
+     "fase": "Bases específiques. Convocatòria. Temari",
+     "observacionsFase": null,
+     "urlPdf": "https://www.porttarragona.cat/images/00_APT_Treballa_Amb_Nosaltres/2026_Convocatories/2026_06_Responsable_Comunicacio/b_cat_2026_06_rci.pdf",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22028215/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22028215/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22084566",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22084566"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-18",
+     "resum": "Plaça de professor/a de llenguatge musical - Serveis Educatius de l'Escola i Conservatori de Música de Tortosa - Escola i Conservatori de Música de Tortosa de la Diputació de Tarragona (1). Bases i convocatòria. Conv. 23-068",
+     "anunciant": "DIPUTACIÓ TARRAGONA - PERSONES I TALENT",
+     "idButlleti": 26,
+     "butlleti": "BOPT",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-18",
+     "idFase": 99,
+     "fase": "Bases específiques. Convocatòria. Temari",
+     "observacionsFase": null,
+     "urlPdf": "https://www.dipta.cat/bopt/web/anunci/363511",
+     "urlHtml": "https://www.dipta.cat/bopt/web/anunci/363511"
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22084566/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22084566/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22085185",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085185"
+    },
+    "attributes": {
+     "dataPublicacio": "2023-12-21",
+     "resum": "ANUNCI relatiu a l'oferta pública d'ocupació per a l'any 2023 i modificació de diferents ofertes públiques d'ocupació anteriors",
+     "anunciant": "_Administració_local_Diputacions\">Diputacions",
+     "idButlleti": 4,
+     "butlleti": "DOGC",
+     "numButlleti": 9065,
+     "dataEntrada": "2026-08-18",
+     "idFase": 46,
+     "fase": "Anunci de referència",
+     "observacionsFase": null,
+     "urlPdf": "https://portaldogc.gencat.cat/utilsEADOP/AppJava/PdfProviderServlet?documentId=974515&type=01&language=ca_ES",
+     "urlHtml": "https://dogc.gencat.cat/ca/document-del-dogc/?documentId=974515"
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085185/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085185/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22085186",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085186"
+    },
+    "attributes": {
+     "dataPublicacio": "2023-12-14",
+     "resum": "l\">Oferta pública d'ocupació per a l'any 2023 i modificació d'ofertes públiques d'ocupació anteriors.",
+     "anunciant": "\nDIPUTACIÓ DE TARRAGONA - RECURSOS HUMANS, OCUPACIÓ I EMPRENEDORIA ",
+     "idButlleti": 26,
+     "butlleti": "BOPT",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-18",
+     "idFase": 29,
+     "fase": "Oferta pública",
+     "observacionsFase": null,
+     "urlPdf": "https://www.diputaciodetarragona.cat/ebop/index.php?op=dwn&tipus=i&data=20231214&anyp=2023&num=11195&v=i",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085186/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22085186/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22080901",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22080901"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-17",
+     "resum": "Bases i convocatòria del procés selectiu per a la constitució d&apos;una borsa de treball per a operari de manteniment d&apos;instal·lacions de l&apos;empresa Onaigua EPEL",
+     "anunciant": "Consell Comarcal d&apos;Osona. Onaigua, EPEL",
+     "idButlleti": 23,
+     "butlleti": "BOPB",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-17",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": null,
+     "urlPdf": "http://bop.diba.cat/anunci/3976297",
+     "urlHtml": "http://bop.diba.cat/anunci/3976297"
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22080901/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22080901/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22084529",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22084529"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-18",
+     "resum": "Convocatòria d&apos;oferta de treball d&apos;una borsa de professorat, de l&apos;especialitat de PIDOD i Interactiu, de l&apos;Escola Municipal d&apos;Art i Disseny",
+     "anunciant": "Ajuntament de Vilanova i la Geltrú",
+     "idButlleti": 23,
+     "butlleti": "BOPB",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-18",
+     "idFase": 99,
+     "fase": "Bases específiques. Convocatòria. Temari",
+     "observacionsFase": null,
+     "urlPdf": "http://bop.diba.cat/anunci/3984183",
+     "urlHtml": "http://bop.diba.cat/anunci/3984183"
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22084529/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22084529/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22080919",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22080919"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-17",
+     "resum": "Convocatòria i bases reguladores del procés selectiu per a la provisió definitiva del lloc de treball de gerent, pel sistema de lliure designació per mobilitat horitzontal interadministrativa",
+     "anunciant": "Ajuntament de Parets del Vallès",
+     "idButlleti": 23,
+     "butlleti": "BOPB",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-17",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": null,
+     "urlPdf": "http://bop.diba.cat/anunci/3980212",
+     "urlHtml": "http://bop.diba.cat/anunci/3980212"
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22080919/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22080919/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22075859",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075859"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-14",
+     "resum": "Anunci d'aprovaciÃ³ de l'oferta pÃºblica d'ocupaciÃ³ ordinÃ ria parcial de 2026 de la Paeria de Cervera.\n                                    ",
+     "anunciant": "PAERIA DE CERVERA",
+     "idButlleti": 25,
+     "butlleti": "BOPL",
+     "numButlleti": 155,
+     "dataEntrada": "2026-08-14",
+     "idFase": 29,
+     "fase": "Oferta pública",
+     "observacionsFase": null,
+     "urlPdf": "https://ebop.diputaciolleida.cat/aplicacions/bop/bopV1/fitxers/pdf/2026/155/202615506940.pdf",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075859/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075859/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22083094",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22083094"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-17",
+     "resum": "Anunci sobre l'oferta pública d'ocupació ordinària parcial de la Paeria de Cervera per a l'any 2026",
+     "anunciant": "Ajuntaments - Ajuntament de Cervera",
+     "idButlleti": 4,
+     "butlleti": "DOGC",
+     "numButlleti": 9731,
+     "dataEntrada": "2026-08-17",
+     "idFase": 29,
+     "fase": "Oferta pública",
+     "observacionsFase": null,
+     "urlPdf": "https://portaldogc.gencat.cat/utilsEADOP/AppJava/PdfProviderServlet?documentId=1052746&type=01&language=ca_ES",
+     "urlHtml": "https://dogc.gencat.cat/ca/document-del-dogc/?documentId=1052746"
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22083094/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22083094/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22044229",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22044229"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-05",
+     "resum": "B---POE26-07/3355 Operador/a de Entrada de Mantenimiento y Fabricación, esp. Mto. Material Rodante Ferr.  13/9/26",
+     "anunciant": "Renfe -- Ofertes Obertes</title><link rel=\"alternate\" href=\"https://empleo.renfe.com/search/\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-17",
+     "idFase": 99,
+     "fase": "Bases específiques. Convocatòria. Temari",
+     "observacionsFase": null,
+     "urlPdf": "https://empleo.renfe.com/job/El-Pilar-POE26-073355-Operadora-de-Entrada-de-Mantenimiento-y-Fabricaci%C3%B3n%2C-esp_-Mto_-Material-Rodante-Ferr_-Vari/1368677257/",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22044229/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22044229/oposicio"
+      }
+     }
+    }
+   }
+  ]
+ },
+ {
+  "data": [
+   {
+    "id": "22088276",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Consorci Sanitari Integral (CSI)",
+     "latitud": 41.3733477,
+     "longitud": 2.0734141,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.3733477%202.0734141",
+     "idAmbit": 93,
+     "ambit": "Altres entitats públiques",
+     "titol": "1 plaça de Terapeuta Ocupacional Atenció Residencial",
+     "borsaTreball": false,
+     "identificador": "20260812O30",
+     "expedient": null,
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-12-31",
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 2,
+     "sistemaSeleccio": "Concurs o valoració de mèrits",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": 7,
+     "grupTitulacio": "A - Grau universitari",
+     "titulacioRequerida": "Grau o Diplomatura en Teràpia Ocupacional",
+     "altresRequisits": "Nivell C1 de català",
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://www.csi.cat/treballa-amb-nosaltres/ofertes-de-feina/",
+     "accesTramit": null,
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22088276",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260812O30",
+     "maxDataPublicacioDocument": "2026-08-12"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22075953",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22088276/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22077478",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Universitat Politècnica de Catalunya (UPC)",
+     "latitud": 41.3897381,
+     "longitud": 2.1167577,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.3897381%202.1167577",
+     "idAmbit": 93,
+     "ambit": "Altres entitats públiques",
+     "titol": "1 plaça de Tècnic de grau superior de suport a la recerca en electrònica de potència (codi 30269460010)",
+     "borsaTreball": false,
+     "identificador": "20260731O166",
+     "expedient": "001_SP_UCT-2026-5592-286",
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2026-09-01",
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 2,
+     "sistemaSeleccio": "Concurs o valoració de mèrits",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": 1,
+     "grupTitulacio": "A1 - Grau universitari (correspondència amb llicenciatures)",
+     "titulacioRequerida": "Vegeu les bases",
+     "altresRequisits": "Català, castellà i anglès",
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://talenthub.upc.edu/en/jobs/psr/psr-jobs-folder",
+     "accesTramit": "https://seuelectronica.upc.edu/ca/tots-els-tramits/Convocatoria_contractacio_personal_PTGAS_realitzacio_activitats_cientificotecniques",
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22077478",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260731O166",
+     "maxDataPublicacioDocument": "2026-07-31"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22077482",
+        "type": "oposicions-documents"
+       },
+       {
+        "id": "22077483",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077478/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22077197",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Ajuntament de Cervera",
+     "latitud": 41.66552,
+     "longitud": 1.27099,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.66552%201.27099",
+     "idAmbit": 7,
+     "ambit": "Municipis província de Lleida i ens adscrits",
+     "titol": "1 plaça d'Agent de la Policia Local",
+     "borsaTreball": false,
+     "identificador": "20260814O8",
+     "expedient": null,
+     "anyOpo": 2026,
+     "dataInici": null,
+     "dataFinalitzacio": null,
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 6,
+     "sistemaSeleccio": "Oposició o prova",
+     "idTipusPersonal": 5,
+     "tipusPersonal": "Funcionari",
+     "idGrupTitulacio": 3,
+     "grupTitulacio": "C1 - Batxillerat, FP 2n grau, cicles formatius grau superior",
+     "titulacioRequerida": null,
+     "altresRequisits": null,
+     "numPlaces": 1,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": null,
+     "accesTramit": null,
+     "idEstat": 1,
+     "estat": "Pendent de convocatòria",
+     "urlCido": "https://cido.diba.cat/oposicions/22077197",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260814O8",
+     "maxDataPublicacioDocument": "2026-08-17"
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/institucio"
+      }
+     },
+     "documents": {
+      "data": [
+       {
+        "id": "22075859",
+        "type": "oposicions-documents"
+       },
+       {
+        "id": "22083094",
+        "type": "oposicions-documents"
+       }
+      ],
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/documents"
+      }
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22077197/ods"
+      }
+     }
+    }
+   },
+   {
+    "id": "22025969",
+    "type": "oposicions",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969"
+    },
+    "attributes": {
+     "institucioDesenvolupat": "Ajuntament de Vilafranca del Penedès - Institut Municipal de Formació",
+     "latitud": 41.3465297,
+     "longitud": 1.6979477,
+     "urlGoogleMaps": "http://maps.google.es/?q=41.3465297%201.6979477",
+     "idAmbit": 8,
+     "ambit": "Municipis província de Tarragona i ens adscrits",
+     "titol": "Borsa de treball de places de professorat de sommelieria",
+     "borsaTreball": true,
+     "identificador": "20260730O70",
+     "expedient": "BorsaObertaProfessoratSommelleriaIMF2026",
+     "anyOpo": null,
+     "dataInici": null,
+     "dataFinalitzacio": "2027-07-30",
+     "horaFinalitzacio": null,
+     "observacionsTermini": null,
+     "idSistemaSeleccio": 2,
+     "sistemaSeleccio": "Concurs o valoració de mèrits",
+     "idTipusPersonal": 8,
+     "tipusPersonal": "Laboral temporal",
+     "idGrupTitulacio": null,
+     "grupTitulacio": null,
+     "titulacioRequerida": "Vegeu les bases",
+     "altresRequisits": "Nivell C1 de català",
+     "numPlaces": 0,
+     "placesReservadesDiscapacitat": null,
+     "placesReservadesAtur": false,
+     "placesReservadesJoves": false,
+     "placesReservadesDones": false,
+     "dataProva": null,
+     "observacions": null,
+     "urlWeb": "https://educacio.vilafranca.cat/imf/ofertes-de-treball-i-convocatories",
+     "accesTramit": "mailto:info@escolaenoturisme.cat",
+     "idEstat": 3,
+     "estat": "Termini obert",
+     "urlCido": "https://cido.diba.cat/oposicions/22025969",
+     "urlSubscripcio": "https://cido.diba.cat/seguir-entrada/OPOSICIO/20260730O70",
+     "maxDataPublicacioDocument": null
+    },
+    "relationships": {
+     "materies-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/relationships/materies-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/materies-vinculades"
+      }
+     },
+     "institucio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/relationships/institucio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/institucio"
+      }
+     },
+     "documents": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/relationships/documents",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/documents"
+      },
+      "data": []
+     },
+     "institucions-vinculades": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/relationships/institucions-vinculades",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/institucions-vinculades"
+      }
+     },
+     "materies": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/relationships/materies",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/materies"
+      }
+     },
+     "ods": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/relationships/ods",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions/22025969/ods"
+      }
+     }
+    }
+   }
+  ],
+  "links": {},
+  "meta": {
+   "totalResourceCount": 3
+  },
+  "included": [
+   {
+    "id": "22075953",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075953"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-12",
+     "resum": "B---Veure oferta",
+     "anunciant": "Consorci Sanitari Integral (CSI) -- Ofertes de feina temporals</title><link rel=\"alternate\" href=\"https://www.csi.cat/treballa-amb-nosaltres/ofertes-de-feina/\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-19",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": null,
+     "urlPdf": "https://www.csi.cat/ofertes-de-feina/terapeuta-ocupacional-atencio-residencial-bet2126/",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075953/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075953/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22077482",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22077482"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-07-31",
+     "resum": "B---RESOLUCIÓ 001_SP_UCT-2026-5592-286 - 1  de setembre 2026",
+     "anunciant": "le type=\"html\">UPC -- eTauler (AOC)</title><link rel=\"alternate\" href=\"https://tauler.seu-e.cat/api/rss?ens=12\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-14",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": "Perfil professional",
+     "urlPdf": "https://talenthub.upc.edu/en/jobs/psr/psr-jobs-folder/tecnic-a-en-electronica-de-potencia-codi-30269460010/fitxa-30269460010.pdf",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22077482/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22077482/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22077483",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22077483"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-07-31",
+     "resum": "B---RESOLUCIÓ 001_SP_UCT-2026-5592-286 - 1  de setembre 2026",
+     "anunciant": "le type=\"html\">UPC -- eTauler (AOC)</title><link rel=\"alternate\" href=\"https://tauler.seu-e.cat/api/rss?ens=12\" type=\"text/html\"></link>",
+     "idButlleti": 91,
+     "butlleti": "TA",
+     "numButlleti": 0,
+     "dataEntrada": "2026-08-14",
+     "idFase": 100,
+     "fase": "Bases específiques. Convocatòria",
+     "observacionsFase": null,
+     "urlPdf": "https://tauler.seu-e.cat/detall?idEns=12&idEdicte=642718",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22077483/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22077483/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22075859",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075859"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-14",
+     "resum": "Anunci d'aprovaciÃ³ de l'oferta pÃºblica d'ocupaciÃ³ ordinÃ ria parcial de 2026 de la Paeria de Cervera.\n                                    ",
+     "anunciant": "PAERIA DE CERVERA",
+     "idButlleti": 25,
+     "butlleti": "BOPL",
+     "numButlleti": 155,
+     "dataEntrada": "2026-08-14",
+     "idFase": 29,
+     "fase": "Oferta pública",
+     "observacionsFase": null,
+     "urlPdf": "https://ebop.diputaciolleida.cat/aplicacions/bop/bopV1/fitxers/pdf/2026/155/202615506940.pdf",
+     "urlHtml": null
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075859/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22075859/oposicio"
+      }
+     }
+    }
+   },
+   {
+    "id": "22083094",
+    "type": "oposicions-documents",
+    "links": {
+     "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22083094"
+    },
+    "attributes": {
+     "dataPublicacio": "2026-08-17",
+     "resum": "Anunci sobre l'oferta pública d'ocupació ordinària parcial de la Paeria de Cervera per a l'any 2026",
+     "anunciant": "Ajuntaments - Ajuntament de Cervera",
+     "idButlleti": 4,
+     "butlleti": "DOGC",
+     "numButlleti": 9731,
+     "dataEntrada": "2026-08-17",
+     "idFase": 29,
+     "fase": "Oferta pública",
+     "observacionsFase": null,
+     "urlPdf": "https://portaldogc.gencat.cat/utilsEADOP/AppJava/PdfProviderServlet?documentId=1052746&type=01&language=ca_ES",
+     "urlHtml": "https://dogc.gencat.cat/ca/document-del-dogc/?documentId=1052746"
+    },
+    "relationships": {
+     "oposicio": {
+      "links": {
+       "self": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22083094/relationships/oposicio",
+       "related": "https://api.diba.cat/dadesobertes/cido/v1/oposicions-documents/22083094/oposicio"
+      }
+     }
+    }
+   }
+  ]
+ }
+]

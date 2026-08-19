@@ -142,10 +142,14 @@ repo como registro de qué se borró y por qué.
 
 ## Roadmap
 
-**Fuentes activas (14):** BOE · BOA (Aragón) · BOC (Canarias) · BOCM (Madrid) ·
+**Fuentes activas (15):** BOE · BOA (Aragón) · BOC (Canarias) · BOCM (Madrid) ·
 BOCYL (Castilla y León) · BOIB (Illes Balears) · BOJA (Andalucía) · BOPA (Asturias) ·
-DOCM (Castilla-La Mancha) · DOE (Extremadura) · DOG (Galicia) · DOGC (Cataluña) ·
-DOGV (C. Valenciana) · EPSO (Unión Europea).
+CIDO (Cataluña, agregador) · DOCM (Castilla-La Mancha) · DOE (Extremadura) ·
+DOG (Galicia) · DOGC (Cataluña) · DOGV (C. Valenciana) · EPSO (Unión Europea).
+
+El CIDO es la única fuente que no es un boletín: la Diputació de Barcelona agrega ahí
+los procesos selectivos de acceso libre de toda Cataluña, incluidos los que sólo salen
+en un boletín provincial o en el tablón del ayuntamiento y nunca llegan al DOGC.
 
 El estado en vivo de cada una —última ejecución, si su scraper está roto— está en
 [`/estado`](https://opoalerta.es/estado), que lo lee de la base de datos. Esta lista es
