@@ -23,12 +23,14 @@
 
 ## Fase 2 — Cobertura nacional 🚧 (en curso)
 
-- **14 fuentes activas**: BOE, EPSO y doce boletines autonómicos (Andalucía, Aragón,
+- **15 fuentes activas**: BOE, EPSO, doce boletines autonómicos (Andalucía, Aragón,
   Asturias, Canarias, Castilla-La Mancha, Castilla y León, Cataluña, C. Valenciana,
-  Extremadura, Galicia, Illes Balears, Madrid).
+  Extremadura, Galicia, Illes Balears, Madrid) y el CIDO.
 - Faltan: País Vasco, Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla
   (vía contribuciones de la comunidad).
-- Boletines provinciales.
+- Boletines provinciales: ✅ en Cataluña, vía el CIDO de la Diputació de Barcelona, que
+  agrega BOPB, BOPG, BOPL y BOPT además de los tablones municipales. En el resto de
+  España no hay un agregador equivalente y habría que ir boletín a boletín.
 - ✅ Alertas por Telegram.
 - ✅ Dump público de datos mensual (CSV/JSON en Releases).
 - **Calidad de los datos**, que resultó pesar tanto como la cobertura:
