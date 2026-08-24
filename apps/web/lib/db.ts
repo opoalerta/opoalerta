@@ -14,6 +14,20 @@ export type Convocatoria = {
   fuente_codigo: string;
 };
 
+/**
+ * Lo que devuelve la ficha de detalle: la convocatoria más los campos que solo
+ * ella necesita. Los listados no los seleccionan (son columnas anchas y no se
+ * pintan en las tarjetas), así que van en un tipo aparte en vez de opcionales
+ * en `Convocatoria`: aquí siempre vienen.
+ */
+export type ConvocatoriaDetalle = Convocatoria & {
+  cuerpo: string | null;
+  grupo: string | null;
+  titulacion_requerida: string | null;
+  num_plazas: number | null;
+  tipo_acceso: string | null;
+};
+
 export type EstadoFuente = {
   fuente_codigo: string;
   nombre: string;
@@ -314,7 +328,7 @@ export async function getConvocatoriasEuropeas(limit = 9): Promise<Convocatoria[
   }
 }
 
-export async function getConvocatoriaById(id: string): Promise<Convocatoria | null> {
+export async function getConvocatoriaById(id: string): Promise<ConvocatoriaDetalle | null> {
   const sql = clientCacheable();
   if (!sql) return null;
   // Next 16 puede entregar el param de ruta aún URL-codificado (p. ej. "boib%3A..."),
@@ -332,12 +346,13 @@ export async function getConvocatoriaById(id: string): Promise<Convocatoria | nu
       SELECT id, titulo, organismo, ambito, ccaa,
              fecha_publicacion::text AS fecha_publicacion,
              fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
-             url_oficial, fuente_codigo
+             url_oficial, fuente_codigo,
+             cuerpo, grupo, titulacion_requerida, num_plazas, tipo_acceso
       FROM convocatorias
       WHERE id = ${clave}
       LIMIT 1
     `;
-    return (rows[0] as Convocatoria | undefined) ?? null;
+    return (rows[0] as ConvocatoriaDetalle | undefined) ?? null;
   } catch (err) {
     console.error("getConvocatoriaById:", err);
     return null;
