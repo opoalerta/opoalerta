@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getConvocatoriaById, type ConvocatoriaDetalle } from "@/lib/db";
 import { getBaseUrl } from "@/lib/site";
+import { tituloCorto } from "@/lib/titulo";
 import { Container } from "../../components/Container";
 import { JsonLd } from "../../components/JsonLd";
 
@@ -131,8 +132,22 @@ export async function generateMetadata({
   const ambito = getAmbito(conv);
   // Sin «| OpoAlerta»: el layout ya aplica `template: "%s — OpoAlerta"`, así que
   // las fichas se estaban publicando como «… | OpoAlerta — OpoAlerta».
-  const title = `Convocatoria de empleo público: ${conv.titulo} — ${conv.organismo}`;
-  const description = `Convocatoria de empleo público publicada en ${conv.fuente_codigo}: ${conv.titulo}. Organismo: ${conv.organismo}. Ámbito: ${ambito}. Consulta plazos, requisitos y enlace oficial en OpoAlerta.`;
+  //
+  // Sin «Convocatoria de empleo público:» tampoco: eran 31 caracteres iguales en
+  // las 2.800 fichas por delante de lo único que las distingue. El organismo va
+  // detrás del asunto ya recortado para que quepa dentro de los ~60 que enseña
+  // Google; los términos de búsqueda siguen en la description y en el H1.
+  const title = `${tituloCorto(conv.titulo)} — ${conv.organismo}`;
+  // Misma enfermedad que el título: la description arrancaba con una frase fija
+  // y metía el título del boletín entero, así que el fragmento que enseña Google
+  // —unos 155 caracteres— se iba en «RESOLUCIÓN de 31 de julio de 2026, de la…».
+  // Ahora abre por el asunto, y el contexto (organismo, ámbito, fuente) va
+  // detrás, que es el orden en que sirve para decidir si abres el resultado.
+  const asunto = tituloCorto(conv.titulo, 90);
+  const description =
+    `${asunto}${asunto.endsWith("…") ? "" : "."} Convocatoria de empleo público de ` +
+    `${conv.organismo} (${ambito}), publicada en ${conv.fuente_codigo}. ` +
+    `Plazos y enlace al texto oficial.`;
 
   return {
     title,
