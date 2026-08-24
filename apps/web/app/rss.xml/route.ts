@@ -1,7 +1,9 @@
 import { getConvocatorias } from "@/lib/db";
 import { getBaseUrl } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+// Tampoco lee la petición, y un feed lo pollean los lectores en bucle: sin
+// caché, cada uno de ellos despertaba la base de datos.
+export const revalidate = 3600;
 
 function esc(s: string): string {
   return s

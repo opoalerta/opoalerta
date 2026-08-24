@@ -8,7 +8,11 @@ import { FeatureBlock } from "./components/FeatureBlock";
 import { JsonLd } from "./components/JsonLd";
 import { NoticeBox } from "./components/NoticeBox";
 
-export const dynamic = "force-dynamic";
+// La ingesta corre una vez al día y la portada no lee la petición: no había
+// nada que obligara a renderizarla por visita. Con `force-dynamic` cada visita
+// —y cada pasada de un rastreador— disparaba cuatro consultas a Postgres, que
+// es lo que mantenía despierto el compute de Neon y agotó su cupo mensual.
+export const revalidate = 3600;
 
 export const metadata = {
   title: "OpoAlerta — Convocatorias de empleo público en España",
@@ -59,7 +63,7 @@ const FAQ = [
 export default async function Home() {
   // Solo la primera tanda: el filtrado vive en Postgres, así que la página ya
   // no tiene que cargar con todo el catálogo para poder buscar dentro de él.
-  const primeraTanda = await buscarConvocatorias();
+  const primeraTanda = await buscarConvocatorias({}, { cacheable: true });
   const facetas = await getFacetas();
   const europeas = await getConvocatoriasEuropeas(9);
   const estado = await getEstado();
