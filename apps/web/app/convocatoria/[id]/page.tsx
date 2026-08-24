@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getConvocatoriaById } from "@/lib/db";
+import { getConvocatoriaById, type ConvocatoriaDetalle } from "@/lib/db";
 import { getBaseUrl } from "@/lib/site";
 import { Container } from "../../components/Container";
 import { JsonLd } from "../../components/JsonLd";
@@ -41,10 +41,76 @@ function fmtFecha(iso: string | null): string {
   return `${d}/${m}/${y}`;
 }
 
-function getAmbito(conv: NonNullable<Awaited<ReturnType<typeof getConvocatoriaById>>>) {
+function getAmbito(conv: ConvocatoriaDetalle) {
   if (conv.ambito === "estatal") return "Estatal";
   if (conv.ambito === "europeo") return "Unión Europea";
   return CCAA_NOMBRE[conv.ccaa ?? ""] ?? conv.ambito ?? "—";
+}
+
+/**
+ * Fin de plazo en ISO 8601 **con hora**, para el `validThrough` del JobPosting.
+ *
+ * Google entiende una fecha sin hora como las 00:00 de ese día, así que mandar
+ * la fecha pelada retiraba la oferta de los resultados el día antes de que se
+ * cerrara el plazo de verdad. Se emite el final del día con el desfase horario
+ * real de la convocatoria —Canarias va una hora por detrás de la península, y
+ * el resto alterna CET/CEST según la fecha—, no con uno fijo.
+ *
+ * Devuelve `undefined` cuando no hay fecha (la mayoría: el boletín solo da el
+ * plazo en texto). Ahí la clave se omite; mandar `validThrough: null` es peor
+ * que no mandarla.
+ */
+function getValidThrough(conv: ConvocatoriaDetalle): string | undefined {
+  const fecha = conv.fecha_fin_plazo;
+  if (!fecha) return undefined;
+
+  const zona = conv.ccaa === "CN" ? "Atlantic/Canary" : "Europe/Madrid";
+  const bruto =
+    new Intl.DateTimeFormat("en-US", { timeZone: zona, timeZoneName: "longOffset" })
+      .formatToParts(new Date(`${fecha}T12:00:00Z`))
+      .find((parte) => parte.type === "timeZoneName")?.value ?? "GMT+01:00";
+  // "GMT+02:00" -> "+02:00". Con desfase cero el formato es "GMT" a secas.
+  const desfase = bruto === "GMT" ? "+00:00" : bruto.replace("GMT", "");
+
+  return `${fecha}T23:59:59${desfase}`;
+}
+
+/** Escapa el texto del boletín para poder incrustarlo en el HTML de `description`. */
+function esc(texto: string): string {
+  return texto.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/**
+ * `description` del JobPosting. Es campo obligatorio y Google valora su
+ * contenido, así que en vez de una frase de relleno se arma con lo que la
+ * ingesta sí guarda de cada convocatoria (cuerpo, grupo, plazas, titulación,
+ * acceso y plazo). Va en HTML porque es lo que pide la documentación.
+ */
+function getDescripcion(conv: ConvocatoriaDetalle, ambito: string): string {
+  const datos: string[] = [];
+  if (conv.cuerpo) datos.push(`Cuerpo o escala: ${esc(conv.cuerpo)}`);
+  if (conv.grupo) datos.push(`Grupo de clasificación: ${esc(conv.grupo)}`);
+  if (conv.num_plazas !== null) datos.push(`Plazas convocadas: ${conv.num_plazas}`);
+  if (conv.titulacion_requerida)
+    datos.push(`Titulación requerida: ${esc(conv.titulacion_requerida)}`);
+  if (conv.tipo_acceso) datos.push(`Sistema de acceso: ${esc(conv.tipo_acceso)}`);
+
+  const plazo = conv.fecha_fin_plazo
+    ? `Plazo de presentación de solicitudes hasta el ${fmtFecha(conv.fecha_fin_plazo)}${
+        conv.fecha_fin_aprox ? " (fecha estimada en días hábiles)" : ""
+      }.`
+    : conv.plazo_texto
+      ? `Plazo de presentación de solicitudes: ${esc(conv.plazo_texto)}.`
+      : "El plazo de presentación consta en el texto oficial de la convocatoria.";
+
+  return [
+    `<p>${esc(conv.titulo)}. Convocatoria de empleo público de ${esc(conv.organismo)}`,
+    ` (ámbito: ${esc(ambito)}), publicada en ${esc(conv.fuente_codigo)}`,
+    ` el ${fmtFecha(conv.fecha_publicacion)}.</p>`,
+    datos.length ? `<ul>${datos.map((dato) => `<li>${dato}</li>`).join("")}</ul>` : "",
+    `<p>${plazo} Las solicitudes se presentan ante el organismo convocante,`,
+    " conforme a las bases publicadas en el boletín oficial.</p>",
+  ].join("");
 }
 
 export async function generateMetadata({
@@ -63,7 +129,9 @@ export async function generateMetadata({
 
   const baseUrl = getBaseUrl();
   const ambito = getAmbito(conv);
-  const title = `Convocatoria de empleo público: ${conv.titulo} — ${conv.organismo} | OpoAlerta`;
+  // Sin «| OpoAlerta»: el layout ya aplica `template: "%s — OpoAlerta"`, así que
+  // las fichas se estaban publicando como «… | OpoAlerta — OpoAlerta».
+  const title = `Convocatoria de empleo público: ${conv.titulo} — ${conv.organismo}`;
   const description = `Convocatoria de empleo público publicada en ${conv.fuente_codigo}: ${conv.titulo}. Organismo: ${conv.organismo}. Ámbito: ${ambito}. Consulta plazos, requisitos y enlace oficial en OpoAlerta.`;
 
   return {
@@ -71,7 +139,9 @@ export async function generateMetadata({
     description,
     alternates: { canonical: `/convocatoria/${id}` },
     openGraph: {
-      title,
+      // El `template` del layout no llega a openGraph, así que la marca va aquí
+      // a mano; si no, la tarjeta compartida sale sin ella.
+      title: `${title} | OpoAlerta`,
       description,
       url: `${baseUrl}/convocatoria/${id}`,
       type: "article",
@@ -93,18 +163,34 @@ export default async function ConvocatoriaPage({
   const baseUrl = getBaseUrl();
   const ambito = getAmbito(conv);
 
+  const validThrough = getValidThrough(conv);
+
+  // Search Console avisa de tres campos recomendados que aquí no se rellenan a
+  // propósito, y que no hay que "arreglar" inventándolos:
+  //   - streetAddress / postalCode / addressLocality: una convocatoria de un
+  //     boletín no trae domicilio. El destino suele ser toda una comunidad o
+  //     todo el Estado, y el organismo convocante no es el centro de trabajo.
+  //   - baseSalary: no existe en la tabla ni en la fuente. Deducirlo del grupo
+  //     (A1, C2…) sería un sueldo inventado: depende del complemento
+  //     específico de cada plaza y de los PGE del año.
+  // Son campos recomendados, no obligatorios: sin ellos el elemento sigue
+  // siendo válido, y rellenarlos a ojo sería datos estructurados falsos.
   const jobPosting = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: conv.titulo,
-    description: `Convocatoria de empleo público publicada en ${conv.fuente_codigo}.`,
+    description: getDescripcion(conv, ambito),
     datePosted: conv.fecha_publicacion,
-    validThrough: conv.fecha_fin_plazo,
+    ...(validThrough ? { validThrough } : {}),
     hiringOrganization: {
       "@type": "Organization",
       name: conv.organismo,
     },
+    // La inmensa mayoría de las plazas de empleo público son de jornada
+    // completa y el boletín no distingue, así que se asume FULL_TIME.
     employmentType: "FULL_TIME",
+    // La solicitud no se tramita en OpoAlerta: se va al organismo convocante.
+    directApply: false,
     jobLocation: {
       "@type": "Place",
       address: {
