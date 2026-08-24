@@ -110,8 +110,15 @@ export const POR_PAGINA = 24;
  * tabla entera. `total` es el recuento de verdad, no el número de filas
  * devueltas, para que la interfaz nunca vuelva a confundir una cosa con otra.
  */
-export async function buscarConvocatorias(filtros: Filtros = {}): Promise<Pagina> {
-  const sql = client();
+export async function buscarConvocatorias(
+  filtros: Filtros = {},
+  { cacheable = false }: { cacheable?: boolean } = {},
+): Promise<Pagina> {
+  // La portada pide la primera tanda sin filtros y declara `revalidate`; con
+  // `no-store` ese fetch la volvía dinámica y el `revalidate` no se aplicaba
+  // nunca. /api/convocatorias sí depende de los searchParams de cada petición,
+  // así que sigue leyendo sin caché.
+  const sql = cacheable ? clientCacheable() : client();
   if (!sql) return { items: [], total: 0 };
 
   const q = (filtros.q ?? "").trim();
@@ -193,7 +200,8 @@ export async function buscarConvocatorias(filtros: Filtros = {}): Promise<Pagina
  * desplegable. Ahora se preguntan a la tabla.
  */
 export async function getFacetas(): Promise<{ fuentes: string[]; ambitos: string[] }> {
-  const sql = client();
+  // Solo la usa la portada, que declara `revalidate`.
+  const sql = clientCacheable();
   if (!sql) return { fuentes: [], ambitos: [] };
   try {
     const [f, a] = await Promise.all([
@@ -218,7 +226,8 @@ export async function getFacetas(): Promise<{ fuentes: string[]; ambitos: string
  * pagina y devuelve el total real.
  */
 export async function getConvocatorias(limit: number): Promise<Convocatoria[]> {
-  const sql = client();
+  // Solo la usa /rss.xml, que declara `revalidate`.
+  const sql = clientCacheable();
   if (!sql) return [];
   try {
     const rows = await sql`
@@ -307,7 +316,8 @@ async function consultarEstado(sql: ClienteNeon): Promise<EstadoFuente[]> {
 }
 
 export async function getConvocatoriasEuropeas(limit = 9): Promise<Convocatoria[]> {
-  const sql = client();
+  // Solo la usa la portada, que declara `revalidate`.
+  const sql = clientCacheable();
   if (!sql) return [];
   try {
     const rows = await sql`
