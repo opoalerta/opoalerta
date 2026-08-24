@@ -152,7 +152,7 @@ export async function buscarConvocatorias(filtros: Filtros = {}): Promise<Pagina
             OR translate(lower(organismo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE translate(lower(${patron}), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc')
             OR lower(fuente_codigo) LIKE lower(${patron})
           )
-        ORDER BY fecha_publicacion DESC, fecha_ingesta DESC
+        ORDER BY fecha_publicacion DESC, fecha_ingesta DESC, id DESC
         LIMIT ${cuantas} OFFSET ${desde}
       `,
       sql`
@@ -359,31 +359,41 @@ export async function getConvocatoriaById(id: string): Promise<ConvocatoriaDetal
   }
 }
 
+/** Una fila del sitemap: la url de la ficha y cuándo cambió de verdad. */
+export type EntradaSitemap = { id: string; lastmod: string };
+
 /**
- * Ids para el sitemap. Van **todas**, también las de plazo cerrado: su página
- * de detalle sigue existiendo (`getConvocatoriaById` no filtra por plazo) y es
- * lo que encuentra quien busca en Google una convocatoria concreta meses
- * después.
+ * Ids para el sitemap, con la fecha real de cada ficha. Van **todas**, también
+ * las de plazo cerrado: su página de detalle sigue existiendo
+ * (`getConvocatoriaById` no filtra por plazo) y es lo que encuentra quien busca
+ * en Google una convocatoria concreta meses después.
  *
  * El tope por defecto es el del propio protocolo de sitemaps —50.000 URLs por
  * fichero—, no una cifra elegida a ojo. El anterior era 1.000, y la llamada del
  * sitemap pasaba 500: con 797 filas en la tabla, Google veía 500 y las otras
  * 297 no existían para el buscador. Si algún día se rebasan las 50.000 hará
  * falta un índice de sitemaps, y entonces esto tendrá que partirse en varios.
+ *
+ * `fecha_ingesta` es el `lastmod` bueno y `actualizada_en` no: el upsert de los
+ * scrapers la pisa con `now()` cada vez que vuelve a ver la fila, cambie o no,
+ * así que anunciaría las ~2.800 fichas como recién modificadas en cada rastreo.
+ * `fecha_ingesta` no entra en el `ON CONFLICT`, así que queda fija.
  */
-export async function getConvocatoriaIds(limit = 50_000): Promise<string[]> {
+export async function getConvocatoriaIds(limit = 50_000): Promise<EntradaSitemap[]> {
   // Cacheable: es la única consulta del sitemap, y con `no-store` su
   // `revalidate` de seis horas no llegaba a aplicarse nunca en producción.
   const sql = clientCacheable();
   if (!sql) return [];
   try {
     const rows = await sql`
-      SELECT id
+      -- ISO 8601 explícito: \`::text\` da «2026-08-24 06:00:00+00», que V8 parsea
+      -- hoy pero que no es un formato que \`new Date()\` tenga obligación de aceptar.
+      SELECT id, to_char(fecha_ingesta AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS lastmod
       FROM convocatorias
-      ORDER BY fecha_publicacion DESC, fecha_ingesta DESC
+      ORDER BY fecha_publicacion DESC, fecha_ingesta DESC, id DESC
       LIMIT ${limit}
     `;
-    return rows.map((r) => (r as { id: string }).id);
+    return rows as EntradaSitemap[];
   } catch (err) {
     console.error("getConvocatoriaIds:", err);
     return [];
@@ -422,7 +432,7 @@ export async function listarArchivo(
                fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
                url_oficial, fuente_codigo
         FROM convocatorias
-        ORDER BY fecha_publicacion DESC, fecha_ingesta DESC
+        ORDER BY fecha_publicacion DESC, fecha_ingesta DESC, id DESC
         LIMIT ${porPagina} OFFSET ${desde}
       `,
       sql`SELECT count(*)::int AS total FROM convocatorias`,

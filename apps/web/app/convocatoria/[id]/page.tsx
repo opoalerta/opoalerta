@@ -129,7 +129,9 @@ export async function generateMetadata({
 
   const baseUrl = getBaseUrl();
   const ambito = getAmbito(conv);
-  const title = `Convocatoria de empleo público: ${conv.titulo} — ${conv.organismo} | OpoAlerta`;
+  // Sin «| OpoAlerta»: el layout ya aplica `template: "%s — OpoAlerta"`, así que
+  // las fichas se estaban publicando como «… | OpoAlerta — OpoAlerta».
+  const title = `Convocatoria de empleo público: ${conv.titulo} — ${conv.organismo}`;
   const description = `Convocatoria de empleo público publicada en ${conv.fuente_codigo}: ${conv.titulo}. Organismo: ${conv.organismo}. Ámbito: ${ambito}. Consulta plazos, requisitos y enlace oficial en OpoAlerta.`;
 
   return {
@@ -137,7 +139,9 @@ export async function generateMetadata({
     description,
     alternates: { canonical: `/convocatoria/${id}` },
     openGraph: {
-      title,
+      // El `template` del layout no llega a openGraph, así que la marca va aquí
+      // a mano; si no, la tarjeta compartida sale sin ella.
+      title: `${title} | OpoAlerta`,
       description,
       url: `${baseUrl}/convocatoria/${id}`,
       type: "article",

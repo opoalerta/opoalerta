@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Sin recorte: el sitemap es lo que le dice a Google qué páginas existen, y
   // pedir 500 de 797 dejaba fuera precisamente las más antiguas, que son las
   // que la gente busca por nombre cuando ya no están en portada.
-  const [ids, posts, paginasArchivo] = await Promise.all([
+  const [fichas, posts, paginasArchivo] = await Promise.all([
     getConvocatoriaIds(),
     getAllPosts(),
     contarPaginasArchivo(),
@@ -67,9 +67,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const convocatoriaPages: MetadataRoute.Sitemap = ids.map((id) => ({
+  // `lastModified: new Date()` anunciaba las ~2.800 fichas como modificadas en
+  // cada rastreo. Google compara ese `lastmod` con lo que ya tiene indexado, ve
+  // que el contenido no ha cambiado, y deja de fiarse del campo para TODO el
+  // sitemap: entonces ya no puede distinguir la ficha de ayer de la de marzo, y
+  // rastrea a ciegas. Con la fecha real, lo nuevo se rastrea antes.
+  const convocatoriaPages: MetadataRoute.Sitemap = fichas.map(({ id, lastmod }) => ({
     url: `${baseUrl}/convocatoria/${id}`,
-    lastModified: new Date(),
+    lastModified: new Date(lastmod),
     changeFrequency: "weekly",
     priority: 0.7,
   }));
