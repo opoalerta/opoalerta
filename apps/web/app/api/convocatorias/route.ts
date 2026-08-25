@@ -27,15 +27,28 @@ export async function GET(request: Request) {
   const desde = Number.parseInt(p.get("desde") ?? "0", 10);
   const cuantas = Number.parseInt(p.get("cuantas") ?? String(POR_PAGINA), 10);
 
-  const pagina = await buscarConvocatorias({
-    q: p.get("q") ?? "",
-    fuente: p.get("fuente") ?? "",
-    ambito: p.get("ambito") ?? "",
-    // Number.isFinite descarta NaN de un parámetro inventado; la capa de datos
-    // ya recorta los rangos, aquí basta con no pasarle basura.
-    desde: Number.isFinite(desde) ? desde : 0,
-    cuantas: Number.isFinite(cuantas) ? cuantas : POR_PAGINA,
-  });
+  let pagina;
+  try {
+    pagina = await buscarConvocatorias({
+      q: p.get("q") ?? "",
+      fuente: p.get("fuente") ?? "",
+      ambito: p.get("ambito") ?? "",
+      // Number.isFinite descarta NaN de un parámetro inventado; la capa de datos
+      // ya recorta los rangos, aquí basta con no pasarle basura.
+      desde: Number.isFinite(desde) ? desde : 0,
+      cuantas: Number.isFinite(cuantas) ? cuantas : POR_PAGINA,
+    });
+  } catch {
+    // La capa de datos ya propaga y registra el error. Lo que importa aquí es
+    // no responder 200 con una lista vacía: el buscador trata cualquier
+    // respuesta no-ok como fallo y avisa, mientras que un 200 sin elementos lo
+    // pinta como «no hay convocatorias que encajen» —que es mentira cuando lo
+    // que ha pasado es que la base no contesta.
+    return NextResponse.json(
+      { error: "No se ha podido consultar la base de datos." },
+      { status: 503 },
+    );
+  }
 
   return NextResponse.json({
     ...pagina,

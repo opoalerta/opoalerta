@@ -67,6 +67,31 @@ function clientCacheable() {
   return neon(url);
 }
 
+/**
+ * Un fallo de consulta no es una lista vacía.
+ *
+ * Todas las funciones de aquí capturaban el error y devolvían `[]`. Una página
+ * que declara `revalidate` no tiene forma de distinguir eso de «no hay nada que
+ * mostrar»: Next da la regeneración por buena y **cachea la página vacía**.
+ *
+ * Es lo que pasó el 24/08/2026. Neon empezó a responder 402 («exceeded the
+ * compute time quota») a las 20:07; la portada se regeneró a las 20:42, en
+ * mitad del corte, y se quedó anunciando «0 convocatorias» durante diecinueve
+ * horas —con la base ya restablecida y 2.646 convocatorias vivas detrás—,
+ * porque su copia congelada seguía siendo, para Next, un resultado legítimo.
+ * El archivo se salvó de casualidad: su prerender era del build de las 09:24,
+ * anterior al corte, y al fallar sus revalidaciones Next siguió sirviéndolo.
+ *
+ * Propagando el error se obtiene ese mismo comportamiento a propósito: la
+ * regeneración falla y se sigue sirviendo la última copia buena, que es lo que
+ * se quiere de un corte pasajero. `never` deja que el `catch` compile sin
+ * inventarse un valor de retorno.
+ */
+function fallo(donde: string, err: unknown): never {
+  console.error(`${donde}:`, err);
+  throw err;
+}
+
 // Una convocatoria sigue "viva" en la web mientras no se sepa que su plazo
 // venció. Regla (idéntica en el WHERE de abajo):
 //   - Con fecha_fin_plazo y ya pasada        -> fuera (plazo agotado).
@@ -187,8 +212,7 @@ export async function buscarConvocatorias(
       total: (conteo as { total: number }[])[0]?.total ?? 0,
     };
   } catch (err) {
-    console.error("buscarConvocatorias:", err);
-    return { items: [], total: 0 };
+    fallo("buscarConvocatorias", err);
   }
 }
 
@@ -213,8 +237,7 @@ export async function getFacetas(): Promise<{ fuentes: string[]; ambitos: string
       ambitos: (a as { v: string }[]).map((r) => r.v),
     };
   } catch (err) {
-    console.error("getFacetas:", err);
-    return { fuentes: [], ambitos: [] };
+    fallo("getFacetas", err);
   }
 }
 
@@ -247,8 +270,7 @@ export async function getConvocatorias(limit: number): Promise<Convocatoria[]> {
     `;
     return rows as Convocatoria[];
   } catch (err) {
-    console.error("getConvocatorias:", err);
-    return [];
+    fallo("getConvocatorias", err);
   }
 }
 
@@ -310,6 +332,12 @@ async function consultarEstado(sql: ClienteNeon): Promise<EstadoFuente[]> {
     `;
     return rows as EstadoFuente[];
   } catch (err) {
+    // La única de este fichero que sigue degradando a `[]` en vez de propagar
+    // (ver `fallo`). La llama el Footer, que vive en el layout raíz: si
+    // relanzara, un corte de la base devolvería un 500 en **todas** las
+    // páginas, incluidos los artículos del blog, que son markdown y no
+    // necesitan la base para nada. Lo que se pierde aquí es la etiqueta de
+    // fase del proyecto y, en la portada, el listado de fuentes: cosmético.
     console.error("getEstado:", err);
     return [];
   }
@@ -333,8 +361,7 @@ export async function getConvocatoriasEuropeas(limit = 9): Promise<Convocatoria[
     `;
     return rows as Convocatoria[];
   } catch (err) {
-    console.error("getConvocatoriasEuropeas:", err);
-    return [];
+    fallo("getConvocatoriasEuropeas", err);
   }
 }
 
@@ -364,8 +391,7 @@ export async function getConvocatoriaById(id: string): Promise<ConvocatoriaDetal
     `;
     return (rows[0] as ConvocatoriaDetalle | undefined) ?? null;
   } catch (err) {
-    console.error("getConvocatoriaById:", err);
-    return null;
+    fallo("getConvocatoriaById", err);
   }
 }
 
@@ -405,8 +431,7 @@ export async function getConvocatoriaIds(limit = 50_000): Promise<EntradaSitemap
     `;
     return rows as EntradaSitemap[];
   } catch (err) {
-    console.error("getConvocatoriaIds:", err);
-    return [];
+    fallo("getConvocatoriaIds", err);
   }
 }
 
@@ -453,8 +478,7 @@ export async function listarArchivo(
       total: (conteo as { total: number }[])[0]?.total ?? 0,
     };
   } catch (err) {
-    console.error("listarArchivo:", err);
-    return { items: [], total: 0 };
+    fallo("listarArchivo", err);
   }
 }
 
@@ -467,7 +491,6 @@ export async function contarPaginasArchivo(porPagina = POR_PAGINA_ARCHIVO): Prom
     const total = (rows as { total: number }[])[0]?.total ?? 0;
     return Math.max(1, Math.ceil(total / porPagina));
   } catch (err) {
-    console.error("contarPaginasArchivo:", err);
-    return 1;
+    fallo("contarPaginasArchivo", err);
   }
 }
