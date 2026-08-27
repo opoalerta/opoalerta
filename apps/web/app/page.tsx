@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { getBaseUrl } from "@/lib/site";
-import { buscarConvocatorias, getConvocatoriasEuropeas, getEstado, getFacetas } from "@/lib/db";
+import { buscarConvocatorias, getEstado, getFacetas } from "@/lib/db";
 import { Container } from "./components/Container";
-import { ConvocatoriaCard } from "./components/ConvocatoriaCard";
 import { ConvocatoriaSearch } from "./components/ConvocatoriaSearch";
 import { FeatureBlock } from "./components/FeatureBlock";
 import { JsonLd } from "./components/JsonLd";
@@ -65,7 +64,6 @@ export default async function Home() {
   // no tiene que cargar con todo el catálogo para poder buscar dentro de él.
   const primeraTanda = await buscarConvocatorias({}, { cacheable: true });
   const facetas = await getFacetas();
-  const europeas = await getConvocatoriasEuropeas(9);
   const estado = await getEstado();
 
   const activas = estado.filter((e) => e.estado === "ok").length;
@@ -162,8 +160,8 @@ export default async function Home() {
           <NoticeBox title="Cobertura nacional en expansión" variant="info">
             {activas > 0 ? (
               <>
-                Ya rastreamos <strong>{activas} boletines oficiales</strong> (BOE, boletines
-                autonómicos y las oposiciones de la UE)
+                Ya rastreamos <strong>{activas} fuentes oficiales</strong> (BOE, boletines
+                autonómicos, el CIDO de Cataluña y las oposiciones de la UE)
                 {totalConvocatorias > 0 && (
                   <>
                     {" "}
@@ -227,29 +225,6 @@ export default async function Home() {
           </p>
         </Container>
       </section>
-
-      {europeas.length > 0 && (
-        <section className="border-t border-border bg-cream py-12">
-          <Container>
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-navy">
-                <span aria-hidden="true">🇪🇺</span> Oposiciones de la Unión Europea
-              </h2>
-              <p className="mt-1 text-slate">
-                Convocatorias de las instituciones de la UE (EPSO), abiertas a
-                nacionales de cualquier país de la UE — también a los españoles.
-              </p>
-            </div>
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {europeas.map((c) => (
-                <li key={c.id}>
-                  <ConvocatoriaCard convocatoria={c} />
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </section>
-      )}
 
       <section className="bg-cream py-16">
         <Container>
