@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getConvocatoriaById, type ConvocatoriaDetalle } from "@/lib/db";
+import { CCAA_NOMBRE } from "@/lib/ccaa";
 import { getBaseUrl } from "@/lib/site";
 import { tituloCorto } from "@/lib/titulo";
 import { Container } from "../../components/Container";
@@ -13,28 +14,6 @@ import { JsonLd } from "../../components/JsonLd";
 // de llegar a las viejas. La ingesta corre una vez al día; una hora de margen
 // sobra para recoger correcciones.
 export const revalidate = 3600;
-
-const CCAA_NOMBRE: Record<string, string> = {
-  AN: "Andalucía",
-  AR: "Aragón",
-  AS: "Asturias",
-  CB: "Cantabria",
-  CE: "Ceuta",
-  CL: "Castilla y León",
-  CM: "Castilla-La Mancha",
-  CN: "Canarias",
-  CT: "Cataluña",
-  EX: "Extremadura",
-  GA: "Galicia",
-  IB: "Illes Balears",
-  MC: "Murcia",
-  MD: "Madrid",
-  ML: "Melilla",
-  NC: "Navarra",
-  PV: "País Vasco",
-  RI: "La Rioja",
-  VC: "C. Valenciana",
-};
 
 function fmtFecha(iso: string | null): string {
   if (!iso) return "—";

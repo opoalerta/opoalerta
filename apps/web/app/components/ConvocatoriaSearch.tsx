@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CCAA_NOMBRE } from "@/lib/ccaa";
 import type { Convocatoria } from "@/lib/db";
 import { ConvocatoriaCard } from "./ConvocatoriaCard";
 import { NoticeBox } from "./NoticeBox";
@@ -48,12 +49,15 @@ type Props = {
   /** Valores de los desplegables, sacados de la tabla y no del listado. */
   fuentes: string[];
   ambitos: string[];
+  ccaas: string[];
 };
 
-export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos }: Props) {
+export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos, ccaas }: Props) {
   const [query, setQuery] = useState("");
   const [fuente, setFuente] = useState("");
   const [ambito, setAmbito] = useState("");
+  const [ccaa, setCcaa] = useState("");
+  const [orden, setOrden] = useState("recientes");
 
   const [items, setItems] = useState<Convocatoria[]>(convocatorias);
   const [totalActual, setTotalActual] = useState(total);
@@ -76,6 +80,8 @@ export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos }: P
           q: query.trim(),
           fuente,
           ambito,
+          ccaa,
+          orden,
           desde: String(desde),
           cuantas: String(PASO),
         });
@@ -91,7 +97,7 @@ export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos }: P
         if (mia === peticion.current) setCargando(false);
       }
     },
-    [query, fuente, ambito]
+    [query, fuente, ambito, ccaa, orden]
   );
 
   useEffect(() => {
@@ -103,13 +109,15 @@ export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos }: P
     return () => clearTimeout(t);
   }, [pedir]);
 
-  const hasFilters = Boolean(query || fuente || ambito);
+  const hasFilters = Boolean(query || fuente || ambito || ccaa);
   const restantes = totalActual - items.length;
 
   function reset() {
     setQuery("");
     setFuente("");
     setAmbito("");
+    setCcaa("");
+    setOrden("recientes");
   }
 
   const chipClass = (activo: boolean) =>
@@ -196,6 +204,36 @@ export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos }: P
           ))}
         </select>
 
+        <label htmlFor="filtro-ccaa" className="sr-only">
+          Filtrar por comunidad autónoma
+        </label>
+        <select
+          id="filtro-ccaa"
+          value={ccaa}
+          onChange={(e) => setCcaa(e.target.value)}
+          className={selectClass}
+        >
+          <option value="">Toda España</option>
+          {ccaas.map((c) => (
+            <option key={c} value={c}>
+              {CCAA_NOMBRE[c] ?? c}
+            </option>
+          ))}
+        </select>
+
+        <label htmlFor="orden-resultados" className="sr-only">
+          Ordenar resultados
+        </label>
+        <select
+          id="orden-resultados"
+          value={orden}
+          onChange={(e) => setOrden(e.target.value)}
+          className={selectClass}
+        >
+          <option value="recientes">Más recientes</option>
+          <option value="urgencia">Plazo cercano</option>
+        </select>
+
         {hasFilters && (
           <button
             type="button"
@@ -241,7 +279,7 @@ export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos }: P
       ) : items.length === 0 && !cargando ? (
         <NoticeBox title="Ninguna coincidencia" variant="info">
           No hemos encontrado convocatorias con esos criterios. Prueba con otro
-          término, fuente o ámbito.
+          término, fuente, ámbito o comunidad autónoma.
         </NoticeBox>
       ) : (
         <>

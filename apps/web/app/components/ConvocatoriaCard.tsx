@@ -1,12 +1,6 @@
 import Link from "next/link";
+import { CCAA_NOMBRE } from "@/lib/ccaa";
 import type { Convocatoria } from "@/lib/db";
-
-const CCAA_NOMBRE: Record<string, string> = {
-  AN: "Andalucía", AR: "Aragón", AS: "Asturias", CB: "Cantabria", CE: "Ceuta",
-  CL: "Castilla y León", CM: "Castilla-La Mancha", CN: "Canarias", CT: "Cataluña",
-  EX: "Extremadura", GA: "Galicia", IB: "Illes Balears", MC: "Murcia", MD: "Madrid",
-  ML: "Melilla", NC: "Navarra", PV: "País Vasco", RI: "La Rioja", VC: "C. Valenciana",
-};
 
 function fmtFecha(iso: string | null): string {
   if (!iso) return "—";
