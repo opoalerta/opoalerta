@@ -28,7 +28,7 @@ export async function Footer() {
               El proyecto es gratuito y su único coste es el dominio. Si te sirve, invítanos a un café.
             </p>
             <a
-              href="https://ko-fi.com/I2I31CXQVM"
+              href="https://ko-fi.com/zaswear"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-3 inline-flex items-center gap-2 rounded bg-gold px-4 py-2 text-sm font-semibold text-navy no-underline hover:bg-gold-dark"
