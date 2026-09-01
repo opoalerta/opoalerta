@@ -206,7 +206,7 @@ citan siempre con enlace y fecha.
   <a href="https://opoalerta.es/blog">📝 Blog</a> ·
   <a href="https://t.me/opoalertbot">🤖 Bot de Telegram</a> ·
   <a href="https://opoalerta.es/rss.xml">📡 RSS</a> ·
-  <a href="https://ko-fi.com/I2I31CXQVM">☕ Invítanos a un café</a>
+  <a href="https://ko-fi.com/zaswear">☕ Invítanos a un café</a>
 </p>
 
 ---
