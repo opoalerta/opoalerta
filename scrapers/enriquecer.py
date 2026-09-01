@@ -1,13 +1,17 @@
-"""Pase de enriquecimiento: rellena el plazo de las convocatorias.
+"""Pase de enriquecimiento: rellena el plazo y campos estructurados.
 
-Los sumarios no traen el plazo de presentación; está en el cuerpo de cada
-disposición. Este pase, desacoplado de los scrapers, recorre las convocatorias
-sin plazo revisado, baja el texto de su `url_oficial`, extrae la frase del plazo
-(common.plazo) y actualiza. El DOGC es la excepción: su página no trae el texto,
-así que va por su API (`_descargar_dogc`). Actualiza:
+Los sumarios no traen el plazo de presentación ni datos como grupo de
+titulación o número de plazas; están en el cuerpo de cada disposición. Este
+pase, desacoplado de los scrapers, recorre las convocatorias sin plazo revisado,
+baja el texto de su `url_oficial` y actualiza:
 
-  - `plazo_texto`      -> la frase literal (siempre que se encuentre).
+  - `plazo_texto`      -> la frase literal del plazo.
   - `fecha_fin_plazo`  -> solo si el plazo es en días naturales (exacto).
+  - `grupo`            -> grupo de titulación reconocido (A1, A2, B...).
+  - `num_plazas`       -> número de plazas convocadas.
+
+El DOGC es la excepción: su página no trae el texto, así que va por su API
+(`_descargar_dogc`).
 
 Marca `plazo_texto = ''` cuando la descarga fue bien pero no había plazo, para
 no volver a bajar esa página cada día. Si la descarga falla, deja el registro
@@ -29,6 +33,7 @@ import sys
 
 import httpx
 
+from common.enriquecimiento import extraer_grupo, extraer_num_plazas
 from common.http import contexto_tls_legacy
 from common.plazo import calcular_fin, extraer_plazo
 
@@ -38,7 +43,7 @@ BROWSER_UA = (
 )
 
 SELECT_SQL = """
-    SELECT id, url_oficial, fecha_publicacion, fuente_codigo
+    SELECT id, url_oficial, fecha_publicacion, fuente_codigo, grupo, num_plazas
     FROM convocatorias
     WHERE plazo_texto IS NULL
       AND fecha_ingesta > now() - interval '45 days'
@@ -51,6 +56,8 @@ UPDATE_SQL = """
     SET plazo_texto = %(plazo_texto)s,
         fecha_fin_plazo = COALESCE(%(fecha_fin)s, fecha_fin_plazo),
         fecha_fin_aprox = %(aprox)s,
+        grupo = COALESCE(%(grupo)s, grupo),
+        num_plazas = COALESCE(%(num_plazas)s, num_plazas),
         actualizada_en = now()
     WHERE id = %(id)s
 """
@@ -124,7 +131,7 @@ def main(argv: list[str] | None = None) -> int:
     import psycopg
     from psycopg.rows import dict_row
 
-    enriquecidas = con_fecha = revisadas = 0
+    enriquecidas = con_fecha = revisadas = con_grupo = con_plazas = 0
     with psycopg.connect(dsn) as conn:
         if args.reprocesar and not args.dry_run:
             with conn.cursor() as cur:
@@ -146,10 +153,19 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  skip {f['id']}: {type(exc).__name__}", file=sys.stderr)
                 continue
             revisadas += 1
+
+            # Extraer campos estructurados si el scraper no los había rellenado.
+            grupo = extraer_grupo(texto) if f["grupo"] is None else None
+            num_plazas = extraer_num_plazas(texto) if f["num_plazas"] is None else None
+            if grupo:
+                con_grupo += 1
+            if num_plazas is not None:
+                con_plazas += 1
+
             plazo = extraer_plazo(texto)
             if not plazo:
                 if not args.dry_run:
-                    _update(conn, f["id"], "", None, False)
+                    _update(conn, f["id"], "", None, False, grupo, num_plazas)
                 continue
             fin, aprox = calcular_fin(f["fecha_publicacion"], plazo)
             fin_iso = fin.isoformat() if fin else None
@@ -157,24 +173,47 @@ def main(argv: list[str] | None = None) -> int:
             if fin_iso:
                 con_fecha += 1
             marca = f"FECHA {fin_iso}{' (aprox)' if aprox else ''}" if fin_iso else "solo texto"
-            print(f"  {f['id']}: {marca} · {plazo['plazo_texto'][:80]}")
+            extra = []
+            if grupo:
+                extra.append(f"grupo {grupo}")
+            if num_plazas is not None:
+                extra.append(f"{num_plazas} plazas")
+            extra_txt = f" · {', '.join(extra)}" if extra else ""
+            print(f"  {f['id']}: {marca} · {plazo['plazo_texto'][:80]}{extra_txt}")
             if not args.dry_run:
-                _update(conn, f["id"], plazo["plazo_texto"], fin_iso, aprox)
+                _update(conn, f["id"], plazo["plazo_texto"], fin_iso, aprox, grupo, num_plazas)
         if not args.dry_run:
             conn.commit()
 
     print(
         f"Revisadas: {revisadas}. Con plazo: {enriquecidas} "
-        f"(con fecha de fin: {con_fecha}).{' [dry-run]' if args.dry_run else ''}"
+        f"(con fecha de fin: {con_fecha}). "
+        f"Con grupo: {con_grupo}. Con plazas: {con_plazas}."
+        f"{' [dry-run]' if args.dry_run else ''}"
     )
     return 0
 
 
-def _update(conn, id_: str, plazo_texto: str, fecha_fin: str | None, aprox: bool) -> None:
+def _update(
+    conn,
+    id_: str,
+    plazo_texto: str,
+    fecha_fin: str | None,
+    aprox: bool,
+    grupo: str | None,
+    num_plazas: int | None,
+) -> None:
     with conn.cursor() as cur:
         cur.execute(
             UPDATE_SQL,
-            {"id": id_, "plazo_texto": plazo_texto, "fecha_fin": fecha_fin, "aprox": aprox},
+            {
+                "id": id_,
+                "plazo_texto": plazo_texto,
+                "fecha_fin": fecha_fin,
+                "aprox": aprox,
+                "grupo": grupo,
+                "num_plazas": num_plazas,
+            },
         )
 
 

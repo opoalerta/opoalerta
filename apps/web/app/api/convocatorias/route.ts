@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
-import { buscarConvocatorias, POR_PAGINA } from "@/lib/db";
+import { buscarConvocatorias, type Orden, POR_PAGINA } from "@/lib/db";
 
 export const runtime = "nodejs";
 // Los datos cambian con cada ingesta diaria; servir una página cacheada
 // mostraría convocatorias que ya no están o esconderá las recién publicadas.
 export const dynamic = "force-dynamic";
 
+const ORDENES_VALIDOS = new Set<Orden>(["recientes", "urgencia"]);
+
 /**
  * Búsqueda paginada de convocatorias.
  *
- * GET /api/convocatorias?q=&fuente=&ambito=&desde=0&cuantas=24
+ * GET /api/convocatorias?q=&fuente=&ambito=&ccaa=&orden=recientes&desde=0&cuantas=24
  *   → { items, total, desde, cuantas }
  *
  * Existe para que el buscador deje de filtrar en el navegador. Filtrando allí
@@ -26,6 +28,7 @@ export async function GET(request: Request) {
 
   const desde = Number.parseInt(p.get("desde") ?? "0", 10);
   const cuantas = Number.parseInt(p.get("cuantas") ?? String(POR_PAGINA), 10);
+  const orden = p.get("orden") ?? "recientes";
 
   let pagina;
   try {
@@ -33,6 +36,8 @@ export async function GET(request: Request) {
       q: p.get("q") ?? "",
       fuente: p.get("fuente") ?? "",
       ambito: p.get("ambito") ?? "",
+      ccaa: p.get("ccaa") ?? "",
+      orden: ORDENES_VALIDOS.has(orden as Orden) ? (orden as Orden) : "recientes",
       // Number.isFinite descarta NaN de un parámetro inventado; la capa de datos
       // ya recorta los rangos, aquí basta con no pasarle basura.
       desde: Number.isFinite(desde) ? desde : 0,

@@ -5,7 +5,7 @@ import { Container } from "./components/Container";
 import { ConvocatoriaSearch } from "./components/ConvocatoriaSearch";
 import { FeatureBlock } from "./components/FeatureBlock";
 import { JsonLd } from "./components/JsonLd";
-import { NoticeBox } from "./components/NoticeBox";
+
 
 // La ingesta corre una vez al día y la portada no lee la petición: no había
 // nada que obligara a renderizarla por visita. Con `force-dynamic` cada visita
@@ -66,14 +66,6 @@ export default async function Home() {
   const facetas = await getFacetas();
   const estado = await getEstado();
 
-  const activas = estado.filter((e) => e.estado === "ok").length;
-  const totalConvocatorias = estado.reduce((sum, e) => sum + e.total, 0);
-  const ultimaActualizacion = estado
-    .filter((e) => e.ultima_ingesta)
-    .map((e) => e.ultima_ingesta!)
-    .sort()
-    .at(-1);
-
   const baseUrl = getBaseUrl();
 
   const structuredData = [
@@ -130,7 +122,7 @@ export default async function Home() {
   return (
     <>
       <JsonLd data={structuredData} />
-      <section className="bg-cream py-16">
+      <section className="bg-cream py-10">
         <Container>
           <div className="max-w-3xl">
             <p className="mb-4 inline-block rounded bg-gold px-3 py-1 text-xs font-semibold uppercase tracking-wide text-navy">
@@ -139,66 +131,17 @@ export default async function Home() {
             <h1 className="text-4xl font-bold tracking-tight text-navy sm:text-5xl">
               Todas las convocatorias de empleo público de España, en un solo sitio.
             </h1>
-            <p className="mt-6 text-xl text-slate">
+            <p className="mt-4 text-lg leading-snug text-slate">
               OpoAlerta agrega automáticamente las oposiciones del BOE y los boletines
               autonómicos. Gratis, sin publicidad, con el código y los datos abiertos.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <a
-                href="#convocatorias"
-                className="inline-flex items-center rounded bg-gold px-6 py-3 text-base font-semibold text-navy no-underline shadow-sm hover:bg-gold-dark hover:text-navy-900 focus-visible:outline-offset-2"
-              >
-                Buscar convocatorias
-              </a>
-            </div>
           </div>
         </Container>
       </section>
 
-      <section className="py-12">
+      <section id="convocatorias" className="py-6">
         <Container>
-          <NoticeBox title="Cobertura nacional en expansión" variant="info">
-            {activas > 0 ? (
-              <>
-                Ya rastreamos <strong>{activas} fuentes oficiales</strong> (BOE, boletines
-                autonómicos, el CIDO de Cataluña y las oposiciones de la UE)
-                {totalConvocatorias > 0 && (
-                  <>
-                    {" "}
-                    con <strong>{totalConvocatorias} convocatorias</strong> abiertas
-                  </>
-                )}{" "}
-                y vamos sumando el resto de comunidades. La ingesta corre cada día a las
-                06:00 UTC.{" "}
-                {ultimaActualizacion && (
-                  <>
-                    Última actualización:{" "}
-                    <time dateTime={ultimaActualizacion}>
-                      {new Date(ultimaActualizacion).toLocaleDateString("es-ES", {
-                        dateStyle: "medium",
-                      })}
-                    </time>
-                    .{" "}
-                  </>
-                )}
-                Si ves algo incorrecto, puedes{" "}
-                <a href="https://github.com/opoalerta/opoalerta/issues">abrir una incidencia</a>.
-              </>
-            ) : (
-              <>
-                La ingesta del BOE ya está activa y corre cada día a las 06:00 UTC. Vamos
-                incorporando los boletines autonómicos para cubrir toda España. Si ves algo
-                incorrecto, puedes{" "}
-                <a href="https://github.com/opoalerta/opoalerta/issues">abrir una incidencia</a>.
-              </>
-            )}
-          </NoticeBox>
-        </Container>
-      </section>
-
-      <section id="convocatorias" className="py-8">
-        <Container>
-          <div className="mb-6">
+          <div className="mb-4">
             <h2 className="text-2xl font-bold text-navy">Últimas convocatorias</h2>
             <p className="mt-1 text-slate">
               Consulta las últimas publicaciones o filtra por puesto, organismo o fuente.
@@ -209,13 +152,14 @@ export default async function Home() {
             total={primeraTanda.total}
             fuentes={facetas.fuentes}
             ambitos={facetas.ambitos}
+            ccaas={facetas.ccaas}
           />
           {/*
             El buscador filtra contra /api/convocatorias, que está en Disallow,
             así que para un rastreador la portada acaba en las tarjetas que ve
             renderizadas. Este enlace es la puerta al archivo completo.
           */}
-          <p className="mt-8 text-center">
+          <p className="mt-6 text-center">
             <Link
               href="/convocatorias"
               className="font-semibold text-navy-700 hover:text-navy"

@@ -107,10 +107,14 @@ export type Pagina = {
   total: number;
 };
 
+export type Orden = "recientes" | "urgencia";
+
 export type Filtros = {
   q?: string;
   fuente?: string;
   ambito?: string;
+  ccaa?: string;
+  orden?: Orden;
   desde?: number;
   cuantas?: number;
 };
@@ -149,11 +153,18 @@ export async function buscarConvocatorias(
   const q = (filtros.q ?? "").trim();
   const fuente = (filtros.fuente ?? "").trim();
   const ambito = (filtros.ambito ?? "").trim();
+  const ccaa = (filtros.ccaa ?? "").trim();
+  const orden: Orden = filtros.orden === "urgencia" ? "urgencia" : "recientes";
   const desde = Math.max(0, filtros.desde ?? 0);
   const cuantas = Math.min(Math.max(1, filtros.cuantas ?? POR_PAGINA), 200);
 
   // Las cadenas vacías desactivan su filtro, así no hay que componer SQL.
   const patron = q ? `%${q}%` : "";
+
+  const orderBy =
+    orden === "urgencia"
+      ? sql.unsafe("fecha_fin_plazo ASC NULLS LAST, fecha_publicacion DESC")
+      : sql.unsafe("fecha_publicacion DESC, fecha_ingesta DESC, id DESC");
 
   // La comparación va sin tildes por los dos lados, igual que hacía el cliente
   // al normalizar en NFD: buscar «oposicion» tiene que seguir encontrando
@@ -178,13 +189,14 @@ export async function buscarConvocatorias(
           )
           AND (${fuente} = '' OR fuente_codigo = ${fuente})
           AND (${ambito} = '' OR ambito = ${ambito})
+          AND (${ccaa} = '' OR ccaa = ${ccaa})
           AND (
             ${patron} = ''
             OR translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE translate(lower(${patron}), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc')
             OR translate(lower(organismo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE translate(lower(${patron}), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc')
             OR lower(fuente_codigo) LIKE lower(${patron})
           )
-        ORDER BY fecha_publicacion DESC, fecha_ingesta DESC, id DESC
+        ORDER BY ${orderBy}
         LIMIT ${cuantas} OFFSET ${desde}
       `,
       sql`
@@ -198,6 +210,7 @@ export async function buscarConvocatorias(
           )
           AND (${fuente} = '' OR fuente_codigo = ${fuente})
           AND (${ambito} = '' OR ambito = ${ambito})
+          AND (${ccaa} = '' OR ccaa = ${ccaa})
           AND (
             ${patron} = ''
             OR translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE translate(lower(${patron}), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc')
@@ -223,18 +236,20 @@ export async function buscarConvocatorias(
  * fuente cuyas convocatorias quedaran fuera del corte desaparecía del
  * desplegable. Ahora se preguntan a la tabla.
  */
-export async function getFacetas(): Promise<{ fuentes: string[]; ambitos: string[] }> {
+export async function getFacetas(): Promise<{ fuentes: string[]; ambitos: string[]; ccaas: string[] }> {
   // Solo la usa la portada, que declara `revalidate`.
   const sql = clientCacheable();
-  if (!sql) return { fuentes: [], ambitos: [] };
+  if (!sql) return { fuentes: [], ambitos: [], ccaas: [] };
   try {
-    const [f, a] = await Promise.all([
+    const [f, a, c] = await Promise.all([
       sql`SELECT DISTINCT fuente_codigo AS v FROM convocatorias ORDER BY v`,
       sql`SELECT DISTINCT ambito AS v FROM convocatorias ORDER BY v`,
+      sql`SELECT DISTINCT ccaa AS v FROM convocatorias WHERE ccaa IS NOT NULL ORDER BY v`,
     ]);
     return {
       fuentes: (f as { v: string }[]).map((r) => r.v),
       ambitos: (a as { v: string }[]).map((r) => r.v),
+      ccaas: (c as { v: string }[]).map((r) => r.v),
     };
   } catch (err) {
     fallo("getFacetas", err);
