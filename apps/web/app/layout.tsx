@@ -57,6 +57,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
+    images: ["/og.png"],
     type: "website",
     locale: "es_ES",
     url: baseUrl,
@@ -67,6 +68,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    // Explícita: `twitter` no hereda las imágenes de `openGraph` en Next, y la
+    // tarjeta grande sin imagen depende de que el scraper caiga a og:image.
+    images: ["/og.png"],
     site: "@opoalerta",
     title: "OpoAlerta — Convocatorias de empleo público en España",
     description:
