@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { vincularTelegram, bajaTelegram, resumenFiltros } from "@/lib/suscripciones";
-import { sendTelegram } from "@/lib/telegram";
+import { BOT_USERNAME, sendTelegram, webhookSecretConfigured, validWebhookSecret } from "@/lib/telegram";
+import { readJsonObject } from "@/lib/alert-input";
+import { escapeHtml } from "@/lib/html";
 
 export const runtime = "nodejs";
 
@@ -9,32 +11,48 @@ export const runtime = "nodejs";
  * suscripción y la confirma. Los tokens son UUID no públicos, así que un
  * mensaje con un token inexistente simplemente no hace nada.
  */
-export async function POST(request: Request) {
-  // Verificación opcional del secreto del webhook.
-  const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
-  if (secret && request.headers.get("x-telegram-bot-api-secret-token") !== secret) {
+async function handleWebhook(request: Request) {
+  if (!webhookSecretConfigured()) {
+    return NextResponse.json({ ok: false }, { status: 503 });
+  }
+  if (!validWebhookSecret(request.headers.get("x-telegram-bot-api-secret-token"))) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  let update: {
-    message?: { text?: string; chat?: { id?: number } };
-  };
+  let update: Record<string, unknown>;
   try {
-    update = await request.json();
+    update = await readJsonObject(request, 16384);
   } catch {
     return NextResponse.json({ ok: true }); // ignora payloads no válidos
   }
 
-  const text = update.message?.text?.trim() ?? "";
-  const chatId = update.message?.chat?.id;
+  const message = update.message;
+  if (!message || typeof message !== "object" || !("text" in message)
+    || typeof message.text !== "string" || !("chat" in message)) {
+    return NextResponse.json({ ok: true });
+  }
+  const chat = message.chat;
+  if (!chat || typeof chat !== "object" || !("type" in chat) || chat.type !== "private"
+    || !("id" in chat) || typeof chat.id !== "number" || !Number.isSafeInteger(chat.id) || chat.id <= 0) {
+    return NextResponse.json({ ok: true });
+  }
+  const chatId = chat.id;
+  const [addressedCommand, ...args] = message.text.trim().split(/\s+/);
+  const [command, username, extra] = addressedCommand.split("@");
+  if (extra !== undefined || (username !== undefined && username.toLowerCase() !== BOT_USERNAME.toLowerCase())) {
+    return NextResponse.json({ ok: true });
+  }
 
-  if (chatId && text.startsWith("/start")) {
-    const token = text.split(/\s+/)[1];
+  if (command === "/start" && args.length <= 1) {
+    const token = args[0];
+    if (token && !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)) {
+      return NextResponse.json({ ok: true });
+    }
     const filtros = token ? await vincularTelegram(token, chatId) : null;
     if (filtros) {
       await sendTelegram(
         chatId,
-        `✅ <b>Alerta activada.</b> Te avisaré cuando salga una convocatoria de: <b>${resumenFiltros(filtros)}</b>.\n\nPara cambiar los criterios, vuelve a opoalerta.es y suscríbete con otra búsqueda. Para darte de baja, escribe /stop.`
+        `✅ <b>Alerta activada.</b> Te avisaré cuando salga una convocatoria de: <b>${escapeHtml(resumenFiltros(filtros))}</b>.\n\nPara cambiar los criterios, vuelve a opoalerta.es y suscríbete con otra búsqueda. Para darte de baja, escribe /stop.`
       );
     } else {
       await sendTelegram(
@@ -42,7 +60,7 @@ export async function POST(request: Request) {
         "👋 Soy el bot de <b>OpoAlerta</b>. Para recibir alertas, entra en opoalerta.es, elige tu búsqueda y pulsa «Recibir por Telegram»."
       );
     }
-  } else if (chatId && text.startsWith("/stop")) {
+  } else if (command === "/stop" && args.length === 0) {
     const n = await bajaTelegram(chatId);
     await sendTelegram(
       chatId,
@@ -52,6 +70,15 @@ export async function POST(request: Request) {
     );
   }
 
-  // Telegram espera siempre 200.
+  // Acknowledge valid updates, including commands we do not handle.
   return NextResponse.json({ ok: true });
+}
+
+export async function POST(request: Request) {
+  try {
+    return await handleWebhook(request);
+  } catch {
+    // Preserve Telegram retries without logging database parameters or chat identifiers.
+    return NextResponse.json({ ok: false }, { status: 503 });
+  }
 }

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { crearSuscripcion, type FiltrosSuscripcion } from "@/lib/suscripciones";
 import { sendEmail, emailConfigured, SITE_URL } from "@/lib/email";
+import { InvalidInput, readJsonObject, parseEmail, parseFilters } from "@/lib/alert-input";
+import { limitSubscription } from "@/lib/alert-rate-limit";
+import { escapeHtml } from "@/lib/html";
 
 export const runtime = "nodejs";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function describeFiltros(f: FiltrosSuscripcion): string {
   const partes: string[] = [];
@@ -16,16 +17,15 @@ function describeFiltros(f: FiltrosSuscripcion): string {
 }
 
 export async function POST(request: Request) {
-  let body: Record<string, unknown>;
+  let email: string;
+  let filtros: FiltrosSuscripcion;
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: "Cuerpo inválido" }, { status: 400 });
-  }
-
-  const email = String(body.email ?? "").trim();
-  if (!EMAIL_RE.test(email)) {
-    return NextResponse.json({ ok: false, error: "Email no válido" }, { status: 400 });
+    const body = await readJsonObject(request);
+    email = parseEmail(body.email);
+    filtros = parseFilters(body);
+  } catch (error) {
+    return NextResponse.json({ ok: false, error: "Email o filtros no válidos" },
+      { status: error instanceof InvalidInput ? error.status : 400 });
   }
 
   if (!emailConfigured()) {
@@ -35,14 +35,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const filtros: FiltrosSuscripcion = {
-    q: (body.q as string) ?? null,
-    ccaa: (body.ccaa as string) ?? null,
-    ambito: (body.ambito as string) ?? null,
-    fuente_codigo: (body.fuente_codigo as string) ?? null,
-  };
-
-  const creada = await crearSuscripcion(email, filtros);
+  const quota = await limitSubscription(request, "email", email);
+  if (!quota.ok) {
+    return NextResponse.json({ ok: false, error: quota.status === 429
+      ? "Demasiadas solicitudes. Inténtalo más tarde."
+      : "Las alertas no están disponibles temporalmente." }, {
+      status: quota.status,
+      headers: quota.retryAfter ? { "Retry-After": String(quota.retryAfter) } : {},
+    });
+  }
+  // Do not include database errors (which may contain the address) in logs or responses.
+  const creada = await crearSuscripcion(email, filtros).catch(() => null);
   if (!creada) {
     return NextResponse.json(
       { ok: false, error: "No se pudo guardar la suscripción." },
@@ -50,9 +53,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const confirmar = `${SITE_URL}/alertas/confirmar?token=${creada.token}`;
-  const baja = `${SITE_URL}/alertas/baja?token=${creada.token}`;
-  const resumen = describeFiltros(filtros);
+  const confirmar = escapeHtml(`${SITE_URL}/alertas/confirmar?token=${encodeURIComponent(creada.token)}`);
+  const baja = escapeHtml(`${SITE_URL}/alertas/baja?token=${encodeURIComponent(creada.token)}`);
+  const resumen = escapeHtml(describeFiltros(filtros));
 
   const html = `
     <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">

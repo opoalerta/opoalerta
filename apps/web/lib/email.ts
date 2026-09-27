@@ -29,6 +29,7 @@ export async function sendEmail(opts: {
   try {
     const resp = await fetch(RESEND_ENDPOINT, {
       method: "POST",
+      signal: AbortSignal.timeout(10000),
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
@@ -36,10 +37,10 @@ export async function sendEmail(opts: {
       body: JSON.stringify({ from: FROM, to: opts.to, subject: opts.subject, html: opts.html }),
     });
     if (!resp.ok) {
-      return { ok: false, error: `Resend ${resp.status}: ${await resp.text()}` };
+      return { ok: false, error: `Resend ${resp.status}` };
     }
     return { ok: true };
-  } catch (err) {
-    return { ok: false, error: String(err) };
+  } catch {
+    return { ok: false, error: "Resend no disponible" };
   }
 }

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { crearSuscripcionTelegram, type FiltrosSuscripcion } from "@/lib/suscripciones";
 import { telegramConfigured, deepLink } from "@/lib/telegram";
+import { InvalidInput, readJsonObject, parseFilters } from "@/lib/alert-input";
+import { limitSubscription } from "@/lib/alert-rate-limit";
 
 export const runtime = "nodejs";
 
@@ -12,21 +14,24 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: Record<string, unknown>;
+  let filtros: FiltrosSuscripcion;
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: "Cuerpo inválido" }, { status: 400 });
+    filtros = parseFilters(await readJsonObject(request));
+  } catch (error) {
+    return NextResponse.json({ ok: false, error: "Filtros no válidos" },
+      { status: error instanceof InvalidInput ? error.status : 400 });
   }
 
-  const filtros: FiltrosSuscripcion = {
-    q: (body.q as string) ?? null,
-    ccaa: (body.ccaa as string) ?? null,
-    ambito: (body.ambito as string) ?? null,
-    fuente_codigo: (body.fuente_codigo as string) ?? null,
-  };
-
-  const creada = await crearSuscripcionTelegram(filtros);
+  const quota = await limitSubscription(request, "telegram");
+  if (!quota.ok) {
+    return NextResponse.json({ ok: false, error: quota.status === 429
+      ? "Demasiadas solicitudes. Inténtalo más tarde."
+      : "Las alertas no están disponibles temporalmente." }, {
+      status: quota.status,
+      headers: quota.retryAfter ? { "Retry-After": String(quota.retryAfter) } : {},
+    });
+  }
+  const creada = await crearSuscripcionTelegram(filtros).catch(() => null);
   if (!creada) {
     return NextResponse.json(
       { ok: false, error: "No se pudo crear la suscripción." },

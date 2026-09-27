@@ -11,7 +11,7 @@ Requiere en el entorno:
   - SITE_URL         base para el enlace de baja.
 
 Uso:
-    python -m notificar --dry-run   # muestra a quién y qué enviaría, sin enviar
+    python -m notificar --dry-run   # muestra recuentos por canal, sin enviar
     python -m notificar             # envía de verdad
 """
 
@@ -21,7 +21,9 @@ import argparse
 import os
 import sys
 import unicodedata
+from html import escape
 from typing import Any
+from urllib.parse import quote, urlsplit
 
 import httpx
 
@@ -60,15 +62,15 @@ def _fila(c: dict[str, Any]) -> str:
     meta = f"{c['organismo']} · {c['fuente_codigo'].upper()} · {c['fecha_publicacion']}"
     return (
         '<li style="margin-bottom:14px">'
-        f'<a href="{c["url_oficial"]}" style="{link_style}">{c["titulo"]}</a>'
-        f'<div style="color:#595959;font-size:13px">{meta}</div>'
+        f'<a href="{_safe_url(c["url_oficial"])}" style="{link_style}">{escape(c["titulo"])}</a>'
+        f'<div style="color:#595959;font-size:13px">{escape(meta)}</div>'
         "</li>"
     )
 
 
 def _render(convocatorias: list[dict[str, Any]], token: str) -> str:
     filas = "".join(_fila(c) for c in convocatorias)
-    baja = f"{SITE_URL}/alertas/baja?token={token}"
+    baja = _safe_url(f"{SITE_URL}/alertas/baja?token={quote(token, safe='')}")
     body_style = (
         "font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;"
         "max-width:600px;margin:0 auto;color:#1a1a1a"
@@ -88,20 +90,42 @@ def _render(convocatorias: list[dict[str, Any]], token: str) -> str:
 
 def _enviar(api_key: str, to: str, html: str, n: int) -> bool:
     asunto = f"{n} nueva{'s' if n != 1 else ''} convocatoria{'s' if n != 1 else ''} · OpoAlerta"
-    resp = httpx.post(
-        RESEND_ENDPOINT,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-        json={"from": FROM, "to": to, "subject": asunto, "html": html},
-        timeout=30,
-    )
+    try:
+        resp = httpx.post(
+            RESEND_ENDPOINT,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={"from": FROM, "to": to, "subject": asunto, "html": html},
+            timeout=30,
+        )
+    except httpx.HTTPError:
+        print("  ERROR Resend: fallo de transporte", file=sys.stderr)
+        return False
     if resp.status_code >= 300:
-        print(f"  ERROR Resend {resp.status_code}: {resp.text[:200]}", file=sys.stderr)
+        print(f"  ERROR Resend {resp.status_code}", file=sys.stderr)
         return False
     return True
 
 
 def _escape_html(s: str) -> str:
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    return escape(s, quote=True)
+
+
+def _safe_url(value: str) -> str:
+    """Allow web links only; escape separately for their HTML attribute context."""
+    try:
+        parts = urlsplit(value)
+        if (
+            parts.scheme in {"https", "http"}
+            and parts.hostname
+            and not parts.username
+            and not parts.password
+            and not any(ord(c) < 33 or ord(c) == 127 for c in value)
+            and "\\" not in value
+        ):
+            return escape(value, quote=True)
+    except ValueError:
+        pass
+    return "https://opoalerta.es"
 
 
 def _acorta(s: str, n: int) -> str:
@@ -114,27 +138,38 @@ def _render_telegram(convocatorias: list[dict[str, Any]]) -> str:
     for c in convocatorias[:TELEGRAM_MAX_ITEMS]:
         titulo = _escape_html(_acorta(c["titulo"], TELEGRAM_TITULO_MAX))
         org = _escape_html(_acorta(c["organismo"], 60))
-        lineas.append(f'• <a href="{c["url_oficial"]}">{titulo}</a>')
-        lineas.append(f"  {org} · {c['fuente_codigo'].upper()}")
+        lineas.append(f'• <a href="{_safe_url(c["url_oficial"])}">{titulo}</a>')
+        lineas.append(f"  {org} · {_escape_html(c['fuente_codigo'].upper())}")
     if n > TELEGRAM_MAX_ITEMS:
-        lineas.append(f"\n…y {n - TELEGRAM_MAX_ITEMS} más en {SITE_URL}")
+        lineas.append(f"\n…y {n - TELEGRAM_MAX_ITEMS} más en {_escape_html(SITE_URL)}")
     lineas.append("\nPara darte de baja: /stop")
     return "\n".join(lineas)
 
 
 def _enviar_telegram(bot_token: str, chat_id: int, text: str) -> bool:
-    resp = httpx.post(
-        f"https://api.telegram.org/bot{bot_token}/sendMessage",
-        json={
-            "chat_id": chat_id,
-            "text": text,
-            "parse_mode": "HTML",
-            "disable_web_page_preview": True,
-        },
-        timeout=30,
-    )
+    try:
+        resp = httpx.post(
+            f"https://api.telegram.org/bot{bot_token}/sendMessage",
+            json={
+                "chat_id": chat_id,
+                "text": text,
+                "parse_mode": "HTML",
+                "disable_web_page_preview": True,
+            },
+            timeout=30,
+        )
+    except httpx.HTTPError:
+        print("  ERROR Telegram: fallo de transporte", file=sys.stderr)
+        return False
     if resp.status_code >= 300:
-        print(f"  ERROR Telegram {resp.status_code}: {resp.text[:200]}", file=sys.stderr)
+        print(f"  ERROR Telegram {resp.status_code}", file=sys.stderr)
+        return False
+    try:
+        result = resp.json()
+    except ValueError:
+        result = None
+    if not isinstance(result, dict) or result.get("ok") is not True:
+        print("  ERROR Telegram: respuesta no aceptada", file=sys.stderr)
         return False
     return True
 
@@ -217,8 +252,8 @@ def main(argv: list[str] | None = None) -> int:
             matches = [c for c in nuevas if coincide(c, susc)]
             if not matches:
                 continue
-            destino = susc.get("email") or f"telegram:{susc.get('telegram_chat_id')}"
-            print(f"  [{susc.get('canal', 'email')}] {destino}: {len(matches)} convocatorias")
+            canal = "telegram" if susc.get("canal") == "telegram" else "email"
+            print(f"  [{canal}] {len(matches)} convocatorias")
             if args.dry_run:
                 continue
             if _notificar_una(susc, matches, api_key, tg_token):
