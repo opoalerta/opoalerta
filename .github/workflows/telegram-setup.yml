@@ -7,19 +7,22 @@ on:
         description: "URL base (vacío = https://opoalerta.es)"
         required: false
 
+permissions:
+  contents: read
+
+concurrency:
+  group: telegram-webhook-setup
+  cancel-in-progress: false
+
 jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - name: setWebhook
         env:
-          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        run: |
-          if [ -z "$TOKEN" ]; then echo "::error::Falta TELEGRAM_BOT_TOKEN"; exit 1; fi
-          BASE="${{ inputs.site_url }}"
-          [ -z "$BASE" ] && BASE="${{ vars.SITE_URL }}"
-          [ -z "$BASE" ] && BASE="https://opoalerta.es"
-          echo "Webhook → ${BASE}/api/telegram"
-          curl -s "https://api.telegram.org/bot${TOKEN}/setWebhook" \
-            --data-urlencode "url=${BASE}/api/telegram" \
-            --data 'allowed_updates=["message"]' | tee /dev/stderr
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}
+          INPUT_SITE_URL: ${{ inputs.site_url }}
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: python3 scrapers/configurar_telegram.py
