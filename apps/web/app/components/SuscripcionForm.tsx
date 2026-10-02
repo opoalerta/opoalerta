@@ -94,6 +94,7 @@ export function SuscripcionForm({
         ) : (
           <> cualquier convocatoria.</>
         )}{" "}
+        Si tu búsqueda es concreta, también te recordamos cuándo cierra el plazo.
         Gratis, sin spam, con baja en un clic.
       </p>
       <form onSubmit={submit} className="mt-4 flex flex-col gap-3 sm:flex-row">
