@@ -160,12 +160,12 @@ la de la matriz de [`ingest.yml`](.github/workflows/ingest.yml).
 - [x] Alertas por **Telegram** (bot [@opoalertbot](https://t.me/opoalertbot)).
 - [x] **RSS** y **volcado mensual** de datos abiertos.
 - [x] Extracción de **fecha de fin de plazo** (`scrapers/enriquecer.py`, en la ingesta diaria).
-- [ ] **Fase 2 — Cobertura nacional** (en curso): 12 de 17 comunidades + Ceuta y Melilla.
+- [ ] **Fase 2 — Cobertura nacional** (en curso): 13 de 17 comunidades + Ceuta y Melilla.
   - [x] Andalucía (BOJA) · Aragón (BOA) · Asturias (BOPA) · Canarias (BOC)
   - [x] Castilla-La Mancha (DOCM) · Castilla y León (BOCYL) · Cataluña (DOGC)
   - [x] C. Valenciana (DOGV) · Extremadura (DOE) · Galicia (DOG)
-  - [x] Illes Balears (BOIB) · Madrid (BOCM)
-  - [ ] País Vasco (BOPV) · Murcia (BORM) · Navarra (BON)
+  - [x] Illes Balears (BOIB) · Madrid (BOCM) · País Vasco (BOPV)
+  - [ ] Murcia (BORM) · Navarra (BON)
   - [ ] Cantabria (BOC Cantabria) · La Rioja (BOR) · Ceuta y Melilla
 - [ ] Ámbito según **quién convoca** y no según dónde se publicó
   ([#94](https://github.com/opoalerta/opoalerta/issues/94)).
