@@ -214,8 +214,8 @@ export function OposicionesPagina({
           <Rejilla items={abiertas} plazo />
         ) : (
           <p className="rounded border border-dashed border-border p-5 text-slate">
-            Ahora mismo no hay ninguna con el plazo abierto. Crea una alerta y te avisamos en
-            cuanto se publique la siguiente.
+            Ahora mismo no hay ninguna con fecha límite abierta que conozcamos. Crea una alerta y
+            te avisamos en cuanto se publique la siguiente.
           </p>
         )}
       </section>
@@ -224,9 +224,11 @@ export function OposicionesPagina({
 
       {recientes.length > 0 && (
         <section className="mt-12">
-          <h2 className="mb-1 text-xl font-semibold text-navy">Cerradas en los últimos meses</h2>
+          <h2 className="mb-1 text-xl font-semibold text-navy">Últimas publicadas</h2>
           <p className="mb-4 text-sm text-slate">
-            Para hacerse una idea de cada cuánto salen y quién las convoca.
+            Con el plazo ya cerrado o sin fecha límite conocida: revisa la publicación oficial
+            antes de dar una por perdida. Sirven también para ver cada cuánto salen y quién
+            las convoca.
           </p>
           <Rejilla items={recientes} />
         </section>

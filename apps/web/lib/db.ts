@@ -517,9 +517,9 @@ type Patrones = { incluye: string[]; excluye?: string[] };
 const TODO: Patrones = { incluye: ["%"] };
 
 export type ListadoOposiciones = {
-  /** Plazo abierto (o sin plazo conocido y publicada hace menos de un año). */
+  /** Con fecha límite conocida y aún no vencida. */
   abiertas: Convocatoria[];
-  /** Publicadas en los últimos 12 meses con el plazo ya vencido. */
+  /** El resto de los últimos 12 meses: plazo vencido o sin plazo conocido. */
   recientes: Convocatoria[];
   /** Todas las publicadas en los últimos 12 meses, abiertas o no. */
   totalAnio: number;
@@ -528,10 +528,12 @@ export type ListadoOposiciones = {
 /**
  * Convocatorias de un perfil y/o comunidad para las páginas de /oposiciones.
  *
- * «Abiertas» usa la misma regla de vigencia que el buscador, para que la página
- * y la portada no se contradigan. Las cerradas del último año también salen,
- * aparte: quien busca «oposiciones de bombero en Galicia» quiere saber también
- * si hubo hace poco y cuántas, aunque ya no pueda presentarse.
+ * «Abiertas» son solo las que tienen una fecha límite futura. La regla de
+ * vigencia del buscador da también por viva una convocatoria sin plazo conocido
+ * durante un año, y bajo el rótulo «plazo abierto» eso sería prometer algo que
+ * no se sabe. Esas van con el resto del año, en «últimas publicadas»: quien
+ * busca «oposiciones de bombero en Galicia» quiere saber también si hubo hace
+ * poco y cuántas, aunque ya no pueda presentarse.
  *
  * El título se compara sin tildes con `translate`, igual que en
  * `buscarConvocatorias` (ver allí por qué no `unaccent`).
@@ -553,12 +555,11 @@ export async function listarOposiciones(
                fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
                url_oficial, fuente_codigo
         FROM convocatorias
-        WHERE (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END))
-          AND (fecha_fin_plazo IS NOT NULL OR ambito = 'europeo' OR fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year')
+        WHERE fecha_fin_plazo >= CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END)
           AND (${c} = '' OR ccaa = ${c})
           AND translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${incluye}::text[])
           AND NOT (translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${excluye}::text[]))
-        ORDER BY fecha_fin_plazo ASC NULLS LAST, fecha_publicacion DESC, id DESC
+        ORDER BY fecha_fin_plazo ASC, fecha_publicacion DESC, id DESC
         LIMIT 60
       `,
       sql`
@@ -567,7 +568,7 @@ export async function listarOposiciones(
                fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
                url_oficial, fuente_codigo
         FROM convocatorias
-        WHERE fecha_fin_plazo < CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END)
+        WHERE (fecha_fin_plazo IS NULL OR fecha_fin_plazo < CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END))
           AND fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year'
           AND (${c} = '' OR ccaa = ${c})
           AND translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${incluye}::text[])
