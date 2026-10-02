@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
-import { contarPaginasArchivo, getConvocatoriaIds } from "@/lib/db";
+import { contarOposiciones, contarPaginasArchivo, getConvocatoriaIds } from "@/lib/db";
+import { CCAA_SLUG } from "@/lib/ccaa";
+import { PERFILES } from "@/lib/perfiles";
+import { hrefOposiciones, MIN_INDEXABLE } from "./components/OposicionesPagina";
 import { getAllPosts } from "@/lib/blog";
 import { getBaseUrl } from "@/lib/site";
 
@@ -12,10 +15,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Sin recorte: el sitemap es lo que le dice a Google qué páginas existen, y
   // pedir 500 de 797 dejaba fuera precisamente las más antiguas, que son las
   // que la gente busca por nombre cuando ya no están en portada.
-  const [fichas, posts, paginasArchivo] = await Promise.all([
+  const [fichas, posts, paginasArchivo, conteo] = await Promise.all([
     getConvocatoriaIds(),
     getAllPosts(),
     contarPaginasArchivo(),
+    contarOposiciones(PERFILES),
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
@@ -79,5 +83,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...archivoPages, ...blogPages, ...convocatoriaPages];
+  // Páginas por puesto y comunidad: solo las que tienen contenido, con el mismo
+  // umbral que las marca como indexables. Anunciar una con noindex sería
+  // contradecirse.
+  const rutasOposiciones = ["/oposiciones"];
+  for (const p of PERFILES) {
+    if ((conteo.porPerfil[p.slug] ?? 0) >= MIN_INDEXABLE) rutasOposiciones.push(hrefOposiciones(p.slug, null));
+  }
+  for (const c of Object.keys(CCAA_SLUG)) {
+    if ((conteo.porCcaa[c] ?? 0) >= MIN_INDEXABLE) rutasOposiciones.push(hrefOposiciones(null, c));
+    for (const p of PERFILES) {
+      if ((conteo.porPar[`${p.slug}|${c}`] ?? 0) >= MIN_INDEXABLE) {
+        rutasOposiciones.push(hrefOposiciones(p.slug, c));
+      }
+    }
+  }
+  const oposicionesPages: MetadataRoute.Sitemap = rutasOposiciones.map((ruta) => ({
+    url: `${baseUrl}${ruta}`,
+    lastModified: new Date(),
+    changeFrequency: "daily",
+    priority: ruta === "/oposiciones" ? 0.9 : 0.8,
+  }));
+
+  return [...staticPages, ...oposicionesPages, ...archivoPages, ...blogPages, ...convocatoriaPages];
 }
