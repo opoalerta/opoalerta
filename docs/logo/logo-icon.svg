@@ -1,16 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 235 205">
-<path d="M35,65 H125 L142,82 V198 H35 Z" fill="#E4E6EA" stroke="#1B3358" stroke-width="5" stroke-linejoin="round"></path>
-<polygon points="125,65 142,82 125,82" fill="#C9CDD3" stroke="#1B3358" stroke-width="3" stroke-linejoin="round"></polygon>
-<path d="M15,45 H103 L120,62 V182 H15 Z" fill="#ffffff" stroke="#1B3358" stroke-width="5" stroke-linejoin="round"></path>
-<polygon points="103,45 120,62 103,62" fill="#E4E6EA" stroke="#1B3358" stroke-width="3" stroke-linejoin="round"></polygon>
-<line x1="32" y1="95" x2="90" y2="95" stroke="#B7BCC4" stroke-width="7" stroke-linecap="round"></line>
-<line x1="32" y1="113" x2="90" y2="113" stroke="#B7BCC4" stroke-width="7" stroke-linecap="round"></line>
-<line x1="32" y1="131" x2="75" y2="131" stroke="#B7BCC4" stroke-width="7" stroke-linecap="round"></line>
-<path d="M118,58 L183,12 L183,88 L118,74 Z" fill="#D9A62B" stroke="#1B3358" stroke-width="5" stroke-linejoin="round"></path>
-<ellipse cx="188" cy="50" rx="9" ry="42" fill="#C7941F" stroke="#1B3358" stroke-width="5"></ellipse>
-<circle cx="121" cy="61" r="10" fill="#1B3358"></circle>
-<rect x="92" y="64" width="26" height="16" rx="4" fill="#D9A62B" stroke="#1B3358" stroke-width="4" transform="rotate(38 92 64)"></rect>
-<line x1="198" y1="18" x2="213" y2="4" stroke="#1B3358" stroke-width="5" stroke-linecap="round"></line>
-<line x1="202" y1="50" x2="220" y2="50" stroke="#1B3358" stroke-width="5" stroke-linecap="round"></line>
-<line x1="198" y1="82" x2="213" y2="96" stroke="#1B3358" stroke-width="5" stroke-linecap="round"></line>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 0 228 196" role="img" aria-label="OpoAlerta">
+<mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="250" height="200">
+<rect width="250" height="200" fill="#fff"/>
+<path d="M96,50 V76 A6,6 0 0 0 102,82 H128" stroke="#000" stroke-width="8" fill="none"/>
+<rect x="36" y="108" width="66" height="14" rx="7" fill="#000"/>
+<rect x="36" y="136" width="66" height="14" rx="7" fill="#000"/>
+<g fill="#000" stroke="#000" stroke-width="14" stroke-linejoin="round"><circle cx="162" cy="34" r="8"/><path d="M162,40 C138,40 128,58 128,80 V100 L116,114 H208 L196,100 V80 C196,58 186,40 162,40 Z"/><path d="M150,119 A12,12 0 0 0 174,119 Z"/></g>
+</mask>
+<path d="M30,50 H96 L128,82 V174 A12,12 0 0 1 116,186 H30 A12,12 0 0 1 18,174 V62 A12,12 0 0 1 30,50 Z" fill="#1B3358" mask="url(#m)"/>
+<g fill="#F7C948" stroke="#1B3358" stroke-width="6" stroke-linejoin="round"><circle cx="162" cy="34" r="8"/><path d="M162,40 C138,40 128,58 128,80 V100 L116,114 H208 L196,100 V80 C196,58 186,40 162,40 Z"/><path d="M150,119 A12,12 0 0 0 174,119 Z"/></g>
+<g stroke="#1B3358" stroke-width="9" stroke-linecap="round"><line x1="192" y1="26" x2="203" y2="9"/><line x1="205" y1="47" x2="224" y2="41"/></g>
 </svg>
