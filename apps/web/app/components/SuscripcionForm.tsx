@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CCAA_NOMBRE } from "@/lib/ccaa";
 
 type Estado = "idle" | "enviando" | "ok" | "error";
 
@@ -8,10 +9,14 @@ export function SuscripcionForm({
   q,
   fuente,
   ambito,
+  ccaa = "",
 }: {
   q: string;
   fuente: string;
   ambito: string;
+  /** Código ISO de la comunidad. Sin él, la alerta valía para toda España
+      aunque la búsqueda estuviera filtrada por comunidad. */
+  ccaa?: string;
 }) {
   const [email, setEmail] = useState("");
   const [estado, setEstado] = useState<Estado>("idle");
@@ -25,7 +30,7 @@ export function SuscripcionForm({
       const resp = await fetch("/api/suscribir-telegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q, ambito, fuente_codigo: fuente }),
+        body: JSON.stringify({ q, ambito, ccaa, fuente_codigo: fuente }),
       });
       const data = await resp.json();
       if (resp.ok && data.ok && data.url) {
@@ -49,7 +54,7 @@ export function SuscripcionForm({
       const resp = await fetch("/api/suscribir", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, q, ambito, fuente_codigo: fuente }),
+        body: JSON.stringify({ email, q, ambito, ccaa, fuente_codigo: fuente }),
       });
       const data = await resp.json();
       if (resp.ok && data.ok) {
@@ -68,6 +73,7 @@ export function SuscripcionForm({
     q && `“${q}”`,
     fuente && fuente.toUpperCase(),
     ambito && ambito,
+    ccaa && (CCAA_NOMBRE[ccaa] ?? ccaa),
   ].filter(Boolean);
 
   if (estado === "ok") {
@@ -94,6 +100,7 @@ export function SuscripcionForm({
         ) : (
           <> cualquier convocatoria.</>
         )}{" "}
+        Si tu búsqueda es concreta, también te recordamos cuándo cierra el plazo.
         Gratis, sin spam, con baja en un clic.
       </p>
       <form onSubmit={submit} className="mt-4 flex flex-col gap-3 sm:flex-row">

@@ -509,3 +509,149 @@ export async function contarPaginasArchivo(porPagina = POR_PAGINA_ARCHIVO): Prom
     fallo("contarPaginasArchivo", err);
   }
 }
+
+// ── Páginas /oposiciones/<perfil>/<ccaa> ─────────────────────────────────────
+
+/** Los patrones de un perfil, o «todo» si la página es solo de comunidad. */
+type Patrones = { incluye: string[]; excluye?: string[] };
+const TODO: Patrones = { incluye: ["%"] };
+
+export type ListadoOposiciones = {
+  /** Plazo abierto (o sin plazo conocido y publicada hace menos de un año). */
+  abiertas: Convocatoria[];
+  /** Publicadas en los últimos 12 meses con el plazo ya vencido. */
+  recientes: Convocatoria[];
+  /** Todas las publicadas en los últimos 12 meses, abiertas o no. */
+  totalAnio: number;
+};
+
+/**
+ * Convocatorias de un perfil y/o comunidad para las páginas de /oposiciones.
+ *
+ * «Abiertas» usa la misma regla de vigencia que el buscador, para que la página
+ * y la portada no se contradigan. Las cerradas del último año también salen,
+ * aparte: quien busca «oposiciones de bombero en Galicia» quiere saber también
+ * si hubo hace poco y cuántas, aunque ya no pueda presentarse.
+ *
+ * El título se compara sin tildes con `translate`, igual que en
+ * `buscarConvocatorias` (ver allí por qué no `unaccent`).
+ */
+export async function listarOposiciones(
+  patrones: Patrones | null,
+  ccaa: string | null,
+): Promise<ListadoOposiciones> {
+  const sql = clientCacheable();
+  if (!sql) return { abiertas: [], recientes: [], totalAnio: 0 };
+  const { incluye, excluye = [] } = patrones ?? TODO;
+  const c = ccaa ?? "";
+
+  try {
+    const [abiertas, recientes, conteo] = await Promise.all([
+      sql`
+        SELECT id, titulo, organismo, ambito, ccaa,
+               fecha_publicacion::text AS fecha_publicacion,
+               fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
+               url_oficial, fuente_codigo
+        FROM convocatorias
+        WHERE (fecha_fin_plazo IS NULL OR fecha_fin_plazo >= CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END))
+          AND (fecha_fin_plazo IS NOT NULL OR ambito = 'europeo' OR fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year')
+          AND (${c} = '' OR ccaa = ${c})
+          AND translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${incluye}::text[])
+          AND NOT (translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${excluye}::text[]))
+        ORDER BY fecha_fin_plazo ASC NULLS LAST, fecha_publicacion DESC, id DESC
+        LIMIT 60
+      `,
+      sql`
+        SELECT id, titulo, organismo, ambito, ccaa,
+               fecha_publicacion::text AS fecha_publicacion,
+               fecha_fin_plazo::text AS fecha_fin_plazo, fecha_fin_aprox, plazo_texto,
+               url_oficial, fuente_codigo
+        FROM convocatorias
+        WHERE fecha_fin_plazo < CURRENT_DATE - (CASE WHEN fecha_fin_aprox THEN INTERVAL '4 days' ELSE INTERVAL '0 days' END)
+          AND fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year'
+          AND (${c} = '' OR ccaa = ${c})
+          AND translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${incluye}::text[])
+          AND NOT (translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${excluye}::text[]))
+        ORDER BY fecha_publicacion DESC, id DESC
+        LIMIT 30
+      `,
+      sql`
+        SELECT count(*)::int AS total
+        FROM convocatorias
+        WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year'
+          AND (${c} = '' OR ccaa = ${c})
+          AND translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${incluye}::text[])
+          AND NOT (translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') LIKE ANY(${excluye}::text[]))
+      `,
+    ]);
+    return {
+      abiertas: abiertas as Convocatoria[],
+      recientes: recientes as Convocatoria[],
+      totalAnio: (conteo as { total: number }[])[0]?.total ?? 0,
+    };
+  } catch (err) {
+    fallo("listarOposiciones", err);
+  }
+}
+
+export type ConteoOposiciones = {
+  /** perfil → total de los últimos 12 meses (toda España). */
+  porPerfil: Record<string, number>;
+  /** ccaa → total de los últimos 12 meses (todos los perfiles). */
+  porCcaa: Record<string, number>;
+  /** `${perfil}|${ccaa}` → total de los últimos 12 meses. */
+  porPar: Record<string, number>;
+};
+
+/**
+ * Cuántas convocatorias tiene cada perfil, comunidad y par en los últimos 12
+ * meses, en dos consultas. Lo usan el índice /oposiciones, los enlaces cruzados
+ * de cada página (solo se enlaza lo que tiene contenido) y el sitemap.
+ */
+export async function contarOposiciones(
+  perfiles: { slug: string; incluye: string[]; excluye?: string[] }[],
+): Promise<ConteoOposiciones> {
+  const vacio: ConteoOposiciones = { porPerfil: {}, porCcaa: {}, porPar: {} };
+  const sql = clientCacheable();
+  if (!sql) return vacio;
+
+  // VALUES con un trío de parámetros por perfil: ($1, $2::text[], $3::text[]), …
+  const params: unknown[] = [];
+  const filas = perfiles.map((p) => {
+    params.push(p.slug, p.incluye, p.excluye ?? []);
+    const n = params.length;
+    return `($${n - 2}::text, $${n - 1}::text[], $${n}::text[])`;
+  });
+
+  try {
+    const [pares, ccaas] = await Promise.all([
+      sql.query(
+        `WITH c AS (
+           SELECT translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') AS t, ccaa
+           FROM convocatorias
+           WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year'
+         ), p(slug, inc, exc) AS (VALUES ${filas.join(", ")})
+         SELECT p.slug, c.ccaa, count(*)::int AS n
+         FROM p JOIN c ON c.t LIKE ANY(p.inc) AND NOT (c.t LIKE ANY(p.exc))
+         GROUP BY p.slug, c.ccaa`,
+        params,
+      ),
+      sql`
+        SELECT ccaa, count(*)::int AS n
+        FROM convocatorias
+        WHERE fecha_publicacion >= CURRENT_DATE - INTERVAL '1 year' AND ccaa IS NOT NULL
+        GROUP BY ccaa
+      `,
+    ]);
+
+    const out: ConteoOposiciones = { porPerfil: {}, porCcaa: {}, porPar: {} };
+    for (const r of pares as { slug: string; ccaa: string | null; n: number }[]) {
+      out.porPerfil[r.slug] = (out.porPerfil[r.slug] ?? 0) + r.n;
+      if (r.ccaa) out.porPar[`${r.slug}|${r.ccaa}`] = r.n;
+    }
+    for (const r of ccaas as { ccaa: string; n: number }[]) out.porCcaa[r.ccaa] = r.n;
+    return out;
+  } catch (err) {
+    fallo("contarOposiciones", err);
+  }
+}
