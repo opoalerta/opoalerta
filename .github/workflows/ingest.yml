@@ -121,7 +121,9 @@ jobs:
         run: python -m enriquecer
 
   notificar:
-    needs: ingest
+    # Tras el enriquecimiento: el aviso de cierre lee fecha_fin_plazo, que lo
+    # calcula ese paso. `!cancelled()` lo lanza aunque el enriquecimiento falle.
+    needs: [ingest, enriquecer]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     defaults:

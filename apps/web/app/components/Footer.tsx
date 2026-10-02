@@ -50,6 +50,11 @@ export async function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/oposiciones" className="text-white no-underline hover:text-gold-light">
+                  Oposiciones por puesto y comunidad
+                </Link>
+              </li>
+              <li>
                 <Link href="/sobre" className="text-white no-underline hover:text-gold-light">
                   Sobre el proyecto
                 </Link>
