@@ -35,7 +35,7 @@ export async function readJsonObject(request: Request, limit = 4096): Promise<Re
 
 const AMBITOS = new Set(["estatal", "autonomico", "provincial", "local", "universidad", "europeo", "otro"]);
 const CCAA = new Set(["AN", "AR", "AS", "CB", "CE", "CL", "CM", "CN", "CT", "EX", "GA", "IB", "MC", "MD", "ML", "NC", "PV", "RI", "VC"]);
-const FUENTES = new Set(["boe", "boa", "boc", "bocm", "bocyl", "boib", "boja", "bopa", "cido", "docm", "doe", "dog", "dogc", "dogv", "epso"]);
+const FUENTES = new Set(["boe", "boa", "boc", "bocm", "bocyl", "boib", "boja", "bopa", "bopv", "cido", "docm", "doe", "dog", "dogc", "dogv", "epso"]);
 
 function optionalString(value: unknown, max: number, allowed?: Set<string>): string | null {
   if (value === null || value === undefined) return null;
