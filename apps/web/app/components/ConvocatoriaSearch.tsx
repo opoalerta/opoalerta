@@ -306,7 +306,7 @@ export function ConvocatoriaSearch({ convocatorias, total, fuentes, ambitos, cca
         </>
       )}
 
-      {total > 0 && <SuscripcionForm q={query} fuente={fuente} ambito={ambito} />}
+      {total > 0 && <SuscripcionForm q={query} fuente={fuente} ambito={ambito} ccaa={ccaa} />}
     </div>
   );
 }

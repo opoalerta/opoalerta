@@ -8,6 +8,7 @@ import { LogoHorizontalDark } from "./Logo";
 const navItems = [
   { href: "/", label: "Inicio" },
   { href: "/convocatorias", label: "Convocatorias" },
+  { href: "/oposiciones", label: "Por puesto" },
   { href: "/blog", label: "Blog" },
   { href: "/sobre", label: "Sobre el proyecto" },
   { href: "/estado", label: "Estado" },
