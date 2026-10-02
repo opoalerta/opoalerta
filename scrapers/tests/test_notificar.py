@@ -135,6 +135,7 @@ def test_dry_run_no_imprime_destinatarios_ni_envia(monkeypatch, capsys):
         {"telegram_chat_id": 987654321, "canal": "telegram", "token": "private-token"},
     ]
     monkeypatch.setattr(notificar, "_fetch", lambda *a, **k: ([CONV], subscribers))
+    monkeypatch.setattr(notificar, "_fetch_cierres", lambda *a, **k: ([], set()))
     send = MagicMock(side_effect=AssertionError("Must not send"))
     monkeypatch.setattr(notificar, "_notificar_una", send)
     assert notificar.main(["--dry-run"]) == 0
@@ -145,3 +146,100 @@ def test_dry_run_no_imprime_destinatarios_ni_envia(monkeypatch, capsys):
         assert private not in output
     assert "[email] 1 convocatorias" in output
     assert "[telegram] 1 convocatorias" in output
+
+
+# ── Aviso de cierre de plazo ─────────────────────────────────────────────────
+
+from datetime import date  # noqa: E402
+
+from notificar import _asunto, _cuando_cierra, cierres_para  # noqa: E402
+
+HOY = date(2026, 10, 2)
+CIERRE = {
+    **CONV,
+    "id": "boja:123",
+    "url_oficial": "https://www.juntadeandalucia.es/boja/x",
+    "fecha_fin_plazo": "2026-10-05",
+    "fecha_fin_aprox": False,
+}
+
+
+def test_cuando_cierra_relativo_y_aproximado():
+    assert _cuando_cierra(CIERRE, HOY) == "cierra en 3 días, el 05/10"
+    assert _cuando_cierra({**CIERRE, "fecha_fin_plazo": "2026-10-03"}, HOY).startswith(
+        "cierra mañana"
+    )
+    assert _cuando_cierra({**CIERRE, "fecha_fin_plazo": "2026-10-02"}, HOY).startswith("cierra hoy")
+    assert _cuando_cierra({**CIERRE, "fecha_fin_aprox": True}, HOY).endswith("(aprox.)")
+
+
+def test_cierres_para_respeta_filtros_avisados_y_nuevas():
+    susc = {"id": "s1", "ccaa": "AN"}
+    assert cierres_para(susc, [CIERRE], set(), set()) == [CIERRE]
+    # Ya avisado a esta suscripción: no se repite.
+    assert cierres_para(susc, [CIERRE], {("s1", "boja:123")}, set()) == []
+    # Avisado a OTRA suscripción: a esta sí le toca.
+    assert cierres_para(susc, [CIERRE], {("s2", "boja:123")}, set()) == [CIERRE]
+    # Va en el bloque de nuevas del mismo mensaje: no se duplica.
+    assert cierres_para(susc, [CIERRE], set(), {"boja:123"}) == []
+    # No encaja con los filtros.
+    assert cierres_para({"id": "s1", "ccaa": "MD"}, [CIERRE], set(), set()) == []
+
+
+def test_asunto_segun_lo_que_lleva():
+    assert _asunto(2) == "2 nuevas convocatorias · OpoAlerta"
+    assert _asunto(0, 1) == "1 plazo a punto de cerrar · OpoAlerta"
+    assert _asunto(1, 3) == "1 nueva convocatoria y 3 plazos a punto de cerrar · OpoAlerta"
+
+
+def test_render_solo_cierres():
+    email = _render([], "tok", [CIERRE], HOY)
+    assert "El plazo cierra pronto" in email
+    assert "Nuevas convocatorias" not in email
+    assert "Cierra en 3 días, el 05/10" in email
+    assert "https://www.juntadeandalucia.es/boja/x" in email
+    tg = _render_telegram([], [CIERRE], HOY)
+    assert "1 plazo a punto de cerrar" in tg
+    assert "nueva" not in tg
+    assert "/stop" in tg
+
+
+def test_render_nuevas_y_cierres_juntos():
+    nueva = {**CONV, "fecha_publicacion": "2026-10-02", "url_oficial": "https://boe.es/n"}
+    email = _render([nueva], "tok", [CIERRE], HOY)
+    assert email.index("Nuevas convocatorias") < email.index("El plazo cierra pronto")
+    tg = _render_telegram([nueva], [CIERRE], HOY)
+    assert tg.index("1 nueva convocatoria") < tg.index("1 plazo a punto de cerrar")
+
+
+def test_main_envia_cierres_y_los_registra(monkeypatch):
+    import psycopg
+
+    monkeypatch.setenv("DATABASE_URL", "test-only")
+    monkeypatch.setenv("RESEND_API_KEY", "k")
+    connection = MagicMock()
+    conn = connection.__enter__.return_value
+    cursor = conn.cursor.return_value.__enter__.return_value
+    monkeypatch.setattr(psycopg, "connect", lambda _: connection)
+    susc = {"id": "s1", "email": "a@b.es", "canal": "email", "token": "t", "ccaa": "AN"}
+    monkeypatch.setattr(notificar, "_fetch", lambda *a, **k: ([], [susc]))
+    monkeypatch.setattr(notificar, "_fetch_cierres", lambda *a, **k: ([CIERRE], set()))
+    send = MagicMock(return_value=True)
+    monkeypatch.setattr(notificar, "_notificar_una", send)
+    assert notificar.main([]) == 0
+    assert send.call_args.args[4] == [CIERRE]
+    sqls = [c.args[0] for c in cursor.execute.call_args_list]
+    assert any("INSERT INTO recordatorios_plazo" in q for q in sqls)
+    conn.commit.assert_called_once()
+
+
+def test_cierres_para_alerta_general_no_manda_listados():
+    muchos = [{**CIERRE, "id": f"boja:{i}"} for i in range(notificar.AVISO_MAX + 5)]
+    # Sin texto de búsqueda y por encima del tope: nada.
+    assert cierres_para({"id": "s1"}, muchos, set(), set()) == []
+    assert cierres_para({"id": "s1", "fuente_codigo": "boja"}, muchos, set(), set()) == []
+    # Con texto: los primeros (más próximos) hasta el tope.
+    suyos = cierres_para({"id": "s1", "q": "auxiliar"}, muchos, set(), set())
+    assert suyos == muchos[: notificar.AVISO_MAX]
+    # Sin texto pero dentro del tope: sí.
+    assert cierres_para({"id": "s1"}, muchos[:3], set(), set()) == muchos[:3]
