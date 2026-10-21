@@ -11,9 +11,22 @@ import { JsonLd } from "../../components/JsonLd";
 // oficial son los del boletín. Con `force-dynamic` cada visita golpeaba Postgres
 // y Vercel respondía `no-store`, así que Googlebot pagaba el precio completo por
 // cada una de las ~1400 fichas y se le acababa el presupuesto de rastreo antes
-// de llegar a las viejas. La ingesta corre una vez al día; una hora de margen
-// sobra para recoger correcciones.
-export const revalidate = 3600;
+// de llegar a las viejas.
+//
+// Un día y no una hora: con ~13.000 fichas y un rastreador pidiendo una cada
+// pocos segundos, revalidar cada hora renderizaba sin parar contra Neon y el
+// compute no llegaba a suspenderse nunca (cupo agotado en octubre de 2026). Lo
+// nuevo no espera al día: la ingesta llama a /api/revalidar al terminar.
+export const revalidate = 86400;
+
+// Sin esto la ruta salía como dinámica (ƒ en el build) y `revalidate` no
+// servía de nada: cada visita renderizaba contra Neon y Vercel respondía MISS.
+// Con la lista vacía no se prerenderiza ninguna en el build —son miles—, pero
+// la primera visita genera la ficha y la deja en caché, como en
+// /oposiciones/[a]/[b].
+export function generateStaticParams() {
+  return [];
+}
 
 function fmtFecha(iso: string | null): string {
   if (!iso) return "—";

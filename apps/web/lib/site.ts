@@ -19,3 +19,14 @@ export function getBaseUrl(): string {
   }
   return "https://opoalerta.es";
 }
+
+/**
+ * Ruta de la ficha de una convocatoria. El id va tal cual, sin
+ * `encodeURIComponent`: todos son `[A-Za-z0-9:._-]` y los dos puntos son
+ * válidos en una ruta. Codificarlos daba `boe%3ABOE-…` en tarjetas, RSS y
+ * JSON-LD mientras el sitemap y la canónica usaban `boe:BOE-…`, y la caché de
+ * Vercel guardaba cada ficha dos veces: el doble de renders contra Neon.
+ */
+export function rutaConvocatoria(id: string): string {
+  return `/convocatoria/${id}`;
+}

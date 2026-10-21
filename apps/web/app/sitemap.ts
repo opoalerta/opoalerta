@@ -8,7 +8,7 @@ import { getBaseUrl } from "@/lib/site";
 
 // Regenerarlo en cada petición costaba ~1,6 s y 262 KB por rastreo, y el
 // contenido solo cambia cuando entra la ingesta diaria de las 06:00 UTC.
-export const revalidate = 21600;
+export const revalidate = 86400;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();

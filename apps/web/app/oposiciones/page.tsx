@@ -15,7 +15,7 @@ import { PageHeader } from "../components/PageHeader";
  * buscador de cliente que ningún rastreador ejecuta; estas páginas lo
  * responden con HTML.
  */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Oposiciones por puesto y comunidad autónoma",

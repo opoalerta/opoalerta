@@ -4,7 +4,7 @@ import { contarPaginasArchivo, listarArchivo, POR_PAGINA_ARCHIVO } from "@/lib/d
 import { ArchivoLista, hrefPagina, tituloPagina } from "../../../components/ArchivoLista";
 
 /** Ver el porqué del archivo en `app/convocatorias/page.tsx`. */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 /**
  * Se prerenderizan todas las páginas que existen hoy. Las que aparezcan después
