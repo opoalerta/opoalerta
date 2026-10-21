@@ -120,6 +120,27 @@ jobs:
           PLAZO_BATCH: "80"
         run: python -m enriquecer
 
+  revalidar:
+    # Las páginas de la web se cachean un día para que los rastreadores no
+    # tengan despierto Neon; este aviso publica lo nuevo en cuanto está
+    # enriquecido. Sin el secreto se salta: la web sigue, solo tarda más.
+    needs: [ingest, enriquecer]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invalidar la caché de la web
+        env:
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$REVALIDATE_SECRET" ]; then
+            echo "::warning::REVALIDATE_SECRET no configurado; la web se actualizará en ≤24 h"
+            exit 0
+          fi
+          curl -fsS --retry 3 -X POST \
+            -H "Authorization: Bearer $REVALIDATE_SECRET" \
+            "${SITE_URL:-https://opoalerta.es}/api/revalidar"
+
   notificar:
     # Tras el enriquecimiento: el aviso de cierre lee fecha_fin_plazo, que lo
     # calcula ese paso. `!cancelled()` lo lanza aunque el enriquecimiento falle.

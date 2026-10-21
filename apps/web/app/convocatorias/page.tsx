@@ -17,7 +17,7 @@ import { ArchivoLista, hrefPagina, tituloPagina } from "../components/ArchivoLis
  * sitemap: su página de detalle sigue existiendo, y es lo que busca en Google
  * quien recuerda una convocatoria concreta meses después.
  */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: tituloPagina(1),

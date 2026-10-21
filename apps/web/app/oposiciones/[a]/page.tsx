@@ -12,7 +12,7 @@ import {
 } from "../../components/OposicionesPagina";
 
 /** /oposiciones/<perfil> (toda España) o /oposiciones/<comunidad> (todos los puestos). */
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 // Son pocas y fijas: se prerenderizan todas.
 export function generateStaticParams() {

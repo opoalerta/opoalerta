@@ -8,7 +8,7 @@ import { PageHeader } from "../components/PageHeader";
 // De la página solo cambia la lista de fuentes activas, y eso lo mueve la
 // ingesta diaria. Con `force-dynamic` cada visita —también la de un rastreador—
 // pagaba una consulta a Postgres por un texto que es prácticamente fijo.
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 const DESCRIPCION =
   "Qué es OpoAlerta, de dónde salen las convocatorias, cómo se tratan los datos " +

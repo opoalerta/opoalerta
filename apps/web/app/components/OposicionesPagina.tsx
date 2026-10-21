@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CCAA_NOMBRE, CCAA_NOMBRE_LARGO, CCAA_SLUG } from "@/lib/ccaa";
 import type { ConteoOposiciones, Convocatoria, ListadoOposiciones } from "@/lib/db";
 import { PERFILES, type Perfil } from "@/lib/perfiles";
-import { getBaseUrl } from "@/lib/site";
+import { getBaseUrl, rutaConvocatoria } from "@/lib/site";
 import { Container } from "./Container";
 import { ConvocatoriaCard } from "./ConvocatoriaCard";
 import { JsonLd } from "./JsonLd";
@@ -187,7 +187,7 @@ export function OposicionesPagina({
         itemListElement: abiertas.map((c, i) => ({
           "@type": "ListItem",
           position: i + 1,
-          url: `${baseUrl}/convocatoria/${encodeURIComponent(c.id)}`,
+          url: `${baseUrl}${rutaConvocatoria(c.id)}`,
           name: c.titulo,
         })),
       }

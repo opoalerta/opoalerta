@@ -11,7 +11,7 @@ import { JsonLd } from "./components/JsonLd";
 // nada que obligara a renderizarla por visita. Con `force-dynamic` cada visita
 // —y cada pasada de un rastreador— disparaba cuatro consultas a Postgres, que
 // es lo que mantenía despierto el compute de Neon y agotó su cupo mensual.
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export const metadata = {
   title: "OpoAlerta — Convocatorias de empleo público en España",

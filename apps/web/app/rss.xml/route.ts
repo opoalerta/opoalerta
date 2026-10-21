@@ -1,9 +1,9 @@
 import { getConvocatorias } from "@/lib/db";
-import { getBaseUrl } from "@/lib/site";
+import { getBaseUrl, rutaConvocatoria } from "@/lib/site";
 
 // Tampoco lee la petición, y un feed lo pollean los lectores en bucle: sin
 // caché, cada uno de ellos despertaba la base de datos.
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 function esc(s: string): string {
   return s
@@ -19,7 +19,7 @@ export async function GET() {
 
   const items = convocatorias
     .map((c) => {
-      const link = `${base}/convocatoria/${encodeURIComponent(c.id)}`;
+      const link = `${base}${rutaConvocatoria(c.id)}`;
       const pubDate = new Date(`${c.fecha_publicacion}T00:00:00Z`).toUTCString();
       const desc = `${c.organismo} · ${c.fuente_codigo.toUpperCase()}`;
       return (
