@@ -27,13 +27,16 @@ export function Header() {
             <LogoHorizontalDark className="h-10 w-auto" />
           </Link>
           <nav aria-label="Principal">
-            <ul className="flex flex-wrap items-center gap-6 text-sm font-medium">
+            {/* En móvil los enlaces medían 16 px de alto y se tocaban a ciegas: cada
+                uno lleva ahora su propia zona de 44 px, y el hueco lo da el
+                relleno en vez del gap. */}
+            <ul className="-mx-2 flex flex-wrap items-center gap-x-2 text-sm font-medium sm:mx-0 sm:gap-x-6">
               {navItems.map((item) => (
                 <li key={item.href}>
                   {item.external ? (
                     <a
                       href={item.href}
-                      className="header-link text-white no-underline hover:text-gold-light"
+                      className="header-link inline-flex min-h-11 items-center px-2 text-white no-underline hover:text-gold-light sm:min-h-0 sm:px-0"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -42,7 +45,7 @@ export function Header() {
                   ) : (
                     <Link
                       href={item.href}
-                      className="header-link text-white no-underline hover:text-gold-light"
+                      className="header-link inline-flex min-h-11 items-center px-2 text-white no-underline hover:text-gold-light sm:min-h-0 sm:px-0"
                     >
                       {item.label}
                     </Link>
