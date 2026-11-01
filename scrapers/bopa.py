@@ -30,11 +30,25 @@ Los datos abiertos del BOPA en datos.gob.es (`a03002951-bopa1` y `-bopa2`)
 tienen mejor estructura, pero el último año publicado es 2024, así que no
 sirven para una ingesta diaria. Quedan documentados por si se reactivan.
 
+**No corre en GitHub Actions.** Desde 2026-09-22 el cortafuegos del Principado
+descarta las conexiones a `miprincipado.asturias.es` y `sede.asturias.es` que
+llegan desde los runners de GitHub (rangos de Azure): el DNS resuelve, pero la
+conexión TCP no se abre nunca. `www.asturias.es`, en la misma red, sí contesta.
+Diagnóstico en la issue #140. Por eso se ejecuta desde una máquina con IP
+residencial (`local/bopa.sh`), que repasa los últimos días cada vez: si un día
+no corre, la pasada siguiente lo recupera.
+
+**Un día sin boletín devuelve otro.** Pedir un sábado o un festivo trae el último
+boletín publicado, no un sumario vacío. Por eso se compara la fecha del PDF con
+la pedida y, si no coinciden, ese día no aporta nada.
+
 Licencia: reutilización de información del sector público citando la fuente
 (Principado de Asturias).
 
 Uso:
-    python -m bopa --dry-run
+    python -m bopa --dry-run                      # último boletín
+    python -m bopa --fecha 2026-10-26             # un día
+    python -m bopa --desde 2026-09-22             # de ese día a hoy
 """
 
 from __future__ import annotations
@@ -43,7 +57,7 @@ import argparse
 import html
 import re
 import sys
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from common.base import BaseScraper
@@ -104,8 +118,13 @@ class BopaScraper(BaseScraper):
     nombre = "Boletín Oficial del Principado de Asturias"
     licencia = "Reutilización de información pública citando fuente (Principado de Asturias)"
 
+    def __init__(self, fecha: date | None = None) -> None:
+        super().__init__(fecha)
+        # La fecha real del boletín sale del sumario; esta es la que se pidió.
+        self.pedida = fecha
+
     def fetch(self) -> str:
-        return http_get(SUMARIO_URL).text
+        return http_get(sumario_url(self.pedida)).text
 
     def parse(self, raw: str) -> list[dict[str, Any]]:
         if not raw:
@@ -121,6 +140,8 @@ class BopaScraper(BaseScraper):
             raise ValueError("No se encontró el enlace al PDF del boletín")
         anio, mes, dia, _ = boletin.groups()
         self.fecha = date(int(anio), int(mes), int(dia))
+        if self.pedida and self.fecha != self.pedida:
+            return []
 
         registros: list[dict[str, Any]] = []
         seccion = ""
@@ -174,16 +195,44 @@ class BopaScraper(BaseScraper):
         }
 
 
+def sumario_url(fecha: date | None) -> str:
+    if fecha is None:
+        return SUMARIO_URL
+    return f"{BASE}/bopa/ultimos-boletines?p_r_p_summaryDate={fecha:%d/%m/%Y}"
+
+
+def dias_habiles(desde: date, hasta: date) -> list[date]:
+    """Días de lunes a viernes entre las dos fechas, ambas incluidas."""
+    dias = (desde + timedelta(n) for n in range((hasta - desde).days + 1))
+    return [d for d in dias if d.weekday() < 5]
+
+
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Ingesta de oposiciones del BOPA (Asturias)")
     p.add_argument("--dry-run", action="store_true", help="No escribe en base de datos.")
     p.add_argument("--out", help="Ruta de un JSON donde volcar las convocatorias.")
+    grupo = p.add_mutually_exclusive_group()
+    grupo.add_argument("--fecha", help="Fecha del boletín (YYYY-MM-DD). Por defecto, el último.")
+    grupo.add_argument("--desde", help="De esta fecha (YYYY-MM-DD) a hoy, lunes a viernes.")
     return p.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
-    return execute(BopaScraper(), dry_run=args.dry_run, out=args.out)
+    if not args.desde:
+        fecha = date.fromisoformat(args.fecha) if args.fecha else None
+        return execute(BopaScraper(fecha), dry_run=args.dry_run, out=args.out)
+
+    # Un día que falle no detiene el resto: se registra y se sigue.
+    fallos = 0
+    for dia in dias_habiles(date.fromisoformat(args.desde), date.today()):
+        out = f"{args.out.removesuffix('.json')}-{dia}.json" if args.out else None
+        try:
+            execute(BopaScraper(dia), dry_run=args.dry_run, out=out)
+        except Exception as exc:  # noqa: BLE001 — execute ya lo registró
+            print(f"BOPA {dia}: {type(exc).__name__}: {exc}", file=sys.stderr)
+            fallos += 1
+    return 1 if fallos else 0
 
 
 if __name__ == "__main__":

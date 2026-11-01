@@ -18,7 +18,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        fuente: [boe, boja, bocm, bocyl, boa, boib, epso, dog, boc, docm, doe, dogv, bopa, dogc, cido, bopv]
+        # bopa no está: el cortafuegos de Asturias no deja conectar a los
+        # runners de GitHub. Corre en local con scrapers/local/bopa.sh (#140).
+        fuente: [boe, boja, bocm, bocyl, boa, boib, epso, dog, boc, docm, doe, dogv, dogc, cido, bopv]
     runs-on: ubuntu-latest
     defaults:
       run:
