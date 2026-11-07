@@ -40,7 +40,7 @@ export async function Footer() {
             <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-white/70">
               Proyecto
             </h3>
-            <ul className="space-y-1 text-sm">
+            <ul className="text-sm sm:space-y-1 [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center sm:[&_a]:min-h-0">
               <li>
                 <Link
                   href="/convocatorias"
@@ -104,7 +104,7 @@ export async function Footer() {
             <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-white/70">
               Legal y datos
             </h3>
-            <ul className="space-y-1 text-sm">
+            <ul className="text-sm sm:space-y-1 [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center sm:[&_a]:min-h-0">
               <li>
                 <a
                   href="https://github.com/opoalerta/opoalerta/blob/main/LICENSE"
