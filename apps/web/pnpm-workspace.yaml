@@ -1,3 +1,10 @@
 allowBuilds:
   sharp: true
   unrs-resolver: true
+
+# gray-matter (solo lee el markdown del blog, en el build) arrastra js-yaml 3.x,
+# con dos avisos «high» de consumo de CPU (GHSA-2883-xcg3-v3hh y otro). No son
+# explotables aquí porque la entrada es del propio repo, pero así el audit queda
+# limpio y no tapa avisos que sí importen.
+overrides:
+  "js-yaml@<3.15.2": "^3.15.2"

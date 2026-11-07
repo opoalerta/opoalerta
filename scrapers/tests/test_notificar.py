@@ -148,6 +148,28 @@ def test_dry_run_no_imprime_destinatarios_ni_envia(monkeypatch, capsys):
     assert "[telegram] 1 convocatorias" in output
 
 
+def test_purga_borra_solo_pendientes_viejas_y_confirma():
+    connection = MagicMock()
+    cursor = connection.cursor.return_value.__enter__.return_value
+    cursor.rowcount = 3
+    assert notificar.purgar_pendientes(connection) == 3
+    sql, params = cursor.execute.call_args.args
+    assert sql.startswith("DELETE FROM suscripciones WHERE confirmada = FALSE")
+    assert "creada_en <" in sql
+    assert params == (notificar.PENDIENTE_DIAS,)
+    connection.commit.assert_called_once()
+
+
+def test_purga_en_dry_run_solo_cuenta():
+    connection = MagicMock()
+    cursor = connection.cursor.return_value.__enter__.return_value
+    cursor.fetchone.return_value = (5,)
+    assert notificar.purgar_pendientes(connection, dry_run=True) == 5
+    sql, _ = cursor.execute.call_args.args
+    assert sql.startswith("SELECT count(*)")
+    connection.commit.assert_not_called()
+
+
 # ── Aviso de cierre de plazo ─────────────────────────────────────────────────
 
 from datetime import date  # noqa: E402
@@ -224,6 +246,8 @@ def test_main_envia_cierres_y_los_registra(monkeypatch):
     susc = {"id": "s1", "email": "a@b.es", "canal": "email", "token": "t", "ccaa": "AN"}
     monkeypatch.setattr(notificar, "_fetch", lambda *a, **k: ([], [susc]))
     monkeypatch.setattr(notificar, "_fetch_cierres", lambda *a, **k: ([CIERRE], set()))
+    # La purga hace su propio commit; aquí solo cuenta el del envío.
+    monkeypatch.setattr(notificar, "purgar_pendientes", lambda *a, **k: 0)
     send = MagicMock(return_value=True)
     monkeypatch.setattr(notificar, "_notificar_una", send)
     assert notificar.main([]) == 0

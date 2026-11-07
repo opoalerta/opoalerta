@@ -52,6 +52,11 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+  // Ya estaba activa: no se envía nada y se responde igual que un alta nueva,
+  // para no revelar a terceros qué direcciones tienen qué alertas.
+  if ("yaConfirmada" in creada) {
+    return NextResponse.json({ ok: true });
+  }
 
   const confirmar = escapeHtml(`${SITE_URL}/alertas/confirmar?token=${encodeURIComponent(creada.token)}`);
   const baja = escapeHtml(`${SITE_URL}/alertas/baja?token=${encodeURIComponent(creada.token)}`);
