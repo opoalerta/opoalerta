@@ -11,7 +11,14 @@
 -- misma regla que boe.py. Reingestar el histórico daría el mismo resultado,
 -- con cientos de peticiones al BOE.
 --
--- Uso (revisar primero el recuento que imprime; si no cuadra, ROLLBACK):
+-- Uso: primero ejecutar esta consulta de forma independiente y validar el
+-- recuento. Solo después, ejecutar el fichero completo, que confirma los
+-- cambios automáticamente.
+--   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 \
+--     -c "SELECT organismo, ambito, count(*) FROM convocatorias
+--         WHERE id LIKE 'boe:%'
+--           AND upper(trim(organismo)) IN ('ADMINISTRACIÓN LOCAL', 'UNIVERSIDADES')
+--         GROUP BY organismo, ambito ORDER BY organismo;"
 --   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 \
 --        -f data/purgas/002_boe_ambito_por_departamento.sql
 
