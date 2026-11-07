@@ -40,6 +40,13 @@ const nextConfig: NextConfig = {
         destination: "https://opoalerta.es/:path*",
         permanent: true,
       },
+      // «¿Qué es el BOE?» eran 240 palabras que repetían media guía; su
+      // contenido vive ahora en la guía de 2026. La URL estaba indexada.
+      {
+        source: "/blog/que-es-el-boe",
+        destination: "/blog/oposiciones-2026-guia-completa",
+        permanent: true,
+      },
     ];
   },
 };
