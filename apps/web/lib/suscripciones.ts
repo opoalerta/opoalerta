@@ -20,14 +20,21 @@ function limpiar(v: string | null | undefined): string | null {
 }
 
 /**
- * Crea (o reactiva) una suscripción sin confirmar y devuelve su token.
- * Si ya existía la misma búsqueda para ese email, reemiten un token nuevo y
- * la vuelven a dejar sin confirmar (para reenviar la confirmación).
+ * Crea una suscripción sin confirmar y devuelve su token.
+ *
+ * Si la misma búsqueda ya existía **sin confirmar**, se reemite el token y se
+ * reinicia `creada_en` (para reenviar la confirmación y que la purga de
+ * pendientes cuente desde ahora).
+ *
+ * Si ya estaba **confirmada**, no se toca y se devuelve `yaConfirmada`. Antes
+ * se reponía `confirmada = FALSE` con un token nuevo: cualquiera que supiera
+ * el email y los filtros de otra persona podía desactivarle la alerta e
+ * invalidar su enlace de baja con solo volver a pedirla.
  */
 export async function crearSuscripcion(
   email: string,
   filtros: FiltrosSuscripcion
-): Promise<{ token: string } | null> {
+): Promise<{ token: string } | { yaConfirmada: true } | null> {
   const sql = client();
   if (!sql) return null;
   const token = randomUUID();
@@ -40,9 +47,12 @@ export async function crearSuscripcion(
       ${token}
     )
     ON CONFLICT (email, q, ccaa, ambito, fuente_codigo) DO UPDATE
-      SET token = EXCLUDED.token, confirmada = FALSE, confirmada_en = NULL
+      SET token = EXCLUDED.token, creada_en = now()
+      WHERE suscripciones.confirmada = FALSE
     RETURNING token
   `;
+  // Sin fila devuelta: el conflicto era con una suscripción ya confirmada.
+  if (rows.length === 0) return { yaConfirmada: true };
   return { token: (rows[0] as { token: string }).token };
 }
 
@@ -117,6 +127,10 @@ export async function vincularTelegram(
     UPDATE suscripciones
     SET telegram_chat_id = ${chatId}, confirmada = TRUE, confirmada_en = now()
     WHERE token = ${token} AND canal = 'telegram'
+      -- Un token solo vincula un chat. Si el enlace t.me/...?start=<token> se
+      -- filtrara, otro chat no podría quedarse con la alerta; el mismo chat
+      -- sí puede volver a pulsar Start.
+      AND (telegram_chat_id IS NULL OR telegram_chat_id = ${chatId})
     RETURNING q, ccaa, ambito, fuente_codigo
   `;
   if (rows.length === 0) return null;

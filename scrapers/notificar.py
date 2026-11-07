@@ -383,6 +383,27 @@ def cierres_para(
     return suyos[:AVISO_MAX]
 
 
+# Días que se guarda una suscripción sin confirmar (email sin pulsar el
+# enlace, o Telegram sin pulsar Start). Pasado ese plazo ya no la va a
+# confirmar nadie, y guardar indefinidamente el email de quien no llegó a
+# dar su consentimiento choca con la minimización de datos del RGPD.
+PENDIENTE_DIAS = 7
+
+
+def purgar_pendientes(conn, dry_run: bool = False) -> int:
+    """Borra las suscripciones sin confirmar con más de PENDIENTE_DIAS días.
+    Con dry_run solo las cuenta. Devuelve cuántas son."""
+    condicion = "confirmada = FALSE AND creada_en < now() - make_interval(days => %s)"
+    with conn.cursor() as cur:
+        if dry_run:
+            cur.execute(f"SELECT count(*) FROM suscripciones WHERE {condicion}", (PENDIENTE_DIAS,))
+            return int(cur.fetchone()[0])
+        cur.execute(f"DELETE FROM suscripciones WHERE {condicion}", (PENDIENTE_DIAS,))
+        n = cur.rowcount
+    conn.commit()
+    return n
+
+
 def _notificar_una(
     susc: dict[str, Any], matches: list[dict], api_key, tg_token, cierres=None
 ) -> bool:
@@ -423,6 +444,12 @@ def main(argv: list[str] | None = None) -> int:
 
     enviados = 0
     with psycopg.connect(dsn) as conn:
+        purgadas = purgar_pendientes(conn, dry_run=args.dry_run)
+        if purgadas:
+            verbo = "se borrarían" if args.dry_run else "borradas"
+            print(
+                f"{purgadas} suscripciones sin confirmar de más de {PENDIENTE_DIAS} días {verbo}."
+            )
         nuevas, suscripciones = _fetch(conn, force=args.force)
         cierres, avisados = _fetch_cierres(conn)
         print(
