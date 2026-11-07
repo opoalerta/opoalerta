@@ -104,3 +104,29 @@ def test_sumario_sin_enlace_al_boletin_falla():
     """Sin ese enlace no hay fecha, y publicar con una fecha inventada es peor."""
     with pytest.raises(ValueError):
         BopaScraper().parse('<div id="bopa-boletin"><h5>AUTORIDADES Y PERSONAL</h5></div>')
+
+
+def test_dia_sin_boletin_no_aporta_nada(raw):
+    """Pedir un día sin BOPA devuelve el último boletín; no debe contarse dos veces."""
+    from datetime import date
+
+    assert BopaScraper(date(2026, 7, 15)).parse(raw)
+    assert BopaScraper(date(2026, 7, 18)).parse(raw) == []
+
+
+def test_url_por_fecha():
+    from datetime import date
+
+    from bopa import SUMARIO_URL, sumario_url
+
+    assert sumario_url(None) == SUMARIO_URL
+    assert sumario_url(date(2026, 9, 22)).endswith("?p_r_p_summaryDate=22/09/2026")
+
+
+def test_dias_habiles_salta_el_fin_de_semana():
+    from datetime import date
+
+    from bopa import dias_habiles
+
+    dias = dias_habiles(date(2026, 10, 23), date(2026, 10, 27))  # vie → mar
+    assert [d.isoformat() for d in dias] == ["2026-10-23", "2026-10-26", "2026-10-27"]

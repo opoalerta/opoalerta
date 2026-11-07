@@ -175,7 +175,7 @@ export default async function Home() {
           <div className="mb-10">
             <h2 className="text-2xl font-bold text-navy">Cómo funciona</h2>
             <p className="mt-1 text-slate">
-              Tres pasos para pasar de cientos de portales a una lista clara y usable.
+              Así llega una convocatoria del boletín oficial a este buscador.
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
@@ -189,8 +189,8 @@ export default async function Home() {
               Todo se guarda en un esquema común para poder buscar y comparar.
             </FeatureBlock>
             <FeatureBlock number="3" title="Alertas y búsqueda">
-              Pronto podrás guardar filtros (cuerpo, CCAA, titulación…) y recibir avisos
-              por email o Telegram cuando salga una plaza que encaje contigo.
+              Guarda una búsqueda con texto, ámbito, comunidad o boletín y te avisamos
+              por email o Telegram cuando salga una plaza que encaje.
             </FeatureBlock>
           </div>
         </Container>
@@ -242,7 +242,7 @@ export default async function Home() {
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-navy">Open source y contribución</h2>
             <p className="mt-1 text-slate">
-              El proyecto vive en GitHub y mejora con la comunidad.
+              El código está en GitHub y cualquiera puede proponer cambios.
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
