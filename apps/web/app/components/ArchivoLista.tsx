@@ -120,6 +120,9 @@ export function ArchivoLista({
               ) : (
                 <Link
                   href={hrefPagina(n)}
+                  // Son ~30 enlaces por página: con prefetch, cada visita pedía
+                  // el archivo entero (ver ConvocatoriaCard).
+                  prefetch={false}
                   className="inline-block rounded border border-border px-3 py-1 text-navy-700 no-underline hover:border-gold"
                 >
                   {n}
