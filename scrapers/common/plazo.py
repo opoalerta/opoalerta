@@ -8,14 +8,19 @@ publicación..."). Este módulo:
     número de días y el tipo (naturales/hábiles). Riesgo cero: la frase se
     guarda tal cual.
   - `calcular_fin(fecha_pub, plazo)` -> `(fecha | None, aprox)`. En días
-    **naturales** la fecha es exacta (`aprox=False`). En días **hábiles** cuenta
+    **naturales** la fecha es exacta (`aprox=False`), prorrogada al siguiente
+    día hábil si el último cae en inhábil. En días **hábiles** cuenta
     saltando sábados, domingos y festivos NACIONALES; como no incluye festivos
     autonómicos/locales, la fecha es aproximada (`aprox=True`, puede quedarse
     1-2 días corta). La frase (`plazo_texto`) se guarda siempre.
 
+  - `cuenta_desde_otra_publicacion(frase, fuente)` -> True cuando el plazo
+    arranca con otra publicación (el extracto en el BOE, «el último de los
+    anuncios»). Entonces no se calcula fecha: no sabemos cuándo empieza.
+
 Uso típico (pase de enriquecimiento):
     p = extraer_plazo(texto_disposicion)
-    if p:
+    if p and not cuenta_desde_otra_publicacion(p["plazo_texto"], fuente):
         fin, aprox = calcular_fin(fecha_publicacion, p)
 """
 
@@ -79,6 +84,29 @@ _SOLICITUD_RE = re.compile(r"solicitud|presentaci[óo]n|present[ae]|instancia", 
 _OTRO_PLAZO_RE = re.compile(
     r"subsan|exclu[iy]|omitid|alegac|reclamac|recurs|impugna|baremaci", re.IGNORECASE
 )
+
+
+# Plazos que no empiezan a contar con la publicación que hemos leído. Las
+# convocatorias locales y muchas autonómicas publican las bases en su boletín,
+# pero abren el plazo «a partir del día siguiente al de la publicación del
+# extracto en el Boletín Oficial del Estado», que sale días o semanas después.
+# Otras cuentan desde «el último de los anuncios», sin decir cuál será.
+_DESDE_BOE_RE = re.compile(r"Bolet[íi]n Oficial del Estado|\bBOE\b", re.IGNORECASE)
+_DESDE_ULTIMO_ANUNCIO_RE = re.compile(r"[úu]ltimo de los anuncios", re.IGNORECASE)
+
+
+def cuenta_desde_otra_publicacion(frase: str, fuente: str) -> bool:
+    """True si el plazo de `frase` no arranca con la publicación de `fuente`.
+
+    En esos casos no hay fecha de inicio fiable: contar desde el boletín
+    autonómico da un cierre demasiado temprano, y la web retiraría del listado
+    una convocatoria cuyo plazo quizá ni ha empezado. La frase se guarda igual.
+    """
+    if not frase:
+        return False
+    if _DESDE_ULTIMO_ANUNCIO_RE.search(frase):
+        return True
+    return fuente != "boe" and bool(_DESDE_BOE_RE.search(frase))
 
 
 def _a_numero(token: str) -> int | None:
@@ -155,7 +183,10 @@ def calcular_fin(fecha_pub: date, plazo: dict) -> tuple[date | None, bool]:
     """Fecha de fin del plazo y si es aproximada.
 
     El plazo cuenta desde el día siguiente a la publicación (día 1 = pub + 1).
-    - Naturales: `pub + N`, exacto -> (fecha, False).
+    - Naturales: `pub + N`; si ese día es inhábil, el plazo se prorroga al
+      primer día hábil siguiente (Ley 39/2015, art. 30.5) -> (fecha, False).
+      Solo conoce los festivos nacionales: si el último día cae en festivo
+      autonómico o local, la fecha real es un día hábil después.
     - Hábiles: cuenta N días saltando sábados, domingos y festivos nacionales.
       Como no incluye festivos autonómicos/locales, es aproximada -> (fecha, True).
     Sin número de días -> (None, False).
@@ -164,7 +195,10 @@ def calcular_fin(fecha_pub: date, plazo: dict) -> tuple[date | None, bool]:
     if dias is None:
         return None, False
     if plazo.get("tipo") == "naturales":
-        return fecha_pub + timedelta(days=dias), False
+        fin = fecha_pub + timedelta(days=dias)
+        while not _es_habil(fin):
+            fin += timedelta(days=1)
+        return fin, False
     cursor = fecha_pub
     contados = 0
     while contados < dias:

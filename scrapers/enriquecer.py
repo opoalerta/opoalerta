@@ -6,7 +6,9 @@ pase, desacoplado de los scrapers, recorre las convocatorias sin plazo revisado,
 baja el texto de su `url_oficial` y actualiza:
 
   - `plazo_texto`      -> la frase literal del plazo.
-  - `fecha_fin_plazo`  -> solo si el plazo es en días naturales (exacto).
+  - `fecha_fin_plazo`  -> exacta en días naturales, aproximada en hábiles, y
+                          ninguna si el plazo cuenta desde otra publicación
+                          (p. ej. el extracto en el BOE).
   - `grupo`            -> grupo de titulación reconocido (A1, A2, B...).
   - `num_plazas`       -> número de plazas convocadas.
 
@@ -35,7 +37,7 @@ import httpx
 
 from common.enriquecimiento import extraer_grupo, extraer_num_plazas
 from common.http import contexto_tls_legacy
-from common.plazo import calcular_fin, extraer_plazo
+from common.plazo import calcular_fin, cuenta_desde_otra_publicacion, extraer_plazo
 
 BROWSER_UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -167,7 +169,10 @@ def main(argv: list[str] | None = None) -> int:
                 if not args.dry_run:
                     _update(conn, f["id"], "", None, False, grupo, num_plazas)
                 continue
-            fin, aprox = calcular_fin(f["fecha_publicacion"], plazo)
+            if cuenta_desde_otra_publicacion(plazo["plazo_texto"], f["fuente_codigo"]):
+                fin, aprox = None, False
+            else:
+                fin, aprox = calcular_fin(f["fecha_publicacion"], plazo)
             fin_iso = fin.isoformat() if fin else None
             enriquecidas += 1
             if fin_iso:
