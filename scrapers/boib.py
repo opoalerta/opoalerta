@@ -40,6 +40,30 @@ _RESOL_RE = re.compile(
 )
 
 
+# En la subsección «Oposiciones y concursos», cada bloque cuelga de un <h3
+# class="organisme"> con la administración que convoca: «ADMINISTRACIÓN DE LA
+# COMUNIDAD AUTÓNOMA», «AYUNTAMIENTO DE …», «CONSEJO INSULAR DE …»,
+# «UNIVERSIDAD DE LAS ILLES BALEARS». El ámbito sale de esa cabecera, que es
+# estructura del boletín, no del título de la resolución (#94). Los consejos
+# insulares cuentan como locales, igual que los cabildos y diputaciones que el
+# BOE publica bajo «ADMINISTRACIÓN LOCAL». Lo que no encaja (Sindicatura de
+# Cuentas, fundaciones…) sigue como autonómico.
+_AMBITO_POR_PREFIJO = (
+    ("AYUNTAMIENTO ", "local"),
+    ("CONSEJO INSULAR ", "local"),
+    ("MANCOMUNIDAD ", "local"),
+    ("UNIVERSIDAD ", "universidad"),
+)
+
+
+def _ambito(organismo: str) -> str:
+    nombre = organismo.strip().upper()
+    for prefijo, ambito in _AMBITO_POR_PREFIJO:
+        if nombre.startswith(prefijo):
+            return ambito
+    return "autonomico"
+
+
 def _clean(fragment: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", fragment))).strip()
 
@@ -97,7 +121,7 @@ class BoibScraper(BaseScraper):
             "id": f"boib:{self.fecha.year}-{registro['reg']}",
             "titulo": registro["titulo"],
             "organismo": registro["organismo"] or "Govern de les Illes Balears",
-            "ambito": "autonomico",
+            "ambito": _ambito(registro["organismo"]),
             "ccaa": "IB",
             "tipo_acceso": _tipo_acceso(registro["titulo"]),
             "fecha_publicacion": self.fecha.isoformat(),
