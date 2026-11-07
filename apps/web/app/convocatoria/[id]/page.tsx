@@ -15,9 +15,15 @@ import { JsonLd } from "../../components/JsonLd";
 //
 // Un día y no una hora: con ~13.000 fichas y un rastreador pidiendo una cada
 // pocos segundos, revalidar cada hora renderizaba sin parar contra Neon y el
-// compute no llegaba a suspenderse nunca (cupo agotado en octubre de 2026). Lo
-// nuevo no espera al día: la ingesta llama a /api/revalidar al terminar.
-export const revalidate = 86400;
+// compute no llegaba a suspenderse nunca (cupo agotado en octubre de 2026).
+//
+// Una semana y no un día (2026-11): con un día, los rastreadores regeneraban
+// las ~13.000 fichas a diario y cada regeneración es una escritura ISR en
+// Vercel. Fueron 1,2 M en un mes contra un cupo de 200.000, y Vercel suspendió
+// todos los proyectos de la cuenta. La ficha no depende de la fecha de hoy, y
+// lo que sí cambia —el plazo que calcula el enriquecimiento en los primeros
+// días— lo refresca /api/revalidar, que invalida las fichas recién ingeridas.
+export const revalidate = 604800;
 
 // Sin esto la ruta salía como dinámica (ƒ en el build) y `revalidate` no
 // servía de nada: cada visita renderizaba contra Neon y Vercel respondía MISS.
