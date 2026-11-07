@@ -450,6 +450,29 @@ export async function getConvocatoriaIds(limit = 50_000): Promise<EntradaSitemap
   }
 }
 
+/**
+ * Ids de las fichas ingeridas en los últimos `dias`, para /api/revalidar.
+ *
+ * Son las únicas que la ingesta y el enriquecimiento pueden haber cambiado: el
+ * enriquecimiento calcula el plazo de las nuevas, y una ficha pedida antes de
+ * ingerirse habrá quedado en caché como 404. Las demás no se tocan, para no
+ * regenerar el archivo entero cada noche. Sin caché: es justo lo que acaba de
+ * cambiar.
+ */
+export async function getIdsIngeridosDesde(dias: number): Promise<string[]> {
+  const sql = client();
+  if (!sql) return [];
+  try {
+    const rows = await sql`
+      SELECT id FROM convocatorias
+      WHERE fecha_ingesta > now() - make_interval(days => ${dias})
+    `;
+    return rows.map((r) => String(r.id));
+  } catch (err) {
+    fallo("getIdsIngeridosDesde", err);
+  }
+}
+
 /** Cuántas fichas lista cada página del archivo. */
 export const POR_PAGINA_ARCHIVO = 50;
 

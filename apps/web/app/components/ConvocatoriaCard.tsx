@@ -20,6 +20,12 @@ export function ConvocatoriaCard({ convocatoria }: { convocatoria: Convocatoria 
   return (
     <Link
       href={rutaConvocatoria(convocatoria.id)}
+      // Sin prefetch: un listado pinta decenas de tarjetas y cada una, al entrar
+      // en pantalla, pedía su ficha por adelantado. Los rastreadores que ejecutan
+      // JS multiplicaban así cada visita por la página entera de fichas, y eso
+      // contaba como peticiones y escrituras ISR en Vercel (cupo agotado,
+      // 2026-11). La ficha carga igual al hacer clic.
+      prefetch={false}
       className="group block rounded border border-border bg-white p-4 no-underline shadow-sm transition hover:border-gold hover:shadow-md"
     >
       <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate">
