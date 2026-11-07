@@ -26,6 +26,17 @@ from common.runner import execute
 API_URL = "https://www.boe.es/datosabiertos/api/boe/sumario/{fecha}"
 SECCION_OPOSICIONES = "2B"
 
+# El BOE agrupa la sección II.B por departamento, y dos de ellos no son la
+# Administración del Estado: publica ahí los extractos de las convocatorias de
+# ayuntamientos, diputaciones y cabildos, y las de las universidades. El ámbito
+# sale del departamento, que es estructura del sumario, no de adivinar por el
+# título (#94). Cualquier otro departamento (ministerios, órganos
+# constitucionales…) sigue siendo estatal.
+AMBITO_POR_DEPARTAMENTO = {
+    "ADMINISTRACIÓN LOCAL": "local",
+    "UNIVERSIDADES": "universidad",
+}
+
 
 def _as_list(value: Any) -> list[Any]:
     """El BOE devuelve un dict cuando hay un solo elemento y una lista cuando hay varios."""
@@ -71,7 +82,7 @@ class BoeScraper(BaseScraper):
             "id": f"boe:{ident}",
             "titulo": registro["titulo"],
             "organismo": registro["organismo"],
-            "ambito": "estatal",
+            "ambito": AMBITO_POR_DEPARTAMENTO.get(registro["organismo"].strip().upper(), "estatal"),
             "ccaa": None,
             "fecha_publicacion": self.fecha.isoformat(),
             "url_oficial": url,

@@ -52,3 +52,45 @@ def test_seccion_distinta_no_devuelve_nada(raw):
     raw["data"]["sumario"]["diario"][0]["seccion"][0]["codigo"] = "1"
     scraper = BoeScraper(fecha=date(2025, 7, 23))
     assert scraper.parse(raw) == []
+
+
+# Sumario real del 6/11/2026, recortado a las secciones 1 y 2B. En la II.B trae
+# ministerios, «ADMINISTRACIÓN LOCAL» (9 anuncios) y «UNIVERSIDADES» (2), que
+# es lo que hace falta para comprobar que el ámbito sale del departamento (#94).
+FIXTURE_DEPARTAMENTOS = Path(__file__).parent / "fixtures" / "boe-20261106.json"
+
+
+@pytest.fixture
+def raw_departamentos():
+    return json.loads(FIXTURE_DEPARTAMENTOS.read_text(encoding="utf-8"))
+
+
+def test_ambito_sale_del_departamento(raw_departamentos):
+    scraper = BoeScraper(fecha=date(2026, 11, 6))
+    convocatorias = scraper.run(raw=raw_departamentos)
+    por_ambito: dict[str, list[dict]] = {}
+    for c in convocatorias:
+        assert is_valid(c), c
+        por_ambito.setdefault(c["ambito"], []).append(c)
+
+    assert {c["organismo"] for c in por_ambito["local"]} == {"ADMINISTRACIÓN LOCAL"}
+    assert len(por_ambito["local"]) == 9
+    assert {c["organismo"] for c in por_ambito["universidad"]} == {"UNIVERSIDADES"}
+    assert len(por_ambito["universidad"]) == 2
+    # Los ministerios y órganos del Estado siguen siendo estatales.
+    assert por_ambito["estatal"]
+    assert all(
+        c["organismo"] not in ("ADMINISTRACIÓN LOCAL", "UNIVERSIDADES")
+        for c in por_ambito["estatal"]
+    )
+    assert all(c["ccaa"] is None for c in convocatorias)
+
+
+def test_seccion_1_no_entra(raw_departamentos):
+    # La fixture trae la sección 1 (Disposiciones generales): el filtro la descarta.
+    scraper = BoeScraper(fecha=date(2026, 11, 6))
+    total = len(scraper.parse(raw_departamentos))
+    for diario in raw_departamentos["data"]["sumario"]["diario"]:
+        diario["seccion"] = [s for s in diario["seccion"] if s["codigo"] == "1"]
+    assert scraper.parse(raw_departamentos) == []
+    assert total == 21
