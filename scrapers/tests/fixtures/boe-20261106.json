@@ -1,0 +1,670 @@
+{
+ "status": {
+  "code": "200",
+  "text": "ok"
+ },
+ "data": {
+  "sumario": {
+   "metadatos": {
+    "publicacion": "BOE",
+    "fecha_publicacion": "20261106"
+   },
+   "diario": [
+    {
+     "numero": "277",
+     "sumario_diario": {
+      "identificador": "BOE-S-2026-277",
+      "url_pdf": {
+       "szBytes": "411233",
+       "szKBytes": "402",
+       "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-S-2026-277.pdf"
+      }
+     },
+     "seccion": [
+      {
+       "codigo": "1",
+       "nombre": "I. Disposiciones generales",
+       "departamento": [
+        {
+         "codigo": "9562",
+         "nombre": "MINISTERIO DE ASUNTOS EXTERIORES, UNIÓN EUROPEA Y COOPERACIÓN",
+         "epigrafe": [
+          {
+           "nombre": "Acuerdos internacionales administrativos",
+           "item": {
+            "identificador": "BOE-A-2026-23264",
+            "control": "2026/17153",
+            "titulo": "Acuerdo entre el Principado de Andorra y el Reino de España en materia de acceso a la educación secundaria postobligatoria y a la educación superior no universitaria, hecho en Madrid y Andorra la Vella el 23 de julio de 2026.",
+            "url_pdf": {
+             "szBytes": "235671",
+             "szKBytes": "230",
+             "pagina_inicial": "149186",
+             "pagina_final": "149189",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23264.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23264",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23264"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9585",
+         "nombre": "MINISTERIO DE LA PRESIDENCIA, JUSTICIA Y RELACIONES CON LAS CORTES",
+         "epigrafe": [
+          {
+           "nombre": "Seguridad alimentaria",
+           "item": {
+            "identificador": "BOE-A-2026-23265",
+            "control": "2026/17326",
+            "titulo": "Real Decreto 950/2026, de 4 de noviembre, por el que se establecen criterios para el fomento de una alimentación saludable y sostenible en centros de titularidad pública y en centros para personas en situación de dependencia o personas con necesidades especiales de titularidad privada.",
+            "url_pdf": {
+             "szBytes": "360465",
+             "szKBytes": "352",
+             "pagina_inicial": "149190",
+             "pagina_final": "149214",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23265.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23265",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23265"
+           }
+          },
+          {
+           "nombre": "Especialidades sanitarias",
+           "item": {
+            "identificador": "BOE-A-2026-23266",
+            "control": "2026/17327",
+            "titulo": "Real Decreto 951/2026, de 4 de noviembre, por el que se modifica el Real Decreto 1146/2006, de 6 de octubre, por el que se regula la relación laboral especial de residencia para la formación de especialistas en Ciencias de la Salud.",
+            "url_pdf": {
+             "szBytes": "246789",
+             "szKBytes": "241",
+             "pagina_inicial": "149215",
+             "pagina_final": "149224",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23266.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23266",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23266"
+           }
+          },
+          {
+           "nombre": "Biocidas",
+           "item": {
+            "identificador": "BOE-A-2026-23267",
+            "control": "2026/17328",
+            "titulo": "Real Decreto 952/2026, de 4 de noviembre, por el que se regula el registro y las condiciones de autorización, fabricación, comercialización y uso de biocidas.",
+            "url_pdf": {
+             "szBytes": "372523",
+             "szKBytes": "364",
+             "pagina_inicial": "149225",
+             "pagina_final": "149250",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23267.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23267",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23267"
+           }
+          },
+          {
+           "nombre": "Contaminación",
+           "item": {
+            "identificador": "BOE-A-2026-23268",
+            "control": "2026/17329",
+            "titulo": "Real Decreto 953/2026, de 4 de noviembre, por el que se modifica el Real Decreto 1052/2022, de 27 de diciembre, por el que se regulan las zonas de bajas emisiones.",
+            "url_pdf": {
+             "szBytes": "211947",
+             "szKBytes": "207",
+             "pagina_inicial": "149251",
+             "pagina_final": "149254",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23268.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23268",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23268"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9586",
+         "nombre": "MINISTERIO DE TRANSPORTES Y MOVILIDAD SOSTENIBLE",
+         "epigrafe": [
+          {
+           "nombre": "Subvenciones",
+           "item": {
+            "identificador": "BOE-A-2026-23269",
+            "control": "2026/17331",
+            "titulo": "Real Decreto 955/2026, de 5 de noviembre, por el que se regula la concesión directa de subvenciones a la Real Sociedad Geográfica y al Observatorio del Ebro durante el ejercicio presupuestario 2026.",
+            "url_pdf": {
+             "szBytes": "311270",
+             "szKBytes": "304",
+             "pagina_inicial": "149255",
+             "pagina_final": "149269",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23269.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23269",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23269"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9587",
+         "nombre": "MINISTERIO DE VIVIENDA Y AGENDA URBANA",
+         "epigrafe": [
+          {
+           "nombre": "Vivienda",
+           "item": {
+            "identificador": "BOE-A-2026-23270",
+            "control": "2026/17374",
+            "titulo": "Orden VAU/1167/2026, de 4 de noviembre, por la que se regulan los mecanismos de seguimiento, control y evaluación de las actuaciones y suministro de información del Plan Estatal de Vivienda 2026-2030, de acuerdo con el Real Decreto 326/2026, de 22 de abril, por el que se regula el Plan Estatal de Vivienda 2026-2030.",
+            "url_pdf": {
+             "szBytes": "312962",
+             "szKBytes": "306",
+             "pagina_inicial": "149270",
+             "pagina_final": "149287",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23270.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23270",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23270"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "8150",
+         "nombre": "COMUNIDAD AUTÓNOMA DEL PRINCIPADO DE ASTURIAS",
+         "epigrafe": [
+          {
+           "nombre": "Derecho a la igualdad",
+           "item": {
+            "identificador": "BOE-A-2026-23271",
+            "control": "2026/16951",
+            "titulo": "Ley del Principado de Asturias 7/2026, de 15 de octubre, para la erradicación de la discriminación y para la igualdad real y efectiva de derechos de las personas lesbianas, gais, trans, bisexuales e intersexuales y de sus familias.",
+            "url_pdf": {
+             "szBytes": "503643",
+             "szKBytes": "492",
+             "pagina_inicial": "149288",
+             "pagina_final": "149334",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23271.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23271",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23271"
+           }
+          },
+          {
+           "nombre": "Infancia y adolescencia",
+           "item": {
+            "identificador": "BOE-A-2026-23272",
+            "control": "2026/16952",
+            "titulo": "Ley del Principado de Asturias 8/2026, de 15 de octubre, de Infancia y Adolescencia.",
+            "url_pdf": {
+             "szBytes": "609454",
+             "szKBytes": "595",
+             "pagina_inicial": "149335",
+             "pagina_final": "149397",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23272.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23272",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23272"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "8040",
+         "nombre": "COMUNIDAD AUTÓNOMA DE CANTABRIA",
+         "epigrafe": [
+          {
+           "nombre": "Urbanismo",
+           "item": {
+            "identificador": "BOE-A-2026-23273",
+            "control": "2026/16953",
+            "titulo": "Ley de Cantabria 10/2026, de 13 de octubre, de medidas urgentes en materia de urbanismo por la que se modifica el artículo 61 de la Ley de Cantabria 5/2022, de 15 de julio, de ordenación del territorio y urbanismo de Cantabria.",
+            "url_pdf": {
+             "szBytes": "202807",
+             "szKBytes": "198",
+             "pagina_inicial": "149398",
+             "pagina_final": "149400",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23273.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23273",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23273"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "8100",
+         "nombre": "COMUNIDAD AUTÓNOMA DE LA REGIÓN DE MURCIA",
+         "epigrafe": [
+          {
+           "nombre": "Turismo",
+           "item": {
+            "identificador": "BOE-A-2026-23274",
+            "control": "2026/16954",
+            "titulo": "Ley 3/2026, de 8 de octubre, por la que se regulan los Bienes de Interés Turístico de la Región de Murcia y se modifica la Ley 12/2013, de 20 de diciembre, de Turismo de la Región de Murcia.",
+            "url_pdf": {
+             "szBytes": "270159",
+             "szKBytes": "264",
+             "pagina_inicial": "149401",
+             "pagina_final": "149411",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23274.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23274",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23274"
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "codigo": "2B",
+       "nombre": "II. Autoridades y personal. - B. Oposiciones y concursos",
+       "departamento": [
+        {
+         "codigo": "9562",
+         "nombre": "MINISTERIO DE ASUNTOS EXTERIORES, UNIÓN EUROPEA Y COOPERACIÓN",
+         "epigrafe": [
+          {
+           "nombre": "Procedimientos de libre designación",
+           "item": {
+            "identificador": "BOE-A-2026-23293",
+            "control": "2026/17270",
+            "titulo": "Resolución de 30 de octubre de 2026, de la Dirección de la Agencia Española de Cooperación Internacional para el Desarrollo, por la que se convoca la provisión de puestos de trabajo por el sistema de libre designación.",
+            "url_pdf": {
+             "szBytes": "343112",
+             "szKBytes": "335",
+             "pagina_inicial": "149444",
+             "pagina_final": "149450",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23293.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23293",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23293"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "7320",
+         "nombre": "MINISTERIO DEL INTERIOR",
+         "epigrafe": [
+          {
+           "nombre": "Procedimientos de libre designación",
+           "item": [
+            {
+             "identificador": "BOE-A-2026-23294",
+             "control": "2026/17181",
+             "titulo": "Resolución de 28 de octubre de 2026, de la Subsecretaría, por la que se convoca la provisión de puesto de trabajo por el sistema de libre designación.",
+             "url_pdf": {
+              "szBytes": "252763",
+              "szKBytes": "247",
+              "pagina_inicial": "149451",
+              "pagina_final": "149453",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23294.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23294",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23294"
+            },
+            {
+             "identificador": "BOE-A-2026-23295",
+             "control": "2026/17182",
+             "titulo": "Resolución de 28 de octubre de 2026, de la Subsecretaría, por la que se convoca la provisión de puestos de trabajo por el sistema de libre designación.",
+             "url_pdf": {
+              "szBytes": "236242",
+              "szKBytes": "231",
+              "pagina_inicial": "149454",
+              "pagina_final": "149457",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23295.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23295",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23295"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "codigo": "9593",
+         "nombre": "MINISTERIO DE POLÍTICA TERRITORIAL Y MEMORIA DEMOCRÁTICA",
+         "epigrafe": [
+          {
+           "nombre": "Procedimientos de libre designación",
+           "item": {
+            "identificador": "BOE-A-2026-23296",
+            "control": "2026/17186",
+            "titulo": "Resolución de 27 de octubre de 2026, de la Delegación del Gobierno en la Comunidad Autónoma de Galicia, por la que se declara desierto puesto de trabajo de libre designación, convocado por Resolución de 4 de septiembre de 2026, de la Subsecretaría.",
+            "url_pdf": {
+             "szBytes": "192529",
+             "szKBytes": "188",
+             "pagina_inicial": "149458",
+             "pagina_final": "149458",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23296.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23296",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23296"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9575",
+         "nombre": "MINISTERIO PARA LA TRANSICIÓN ECOLÓGICA Y EL RETO DEMOGRÁFICO",
+         "epigrafe": [
+          {
+           "nombre": "Procedimientos de libre designación",
+           "item": {
+            "identificador": "BOE-A-2026-23297",
+            "control": "2026/17113",
+            "titulo": "Resolución de 28 de octubre de 2026, de la Subsecretaría, por la que se convoca la provisión de puesto de trabajo por el sistema de libre designación.",
+            "url_pdf": {
+             "szBytes": "322057",
+             "szKBytes": "315",
+             "pagina_inicial": "149459",
+             "pagina_final": "149467",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23297.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23297",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23297"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "4335",
+         "nombre": "MINISTERIO DE SANIDAD",
+         "epigrafe": [
+          {
+           "nombre": "Cuerpo de Médicos Titulares",
+           "item": {
+            "identificador": "BOE-A-2026-23298",
+            "control": "2026/17187",
+            "titulo": "Resolución de 28 de octubre de 2026, de la Subsecretaría, por la que se publica la relación de aspirantes que han superado la fase de oposición del proceso selectivo para ingreso, por el sistema general de acceso libre, en el Cuerpo de Médicos Titulares, convocado por Resolución de 4 de diciembre de 2025.",
+            "url_pdf": {
+             "szBytes": "238102",
+             "szKBytes": "233",
+             "pagina_inicial": "149468",
+             "pagina_final": "149470",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23298.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23298",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23298"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9565",
+         "nombre": "MINISTERIO DE CIENCIA, INNOVACIÓN Y UNIVERSIDADES",
+         "epigrafe": [
+          {
+           "nombre": "Personal laboral",
+           "item": {
+            "identificador": "BOE-A-2026-23299",
+            "control": "2026/17279",
+            "titulo": "Resolución de 30 de octubre de 2026, de la Subsecretaría, por la que se corrigen errores y se modifica la de 5 de octubre de 2026, por la que se aprueba la relación provisional de personas admitidas y excluidas, se designa al Tribunal calificador y se anuncia fecha, hora y lugar de celebración del primer ejercicio o ejercicio único de la fase de oposición del proceso selectivo para ingreso, por el sistema general de acceso libre y promoción interna, como personal laboral fijo, en los grupos profesionales M3, M2, M1, E2 y E1, sujetos al IV Convenio colectivo único para el personal laboral de la Administración General del Estado, convocado por Resolución de 6 de julio de 2026.",
+            "url_pdf": {
+             "szBytes": "242922",
+             "szKBytes": "237",
+             "pagina_inicial": "149471",
+             "pagina_final": "149473",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23299.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23299",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23299"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9579",
+         "nombre": "MINISTERIO DE INCLUSIÓN, SEGURIDAD SOCIAL Y MIGRACIONES",
+         "epigrafe": [
+          {
+           "nombre": "Procedimientos de libre designación",
+           "item": {
+            "identificador": "BOE-A-2026-23300",
+            "control": "2026/17281",
+            "titulo": "Resolución de 28 de octubre de 2026, de la Subsecretaría, por la que se convoca la provisión de puesto de trabajo por el sistema de libre designación.",
+            "url_pdf": {
+             "szBytes": "254448",
+             "szKBytes": "248",
+             "pagina_inicial": "149474",
+             "pagina_final": "149477",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23300.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23300",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23300"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "1810",
+         "nombre": "CONSEJO DE ESTADO",
+         "epigrafe": [
+          {
+           "nombre": "Procedimientos de libre designación",
+           "item": {
+            "identificador": "BOE-A-2026-23301",
+            "control": "2026/16622",
+            "titulo": "Resolución de 22 de octubre de 2026, de la Presidencia del Consejo de Estado, por la que se convoca la provisión de puesto de trabajo por el sistema de libre designación.",
+            "url_pdf": {
+             "szBytes": "233836",
+             "szKBytes": "228",
+             "pagina_inicial": "149478",
+             "pagina_final": "149480",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23301.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23301",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23301"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "1420",
+         "nombre": "TRIBUNAL DE CUENTAS",
+         "epigrafe": [
+          {
+           "nombre": "Oferta de empleo público",
+           "item": {
+            "identificador": "BOE-A-2026-23302",
+            "control": "2026/17188",
+            "titulo": "Resolución de 30 de octubre de 2026, de la Presidencia del Tribunal de Cuentas, por la que se publica el Acuerdo del Pleno de aprobación de la oferta de empleo público para el año 2026.",
+            "url_pdf": {
+             "szBytes": "196816",
+             "szKBytes": "192",
+             "pagina_inicial": "149481",
+             "pagina_final": "149482",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23302.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23302",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23302"
+           }
+          }
+         ]
+        },
+        {
+         "codigo": "9525",
+         "nombre": "ADMINISTRACIÓN LOCAL",
+         "epigrafe": [
+          {
+           "nombre": "Personal funcionario y laboral",
+           "item": [
+            {
+             "identificador": "BOE-A-2026-23303",
+             "control": "2026/105992",
+             "titulo": "Resolución de 20 de octubre de 2026, del Ayuntamiento de Fraga (Huesca), referente a la convocatoria para proveer una plaza.",
+             "url_pdf": {
+              "szBytes": "190454",
+              "szKBytes": "186",
+              "pagina_inicial": "149483",
+              "pagina_final": "149483",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23303.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23303",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23303"
+            },
+            {
+             "identificador": "BOE-A-2026-23304",
+             "control": "2026/105862",
+             "titulo": "Resolución de 22 de octubre de 2026, del Ayuntamiento de Madrid, referente a la convocatoria para proveer varias plazas.",
+             "url_pdf": {
+              "szBytes": "190499",
+              "szKBytes": "186",
+              "pagina_inicial": "149484",
+              "pagina_final": "149484",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23304.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23304",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23304"
+            },
+            {
+             "identificador": "BOE-A-2026-23305",
+             "control": "2026/105863",
+             "titulo": "Resolución de 22 de octubre de 2026, del Ayuntamiento de Madrid, referente a la convocatoria para proveer varias plazas.",
+             "url_pdf": {
+              "szBytes": "190431",
+              "szKBytes": "186",
+              "pagina_inicial": "149485",
+              "pagina_final": "149485",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23305.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23305",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23305"
+            },
+            {
+             "identificador": "BOE-A-2026-23306",
+             "control": "2026/105988",
+             "titulo": "Resolución de 22 de octubre de 2026, de la Mancomunidad Pinoduero (Valladolid), referente a la convocatoria para proveer una plaza.",
+             "url_pdf": {
+              "szBytes": "190243",
+              "szKBytes": "186",
+              "pagina_inicial": "149486",
+              "pagina_final": "149486",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23306.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23306",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23306"
+            },
+            {
+             "identificador": "BOE-A-2026-23307",
+             "control": "2026/105991",
+             "titulo": "Resolución de 22 de octubre de 2026, del Ayuntamiento de Nava de Arévalo (Ávila), referente a la convocatoria para proveer una plaza.",
+             "url_pdf": {
+              "szBytes": "190276",
+              "szKBytes": "186",
+              "pagina_inicial": "149487",
+              "pagina_final": "149487",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23307.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23307",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23307"
+            },
+            {
+             "identificador": "BOE-A-2026-23308",
+             "control": "2026/105984",
+             "titulo": "Resolución de 29 de octubre de 2026, del Ayuntamiento de Sant Fruitós de Bages (Barcelona), referente a la convocatoria para proveer varias plazas.",
+             "url_pdf": {
+              "szBytes": "192321",
+              "szKBytes": "188",
+              "pagina_inicial": "149488",
+              "pagina_final": "149488",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23308.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23308",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23308"
+            },
+            {
+             "identificador": "BOE-A-2026-23309",
+             "control": "2026/105985",
+             "titulo": "Resolución de 29 de octubre de 2026, del Ayuntamiento de Guadarrama (Madrid), referente a la convocatoria para proveer una plaza.",
+             "url_pdf": {
+              "szBytes": "190648",
+              "szKBytes": "186",
+              "pagina_inicial": "149489",
+              "pagina_final": "149489",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23309.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23309",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23309"
+            },
+            {
+             "identificador": "BOE-A-2026-23310",
+             "control": "2026/105987",
+             "titulo": "Resolución de 29 de octubre de 2026, del Ayuntamiento de Guadarrama (Madrid), referente a la convocatoria para proveer varias plazas.",
+             "url_pdf": {
+              "szBytes": "190996",
+              "szKBytes": "187",
+              "pagina_inicial": "149490",
+              "pagina_final": "149490",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23310.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23310",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23310"
+            },
+            {
+             "identificador": "BOE-A-2026-23311",
+             "control": "2026/106067",
+             "titulo": "Resolución de 3 de noviembre de 2026, del Ayuntamiento de Villa del Río (Córdoba), de corrección de errores de la de 29 de octubre de 2026, referente a la convocatoria para proveer una plaza.",
+             "url_pdf": {
+              "szBytes": "190865",
+              "szKBytes": "186",
+              "pagina_inicial": "149491",
+              "pagina_final": "149491",
+              "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23311.pdf"
+             },
+             "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23311",
+             "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23311"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "codigo": "310",
+         "nombre": "UNIVERSIDADES",
+         "epigrafe": [
+          {
+           "nombre": "Cuerpos docentes universitarios",
+           "item": {
+            "identificador": "BOE-A-2026-23312",
+            "control": "2026/17189",
+            "titulo": "Resolución de 21 de octubre de 2026, de la Universidad de A Coruña, por la que se convoca concurso de acceso a plazas de cuerpos docentes universitarios.",
+            "url_pdf": {
+             "szBytes": "413814",
+             "szKBytes": "404",
+             "pagina_inicial": "149492",
+             "pagina_final": "149513",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23312.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23312",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23312"
+           }
+          },
+          {
+           "nombre": "Personal técnico, de gestión y de administración y servicios",
+           "item": {
+            "identificador": "BOE-A-2026-23313",
+            "control": "2026/17190",
+            "titulo": "Resolución de 27 de octubre de 2026, de la Universidad de Cádiz, por la que se modifica la de 8 de octubre de 2026, por la que se convoca proceso selectivo para ingreso, por el sistema general de acceso libre, en la Escala Técnica de Gestión Universitaria.",
+            "url_pdf": {
+             "szBytes": "195452",
+             "szKBytes": "191",
+             "pagina_inicial": "149514",
+             "pagina_final": "149515",
+             "texto": "https://www.boe.es/boe/dias/2026/11/06/pdfs/BOE-A-2026-23313.pdf"
+            },
+            "url_html": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-23313",
+            "url_xml": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-2026-23313"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
