@@ -8,6 +8,19 @@ export const dynamic = "force-dynamic";
 
 const ORDENES_VALIDOS = new Set<Orden>(["recientes", "urgencia"]);
 
+/** Tope del texto de búsqueda: el mismo que admiten las alertas. */
+const MAX_Q = 200;
+/** Tope de resultados por petición. El buscador pide 24; 50 deja margen. */
+const MAX_CUANTAS = 50;
+
+/**
+ * Cinco minutos en el CDN por URL. Era `force-dynamic` sin caché: cada
+ * petición eran dos consultas a Neon, y un bot que recorriera combinaciones
+ * de filtros lo mantenía despierto y gastaba invocaciones de Vercel. Los datos
+ * solo cambian con la ingesta diaria, así que cinco minutos no se notan.
+ */
+const CACHE = "public, s-maxage=300, stale-while-revalidate=3600";
+
 /**
  * Búsqueda paginada de convocatorias.
  *
@@ -29,11 +42,15 @@ export async function GET(request: Request) {
   const desde = Number.parseInt(p.get("desde") ?? "0", 10);
   const cuantas = Number.parseInt(p.get("cuantas") ?? String(POR_PAGINA), 10);
   const orden = p.get("orden") ?? "recientes";
+  const q = p.get("q") ?? "";
+  if (q.length > MAX_Q) {
+    return NextResponse.json({ error: "Búsqueda demasiado larga." }, { status: 400 });
+  }
 
   let pagina;
   try {
     pagina = await buscarConvocatorias({
-      q: p.get("q") ?? "",
+      q,
       fuente: p.get("fuente") ?? "",
       ambito: p.get("ambito") ?? "",
       ccaa: p.get("ccaa") ?? "",
@@ -41,7 +58,7 @@ export async function GET(request: Request) {
       // Number.isFinite descarta NaN de un parámetro inventado; la capa de datos
       // ya recorta los rangos, aquí basta con no pasarle basura.
       desde: Number.isFinite(desde) ? desde : 0,
-      cuantas: Number.isFinite(cuantas) ? cuantas : POR_PAGINA,
+      cuantas: Number.isFinite(cuantas) ? Math.min(cuantas, MAX_CUANTAS) : POR_PAGINA,
     });
   } catch {
     // La capa de datos ya propaga y registra el error. Lo que importa aquí es
@@ -55,9 +72,12 @@ export async function GET(request: Request) {
     );
   }
 
-  return NextResponse.json({
-    ...pagina,
-    desde: Number.isFinite(desde) ? Math.max(0, desde) : 0,
-    cuantas: pagina.items.length,
-  });
+  return NextResponse.json(
+    {
+      ...pagina,
+      desde: Number.isFinite(desde) ? Math.max(0, desde) : 0,
+      cuantas: pagina.items.length,
+    },
+    { headers: { "Cache-Control": CACHE } },
+  );
 }

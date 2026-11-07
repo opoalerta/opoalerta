@@ -93,11 +93,11 @@ test("HTML helper escapes text and both kinds of attribute quote", () => {
   assert.equal(load("lib/html.ts").escapeHtml(`<b title="x">'&`), "&lt;b title=&quot;x&quot;&gt;&#39;&amp;");
 });
 
-function subscriptionRoute(channel, quota = { ok: true }, createError = false) {
+function subscriptionRoute(channel, quota = { ok: true }, createError = false, created = { token }) {
   const effects = [];
   const route = load(`app/api/${channel === "email" ? "suscribir" : "suscribir-telegram"}/route.ts`, {
     "@/lib/suscripciones": {
-      crearSuscripcion: async (...args) => { effects.push(["create", ...args]); if (createError) throw new Error("private@example.com"); return { token }; },
+      crearSuscripcion: async (...args) => { effects.push(["create", ...args]); if (createError) throw new Error("private@example.com"); return created; },
       crearSuscripcionTelegram: async (...args) => { effects.push(["create", ...args]); return { token }; },
     },
     "@/lib/alert-rate-limit": { limitSubscription: async (...args) => { effects.push(["quota", ...args]); return quota; } },
@@ -136,6 +136,14 @@ test("confirmation email renders hostile filter text as text, not markup", async
   assert.ok(message.html.includes("&lt;img src=&quot;x&quot;&gt; &amp; texto"));
   assert.ok(!message.html.includes("<img"));
   assert.ok(message.html.includes(`/alertas/confirmar?token=${token}`));
+});
+
+test("re-subscribing to an already confirmed alert sends nothing and looks like a new one", async () => {
+  const route = subscriptionRoute("email", { ok: true }, false, { yaConfirmada: true });
+  const result = await route.POST(request({ email: "user@example.com" }));
+  assert.equal(result.status, 200);
+  assert.deepEqual(await result.json(), { ok: true });
+  assert.deepEqual(route.effects.map((e) => e[0]), ["quota", "create"]);
 });
 
 test("subscription database exceptions do not escape or expose the address", async () => {
