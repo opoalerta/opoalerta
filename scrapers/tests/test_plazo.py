@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from common.plazo import calcular_fin, extraer_plazo
+from common.plazo import calcular_fin, cuenta_desde_otra_publicacion, extraer_plazo
 
 
 def test_naturales_en_palabras():
@@ -74,3 +74,46 @@ def test_elige_presentacion_entre_varios_plazos():
 def test_sin_plazo_devuelve_none():
     assert extraer_plazo("Resolución por la que se nombra a un funcionario.") is None
     assert extraer_plazo("") is None
+
+
+def test_naturales_que_acaban_en_domingo_se_prorrogan_al_lunes():
+    # Ley 39/2015, art. 30.5: si el último día es inhábil, el plazo se
+    # prorroga al primer día hábil siguiente.
+    p = {"plazo_texto": "", "dias": 9, "tipo": "naturales"}
+    # 24-jul-2026 (viernes) + 9 = domingo 2-ago -> lunes 3-ago.
+    assert calcular_fin(date(2026, 7, 24), p) == (date(2026, 8, 3), False)
+
+
+def test_naturales_que_acaban_en_festivo_nacional_se_prorrogan():
+    p = {"plazo_texto": "", "dias": 3, "tipo": "naturales"}
+    # 9-oct-2026 (viernes) + 3 = lunes 12-oct (Fiesta Nacional) -> martes 13.
+    assert calcular_fin(date(2026, 10, 9), p) == (date(2026, 10, 13), False)
+
+
+def test_autonomica_que_cuenta_desde_el_extracto_en_el_boe():
+    frase = (
+        "El plazo de presentación de solicitudes será de veinte días hábiles contados a "
+        "partir del siguiente al de la publicación del extracto de la correspondiente "
+        'convocatoria en el "Boletín Oficial del Estado".'
+    )
+    assert cuenta_desde_otra_publicacion(frase, "boa") is True
+    # En el propio BOE la fecha de publicación es la buena.
+    assert cuenta_desde_otra_publicacion(frase, "boe") is False
+
+
+def test_cuenta_desde_el_ultimo_de_los_anuncios():
+    frase = (
+        "Las solicitudes se presentarán en el plazo de veinte días naturales, contados a "
+        "partir del siguiente al que aparezca el último de los anuncios de la convocatoria."
+    )
+    assert cuenta_desde_otra_publicacion(frase, "bocyl") is True
+    assert cuenta_desde_otra_publicacion(frase, "boe") is True
+
+
+def test_plazo_desde_su_propio_boletin():
+    frase = (
+        "El plazo de presentación de solicitudes será de veinte días hábiles desde el día "
+        "siguiente al de la publicación de esta orden en el Boletín Oficial de Aragón."
+    )
+    assert cuenta_desde_otra_publicacion(frase, "boa") is False
+    assert cuenta_desde_otra_publicacion("", "boa") is False
