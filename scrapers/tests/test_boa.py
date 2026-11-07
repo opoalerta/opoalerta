@@ -51,7 +51,7 @@ def test_run_produce_convocatorias_validas(raw):
         assert is_valid(c), c
         assert re.fullmatch(r"boa:20260807-\d+", c["id"])
         assert c["ccaa"] == "AR"
-        assert c["ambito"] == "autonomico"
+        assert c["ambito"] in ("autonomico", "universidad")
         assert c["fuente"]["codigo"] == "boa"
         assert c["fecha_publicacion"] == "2026-08-07"
         assert c["url_oficial"].startswith("https://www.boa.aragon.es/")
@@ -81,3 +81,39 @@ def test_dia_con_boletin_pero_sin_oposiciones(raw):
     # devuelve 0 convocatorias sin considerarlo un fallo del scraper.
     sin_ub = raw.replace('<h3 class="boasubseccion">b) Oposiciones y concursos<h3>', "")
     assert BoaScraper(fecha=date(2026, 8, 7)).parse(sin_ub) == []
+
+
+# Sumario real del 30/10/2026, con todas sus secciones (I, II, III y V). En II.b
+# convocan el Gobierno de Aragón, las Cortes, la Universidad de Zaragoza y la
+# Diputación Provincial de Huesca (#94).
+FIXTURE_EMISORES = Path(__file__).parent / "fixtures" / "boa-lista-20261030.html"
+
+
+def test_ambito_sale_del_emisor():
+    raw = FIXTURE_EMISORES.read_text(encoding="utf-8")
+    por_ambito: dict[str, list[str]] = {}
+    for c in BoaScraper(fecha=date(2026, 10, 30)).run(raw=raw):
+        assert is_valid(c), c
+        assert c["ccaa"] == "AR"
+        por_ambito.setdefault(c["ambito"], []).append(c["organismo"])
+
+    assert por_ambito["local"] == ["DIPUTACIÓN PROVINCIAL DE HUESCA"] * 2
+    assert por_ambito["universidad"] == ["UNIVERSIDAD DE ZARAGOZA"]
+    assert len(por_ambito["autonomico"]) == 5
+    # «Departamento de Educación, Ciencia y Universidades» es del Gobierno.
+    assert "DEPARTAMENTO DE EDUCACIÓN, CIENCIA Y UNIVERSIDADES" in por_ambito["autonomico"]
+
+
+@pytest.mark.parametrize(
+    ("emisor", "esperado"),
+    [
+        ("AYUNTAMIENTO DE SABIÑÁNIGO", "local"),
+        ("COMARCA DEL ALTO GÁLLEGO", "local"),
+        ("CÁMARA DE CUENTAS DE ARAGÓN", "autonomico"),
+        ("", "autonomico"),
+    ],
+)
+def test_ambito_por_prefijo(emisor, esperado):
+    from boa import _ambito
+
+    assert _ambito(emisor) == esperado

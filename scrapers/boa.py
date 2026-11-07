@@ -65,6 +65,28 @@ SECCION_OPOSICIONES = "II."
 SUBSECCION_OPOSICIONES = "b)"
 
 
+# Dentro de II.b cada documento cuelga de un <h4 class="boaemisor"> con quien
+# convoca: departamentos del Gobierno de Aragón, Cortes, Cámara de Cuentas,
+# la Universidad de Zaragoza y entidades locales (ayuntamientos, comarcas,
+# diputaciones provinciales). El ámbito sale de esa cabecera, que es estructura
+# del boletín, no del título (#94). Lo que no encaja sigue como autonómico.
+_AMBITO_POR_PREFIJO = (
+    ("AYUNTAMIENTO ", "local"),
+    ("COMARCA ", "local"),
+    ("DIPUTACIÓN ", "local"),
+    ("MANCOMUNIDAD ", "local"),
+    ("UNIVERSIDAD ", "universidad"),
+)
+
+
+def _ambito(emisor: str) -> str:
+    nombre = emisor.strip().upper()
+    for prefijo, ambito in _AMBITO_POR_PREFIJO:
+        if nombre.startswith(prefijo):
+            return ambito
+    return "autonomico"
+
+
 def _clean(fragment: str) -> str:
     return html.unescape(re.sub(r"<[^>]+>", "", fragment)).strip()
 
@@ -144,7 +166,7 @@ class BoaScraper(BaseScraper):
             "id": f"boa:{self.fecha.strftime('%Y%m%d')}-{registro['docr']}",
             "titulo": registro["titulo"],
             "organismo": registro["organismo"] or "Gobierno de Aragón",
-            "ambito": "autonomico",
+            "ambito": _ambito(registro["organismo"]),
             "ccaa": "AR",
             "tipo_acceso": _tipo_acceso(registro["titulo"]),
             "fecha_publicacion": self.fecha.isoformat(),
