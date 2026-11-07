@@ -52,7 +52,7 @@ def test_run_produce_convocatorias_validas(raw):
         assert is_valid(c), c
         assert c["id"].startswith("dogv:2026-")
         assert c["ccaa"] == "VC"
-        assert c["ambito"] == "autonomico"
+        assert c["ambito"] in ("autonomico", "local", "universidad")
         assert c["fuente"]["codigo"] == "dogv"
         assert c["fecha_publicacion"] == "2026-07-24"
         assert c["url_oficial"].startswith("https://dogv.gva.es/datos/2026/07/24/pdf/")
@@ -136,3 +136,51 @@ def test_fecha_ilegible_falla_si_hay_convocatorias():
 def test_sumario_vacio_sin_fecha_no_rompe_la_ingesta():
     """Algunos días llegan sin fechaSumario; si no traen nada, se ignoran."""
     assert DogvScraper().parse({"fechaSumario": "", "disposiciones": []}) == []
+
+
+def test_ambito_en_la_fixture_de_julio(raw):
+    # 24/7/2026: 12 del IVIA, Generalitat, tres universidades y un ayuntamiento.
+    por_ambito = {}
+    for c in DogvScraper().run(raw=raw):
+        por_ambito.setdefault(c["ambito"], []).append(c["organismo"])
+    assert por_ambito["local"] == ["Ayuntamiento de Xirivella"]
+    assert len(por_ambito["universidad"]) == 6
+    assert len(por_ambito["autonomico"]) == 19
+
+
+# Sumario real del 6/11/2026: convocan las Corts, Turisme Comunitat Valenciana,
+# dos ayuntamientos y tres universidades (#94).
+FIXTURE_ORGANISMOS = Path(__file__).parent / "fixtures" / "dogv-20261106.json"
+
+
+def test_ambito_sale_del_organismo():
+    raw = json.loads(FIXTURE_ORGANISMOS.read_text(encoding="utf-8"))
+    por_ambito: dict[str, list[str]] = {}
+    for c in DogvScraper().run(raw=raw):
+        assert is_valid(c), c
+        por_ambito.setdefault(c["ambito"], []).append(c["organismo"])
+
+    assert sorted(por_ambito["local"]) == [
+        "Ayuntamiento de Almàssera",
+        "Ayuntamiento de Tavernes de la Valldigna",
+    ]
+    assert len(por_ambito["universidad"]) == 8
+    assert sorted(por_ambito["autonomico"]) == ["Corts Valencianes", "Turisme Comunitat Valenciana"]
+
+
+@pytest.mark.parametrize(
+    ("organismo", "esperado"),
+    [
+        ("Ajuntament de València", "local"),
+        ("Diputación Provincial de Alicante", "local"),
+        ("Mancomunitat de la Ribera Alta", "local"),
+        ("Universitat Politècnica de València", "universidad"),
+        ("Consell Jurídic Consultiu de la Comunitat Valenciana", "autonomico"),
+        ("Conselleria de Sanidad", "autonomico"),
+        ("", "autonomico"),
+    ],
+)
+def test_ambito_por_prefijo(organismo, esperado):
+    from dogv import _ambito
+
+    assert _ambito(organismo) == esperado

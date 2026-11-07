@@ -68,6 +68,31 @@ SUBSECCION_OPOSICIONES = "A) OFERTAS DE EMPLEO PÚBLICO, OPOSICIONES Y CONCURSOS
 DIAS_VENTANA = int(os.environ.get("DOGV_DIAS_VENTANA", "4"))
 
 
+# El JSON trae el `organismo` que firma cada disposición, como campo propio y no
+# dentro del título. En la subsección de oposiciones convocan la Generalitat y
+# sus entes, los ayuntamientos y las universidades; el ámbito sale de ese campo
+# (#94). Prefijos con espacio para no confundir «Consell Jurídic Consultiu» o
+# «Corts Valencianes» con nada local. Lo que no encaja sigue como autonómico.
+_AMBITO_POR_PREFIJO = (
+    ("ayuntamiento ", "local"),
+    ("ajuntament ", "local"),
+    ("diputación ", "local"),
+    ("diputació ", "local"),
+    ("mancomunidad ", "local"),
+    ("mancomunitat ", "local"),
+    ("universidad ", "universidad"),
+    ("universitat ", "universidad"),
+)
+
+
+def _ambito(organismo: str) -> str:
+    nombre = organismo.strip().lower()
+    for prefijo, ambito in _AMBITO_POR_PREFIJO:
+        if nombre.startswith(prefijo):
+            return ambito
+    return "autonomico"
+
+
 def _tipo_acceso(titulo: str) -> str | None:
     t = titulo.lower()
     if "concurso-oposició" in t or "concurso oposició" in t or "concurs-oposició" in t:
@@ -172,7 +197,7 @@ class DogvScraper(BaseScraper):
             "id": f"dogv:{codigo.replace('/', '-')}",
             "titulo": registro["titulo"],
             "organismo": registro.get("organismo") or "Generalitat Valenciana",
-            "ambito": "autonomico",
+            "ambito": _ambito(registro.get("organismo") or ""),
             "ccaa": "VC",
             "tipo_acceso": _tipo_acceso(registro["titulo"]),
             "fecha_publicacion": fecha.isoformat(),
