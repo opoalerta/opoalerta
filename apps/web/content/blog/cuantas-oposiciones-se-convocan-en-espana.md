@@ -11,6 +11,8 @@ tags:
   - comunidades autónomas
 ---
 
+> **Actualización (7 de noviembre de 2026):** hay [números nuevos, con 14 boletines y tres meses de datos](/blog/cuantas-oposiciones-hay-noviembre-2026). Ahí explicamos también por qué la cifra de «convocatorias abiertas» de este artículo no se puede comparar con la de ahora.
+
 Si buscas cuántas oposiciones hay abiertas ahora mismo en España, no encontrarás la cifra en ningún sitio. Cada administración publica en su propio boletín, con su propio formato y su propio buscador, y nadie los suma. El Estado no lleva ese recuento agregado.
 
 Nosotros sí lo tenemos, porque leer esos boletines cada día es literalmente lo que hace este proyecto. A 10 de agosto de 2026 hay **1.276 convocatorias de empleo público con el plazo abierto** en los 13 boletines que rastreamos. Estos son los números, y también sus límites, que importan tanto como los números.

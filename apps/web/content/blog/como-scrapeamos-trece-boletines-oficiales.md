@@ -11,6 +11,8 @@ tags:
   - python
 ---
 
+> **Actualización (7 de noviembre de 2026):** desde que se escribió este artículo han entrado Cataluña (DOGC y CIDO) y el País Vasco (BOPV). Hoy faltan Murcia, Navarra, Cantabria, La Rioja, Ceuta y Melilla. El cálculo de plazos también ha cambiado: [ya no ponemos fecha cuando el plazo cuenta desde otra publicación](/blog/como-contar-un-plazo-de-dias-habiles).
+
 OpoAlerta lee cada madrugada trece boletines oficiales, normaliza lo que publican y lo deja buscable en un mismo sitio. Todo el código de scraping son unas 2.900 líneas de Python y tiene exactamente dos dependencias de producción:
 
 ```toml
