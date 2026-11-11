@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
-import { revalidatePath } from "next/cache";
-import { getIdsIngeridosDesde } from "@/lib/db";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { getIdsIngeridosDesde, TAG_CONTEO_OPOSICIONES } from "@/lib/db";
 import { rutaConvocatoria } from "@/lib/site";
 
 /**
@@ -62,6 +62,9 @@ export async function POST(request: Request) {
     return Response.json({ ok: false }, { status: 401 });
   }
 
+  // Antes que las rutas: las páginas de /oposiciones leen este recuento de la
+  // Data Cache, y regenerarlas con el de ayer no serviría de nada.
+  revalidateTag(TAG_CONTEO_OPOSICIONES, { expire: 0 });
   for (const [ruta, tipo] of LISTADOS) revalidatePath(ruta, tipo);
   const fichas = await getIdsIngeridosDesde(DIAS_FICHAS);
   const rutas = fichas.map(rutaConvocatoria);
