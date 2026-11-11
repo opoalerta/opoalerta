@@ -30,6 +30,11 @@ from common.runner import execute
 HOME_URL = "https://www.gobiernodecanarias.org/boc/"
 BASE = "https://www.gobiernodecanarias.org"
 SECCION_OPOSICIONES = "Oposiciones y concursos"
+# Cuántos números recientes se miran buscando la sección de oposiciones.
+MAX_NUMEROS = 3
+# Cabecera de sección de un sumario («I. Disposiciones generales»): un
+# extraordinario no trae ni «Autoridades y personal» ni la clase `titboc`.
+_SECCION_RE = re.compile(r"<h4>\s*[IVX]+\. ")
 
 _NUM_RE = re.compile(r"/boc/(\d{4})/(\d+)")
 # Alternancia en orden de documento: cabecera de organismo (h5) o artículo (li).
@@ -97,9 +102,22 @@ class BocScraper(BaseScraper):
         pares = _NUM_RE.findall(home)
         if not pares:
             raise ValueError("No se encontró ningún número de BOC en la portada")
-        anio, num = max((int(y), int(n)) for y, n in pares)
-        raw = http_get(f"{BASE}/boc/{anio}/{num}/").text
-        self.fecha = _parse_fecha(raw) or date.today()
+        # No siempre vale el número más alto: un extraordinario sale por encima
+        # del ordinario del mismo día y suele traer una sola disposición, sin
+        # oposiciones. Quedarse con él perdía el ordinario entero (2026-11-11,
+        # nº 226 extraordinario sobre el 225). Se mira hacia atrás hasta dar con
+        # uno que tenga la sección; si ninguno la tiene, vale el más reciente.
+        numeros = sorted({(int(y), int(n)) for y, n in pares}, reverse=True)[:MAX_NUMEROS]
+        primero: tuple[str, date] | None = None
+        for anio, num in numeros:
+            raw = http_get(f"{BASE}/boc/{anio}/{num}/").text
+            fecha = _parse_fecha(raw) or date.today()
+            if SECCION_OPOSICIONES in raw:
+                self.fecha = fecha
+                return raw
+            primero = primero or (raw, fecha)
+        assert primero is not None
+        raw, self.fecha = primero
         return raw
 
     def parse(self, raw: str) -> list[dict[str, Any]]:
@@ -108,7 +126,7 @@ class BocScraper(BaseScraper):
         if SECCION_OPOSICIONES not in raw:
             # Número correcto pero sin oposiciones ese día; si ni parece un
             # sumario del BOC, el formato ha cambiado.
-            if "titboc" in raw or "Autoridades y personal" in raw:
+            if "titboc" in raw or "Autoridades y personal" in raw or _SECCION_RE.search(raw):
                 return []
             raise ValueError("El fragmento no es un sumario del BOC de Canarias")
 
