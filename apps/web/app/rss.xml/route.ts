@@ -3,7 +3,7 @@ import { getBaseUrl, rutaConvocatoria } from "@/lib/site";
 
 // Tampoco lee la petición, y un feed lo pollean los lectores en bucle: sin
 // caché, cada uno de ellos despertaba la base de datos.
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 function esc(s: string): string {
   return s

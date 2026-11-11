@@ -6,10 +6,18 @@ import { rutaConvocatoria } from "@/lib/site";
 /**
  * Invalida la caché de lo que cambia con la ingesta diaria.
  *
- * Las páginas se revalidan solas una vez al día (las fichas, una vez a la
- * semana) para que los rastreadores no tengan despierto el compute de Neon. Sin
- * este aviso, una convocatoria nueva tardaría hasta un día en salir en la
- * portada y los listados. Lo llama el job `revalidar` de `ingest.yml`.
+ * Las páginas se revalidan solas una vez a la semana, como red de seguridad;
+ * quien las refresca de verdad es este aviso, que llama el job `revalidar` de
+ * `ingest.yml` al terminar la ingesta.
+ *
+ * Devuelve las rutas de las fichas invalidadas para que ese mismo job las
+ * vuelva a pedir, junto con los listados del sitemap, nada más invalidarlas.
+ * Sin ese calentamiento las ~570 páginas de listado quedaban caducadas a la
+ * vez y se regeneraban una a una según iban llegando los rastreadores a lo
+ * largo del día: una consulta cada pocos minutos, justo lo que impide que el
+ * compute de Neon se suspenda (80 % del cupo mensual gastado el día 11, en
+ * noviembre de 2026). Regenerándolas seguidas, la base trabaja unos minutos
+ * —ya está despierta por la ingesta— y duerme el resto del día.
  *
  * Antes invalidaba todo el sitio con `revalidatePath("/", "layout")`. Eso
  * incluía las ~13.000 fichas, que los rastreadores volvían a pedir y Vercel
@@ -34,6 +42,7 @@ const LISTADOS: Array<[ruta: string, tipo?: "page"]> = [
   ["/oposiciones/[a]", "page"],
   ["/oposiciones/[a]/[b]", "page"],
   ["/sobre", "page"],
+  ["/estado", "page"],
   ["/rss.xml"],
   ["/sitemap.xml"],
 ];
@@ -55,7 +64,8 @@ export async function POST(request: Request) {
 
   for (const [ruta, tipo] of LISTADOS) revalidatePath(ruta, tipo);
   const fichas = await getIdsIngeridosDesde(DIAS_FICHAS);
-  for (const id of fichas) revalidatePath(rutaConvocatoria(id));
+  const rutas = fichas.map(rutaConvocatoria);
+  for (const ruta of rutas) revalidatePath(ruta);
 
-  return Response.json({ ok: true, listados: LISTADOS.length, fichas: fichas.length });
+  return Response.json({ ok: true, listados: LISTADOS.length, fichas: rutas.length, rutas });
 }
