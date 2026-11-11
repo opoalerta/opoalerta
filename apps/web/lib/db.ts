@@ -290,13 +290,13 @@ export async function getConvocatorias(limit: number): Promise<Convocatoria[]> {
 }
 
 /**
- * El estado de cada fuente. Hay dos puertas porque el layout entero depende de
- * cuál se use.
+ * El estado de cada fuente. Lee con `clientCacheable` porque el layout entero
+ * depende de ello.
  *
- * `getEstado` la llama el Footer, que vive en el layout raíz y por tanto se
- * renderiza en **todas** las páginas. Mientras leía con `no-store`, ese único
- * fetch marcaba como dinámico el árbol completo: daba igual el `revalidate` de
- * cada página, en producción ni siquiera los artículos del blog —markdown puro,
+ * La llama el Footer, que vive en el layout raíz y por tanto se renderiza en
+ * **todas** las páginas. Mientras leía con `no-store`, ese único fetch marcaba
+ * como dinámico el árbol completo: daba igual el `revalidate` de cada página,
+ * en producción ni siquiera los artículos del blog —markdown puro,
  * prerenderizados con `generateStaticParams`— llegaban cacheados. Vercel
  * respondía `no-store` y `x-vercel-cache: MISS` en todo el sitio.
  *
@@ -304,21 +304,13 @@ export async function getConvocatorias(limit: number): Promise<Convocatoria[]> {
  * hay fetch y Next prerenderiza tan contento. El síntoma solo aparecía con la
  * base conectada.
  *
- * Lo que el Footer saca de aquí es la etiqueta de fase del proyecto, que puede
- * ir con una hora de retraso sin que pase nada. Quien necesita el dato al
- * segundo es /estado, y para eso está `getEstadoEnVivo`.
+ * También la usa /estado. Tuvo su propia lectura sin caché, pero lo que
+ * muestra solo cambia con la ingesta y `/api/revalidar` ya la invalida.
  */
-type ClienteNeon = NonNullable<ReturnType<typeof client>>;
+type ClienteNeon = NonNullable<ReturnType<typeof clientCacheable>>;
 
 export async function getEstado(): Promise<EstadoFuente[]> {
   const sql = clientCacheable();
-  if (!sql) return [];
-  return consultarEstado(sql);
-}
-
-/** Lectura sin caché, para el panel de estado del servicio. */
-export async function getEstadoEnVivo(): Promise<EstadoFuente[]> {
-  const sql = client();
   if (!sql) return [];
   return consultarEstado(sql);
 }

@@ -1,4 +1,4 @@
-import { getEstadoEnVivo } from "@/lib/db";
+import { getEstado } from "@/lib/db";
 import { getBaseUrl } from "@/lib/site";
 import { Container } from "../components/Container";
 import { EstadoTable } from "../components/EstadoTable";
@@ -6,7 +6,11 @@ import { JsonLd } from "../components/JsonLd";
 import { NoticeBox } from "../components/NoticeBox";
 import { PageHeader } from "../components/PageHeader";
 
-export const dynamic = "force-dynamic";
+// Lo que muestra solo cambia cuando corre la ingesta, y `/api/revalidar` la
+// invalida al terminar. Con `force-dynamic` cada visita —está en el sitemap y
+// enlazada desde el pie de todas las páginas— era una consulta a Postgres, y
+// bastaba una cada cinco minutos para que el compute de Neon no se suspendiera.
+export const revalidate = 604800;
 
 export const metadata = {
   title: "Estado del servicio",
@@ -16,7 +20,7 @@ export const metadata = {
 };
 
 export default async function Estado() {
-  const fuentes = await getEstadoEnVivo();
+  const fuentes = await getEstado();
   const baseUrl = getBaseUrl();
 
   const structuredData = [
