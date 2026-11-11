@@ -131,6 +131,9 @@ jobs:
     needs: [ingest, enriquecer]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
+    # Lo normal son dos o tres minutos. Si la web va lenta, mejor cortar que
+    # tener al runner una hora martilleando la base.
+    timeout-minutes: 15
     steps:
       - name: Invalidar la caché de la web y regenerarla
         env:

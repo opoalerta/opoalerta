@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { unstable_cache } from "next/cache";
 
 export type Convocatoria = {
   id: string;
@@ -619,14 +620,37 @@ export type ConteoOposiciones = {
   porPar: Record<string, number>;
 };
 
+/** Etiqueta de caché del recuento de /oposiciones; la invalida `/api/revalidar`. */
+export const TAG_CONTEO_OPOSICIONES = "conteo-oposiciones";
+
+type PerfilConteo = { slug: string; incluye: string[]; excluye?: string[] };
+
 /**
  * Cuántas convocatorias tiene cada perfil, comunidad y par en los últimos 12
  * meses, en dos consultas. Lo usan el índice /oposiciones, los enlaces cruzados
  * de cada página (solo se enlaza lo que tiene contenido) y el sitemap.
+ *
+ * El resultado se guarda en la Data Cache y lo comparten todas las páginas. La
+ * consulta cruza cada convocatoria del año con los patrones de los 28 perfiles
+ * —cientos de miles de `LIKE`— y es, con diferencia, la más cara del sitio.
+ * Cada página de /oposiciones la repetía al regenerarse, más de 200 veces al
+ * día para obtener siempre lo mismo: con el compute de Neon a 0,5 CU una sola
+ * página tardó 84 s en regenerarse (2026-11-11). Era lo que más cupo gastaba.
+ *
+ * Sin base de datos no pasa por la caché: un recuento vacío guardado durante
+ * el build dejaría /oposiciones sin enlaces hasta la siguiente ingesta.
  */
-export async function contarOposiciones(
-  perfiles: { slug: string; incluye: string[]; excluye?: string[] }[],
-): Promise<ConteoOposiciones> {
+export async function contarOposiciones(perfiles: PerfilConteo[]): Promise<ConteoOposiciones> {
+  if (!process.env.DATABASE_URL) return { porPerfil: {}, porCcaa: {}, porPar: {} };
+  return contarOposicionesCacheado(perfiles);
+}
+
+const contarOposicionesCacheado = unstable_cache(consultarConteoOposiciones, ["conteo-oposiciones"], {
+  revalidate: 604800,
+  tags: [TAG_CONTEO_OPOSICIONES],
+});
+
+async function consultarConteoOposiciones(perfiles: PerfilConteo[]): Promise<ConteoOposiciones> {
   const vacio: ConteoOposiciones = { porPerfil: {}, porCcaa: {}, porPar: {} };
   const sql = clientCacheable();
   if (!sql) return vacio;
