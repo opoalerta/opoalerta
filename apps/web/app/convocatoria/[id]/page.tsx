@@ -23,7 +23,14 @@ import { JsonLd } from "../../components/JsonLd";
 // todos los proyectos de la cuenta. La ficha no depende de la fecha de hoy, y
 // lo que sí cambia —el plazo que calcula el enriquecimiento en los primeros
 // días— lo refresca /api/revalidar, que invalida las fichas recién ingeridas.
-export const revalidate = 604800;
+//
+// Y sin caducidad (2026-11): con una semana, las ~17.700 fichas caducaban a un
+// ritmo de una cada ~35 s, cada visita de rastreador a una caducada era una
+// consulta, y bastaba una cada cinco minutos para que el compute de Neon no se
+// suspendiera nunca (98,6 de 100 CU-h gastadas el día 14). Ahora una ficha
+// solo se regenera cuando la invalida /api/revalidar o cuando un deploy vacía
+// la caché, y para eso último está el workflow `calentar.yml`.
+export const revalidate = false;
 
 // Sin esto la ruta salía como dinámica (ƒ en el build) y `revalidate` no
 // servía de nada: cada visita renderizaba contra Neon y Vercel respondía MISS.

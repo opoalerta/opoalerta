@@ -1,0 +1,46 @@
+name: Calentar la caché tras un deploy
+
+# Cada deploy de producción en Vercel estrena una caché ISR vacía. Las ~17.700
+# fichas se iban regenerando una a una según las pedían los rastreadores, a lo
+# largo de días, y cada regeneración es una consulta: el compute de Neon pasó
+# 35 horas seguidas sin suspenderse tras el deploy del 11/11/2026. Pidiéndolas
+# todas seguidas la base trabaja media hora y luego puede dormir.
+#
+# Lo dispara el `deployment_status` que Vercel publica en GitHub; también se
+# puede lanzar a mano.
+
+on:
+  deployment_status:
+  workflow_dispatch:
+
+concurrency:
+  group: calentar
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  calentar:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Pedir todas las páginas del sitemap
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          BASE="${SITE_URL:-https://opoalerta.es}"
+          # El alias de producción tarda unos segundos en apuntar al deploy nuevo.
+          sleep 60
+          curl -fsS --retry 3 "$BASE/sitemap.xml" \
+            | grep -o '<loc>[^<]*' | sed 's/<loc>//' > urls.txt
+          echo "$BASE/rss.xml" >> urls.txt
+          echo "Calentando $(wc -l < urls.txt) páginas"
+          # Pocas en paralelo: con el compute de Neon a 1 CU, más concurrencia
+          # solo apila consultas. Un fallo no rompe nada: la página se genera
+          # con la primera visita, como antes.
+          xargs -P 4 -n 1 curl -s -o /dev/null --max-time 60 -A "opoalerta-calentar" < urls.txt || true

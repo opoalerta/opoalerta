@@ -16,7 +16,7 @@ import {
  * tiene nada: no se prerenderiza ninguna, se generan al pedirlas y quedan en
  * caché. Solo se enlazan (y van al sitemap) las que tienen contenido.
  */
-export const revalidate = 604800;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return [];

@@ -310,11 +310,27 @@ export async function getConvocatorias(limit: number): Promise<Convocatoria[]> {
  */
 type ClienteNeon = NonNullable<ReturnType<typeof clientCacheable>>;
 
+/** Etiqueta de caché del estado de las fuentes; la invalida `/api/revalidar`. */
+export const TAG_ESTADO = "estado-fuentes";
+
+/**
+ * Pasa por la Data Cache porque el Footer la pide en cada render: sin ella,
+ * regenerar cualquier ficha costaba dos consultas en vez de una. El fetch del
+ * driver de Neon es un POST y Next no lo guarda por su cuenta.
+ */
 export async function getEstado(): Promise<EstadoFuente[]> {
-  const sql = clientCacheable();
-  if (!sql) return [];
-  return consultarEstado(sql);
+  if (!process.env.DATABASE_URL) return [];
+  return getEstadoCacheado();
 }
+
+const getEstadoCacheado = unstable_cache(
+  async () => {
+    const sql = clientCacheable();
+    return sql ? consultarEstado(sql) : [];
+  },
+  ["estado-fuentes"],
+  { revalidate: false, tags: [TAG_ESTADO] },
+);
 
 async function consultarEstado(sql: ClienteNeon): Promise<EstadoFuente[]> {
   try {
@@ -646,7 +662,7 @@ export async function contarOposiciones(perfiles: PerfilConteo[]): Promise<Conte
 }
 
 const contarOposicionesCacheado = unstable_cache(consultarConteoOposiciones, ["conteo-oposiciones"], {
-  revalidate: 604800,
+  revalidate: false,
   tags: [TAG_CONTEO_OPOSICIONES],
 });
 

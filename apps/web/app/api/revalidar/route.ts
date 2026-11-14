@@ -1,14 +1,15 @@
 import { timingSafeEqual } from "node:crypto";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { getIdsIngeridosDesde, TAG_CONTEO_OPOSICIONES } from "@/lib/db";
+import { getIdsIngeridosDesde, TAG_CONTEO_OPOSICIONES, TAG_ESTADO } from "@/lib/db";
 import { rutaConvocatoria } from "@/lib/site";
 
 /**
  * Invalida la caché de lo que cambia con la ingesta diaria.
  *
- * Las páginas se revalidan solas una vez a la semana, como red de seguridad;
- * quien las refresca de verdad es este aviso, que llama el job `revalidar` de
- * `ingest.yml` al terminar la ingesta.
+ * Las páginas no caducan por tiempo (`revalidate = false`): este aviso, que
+ * llama el job `revalidar` de `ingest.yml` al terminar la ingesta, es lo único
+ * que las refresca. Ese job corre aunque falle algún scraper. Si dejara de
+ * correr, la web se quedaría congelada en la última ingesta buena.
  *
  * Devuelve las rutas de las fichas invalidadas para que ese mismo job las
  * vuelva a pedir, junto con los listados del sitemap, nada más invalidarlas.
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
   // Antes que las rutas: las páginas de /oposiciones leen este recuento de la
   // Data Cache, y regenerarlas con el de ayer no serviría de nada.
   revalidateTag(TAG_CONTEO_OPOSICIONES, { expire: 0 });
+  revalidateTag(TAG_ESTADO, { expire: 0 });
   for (const [ruta, tipo] of LISTADOS) revalidatePath(ruta, tipo);
   const fichas = await getIdsIngeridosDesde(DIAS_FICHAS);
   const rutas = fichas.map(rutaConvocatoria);
