@@ -10,7 +10,7 @@ import { PageHeader } from "../components/PageHeader";
 // invalida al terminar. Con `force-dynamic` cada visita —está en el sitemap y
 // enlazada desde el pie de todas las páginas— era una consulta a Postgres, y
 // bastaba una cada cinco minutos para que el compute de Neon no se suspendiera.
-export const revalidate = 604800;
+export const revalidate = false;
 
 export const metadata = {
   title: "Estado del servicio",
