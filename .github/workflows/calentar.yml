@@ -13,8 +13,12 @@ on:
   deployment_status:
   workflow_dispatch:
 
+# El grupo va por entorno porque la concurrencia se evalúa antes que el `if`
+# del job: con un grupo único, el deploy de preview de un PR de Dependabot
+# canceló a los 21 minutos el calentamiento de producción (14/11/2026). Un
+# deploy de producción nuevo sí cancela al anterior: su caché ya no sirve.
 concurrency:
-  group: calentar
+  group: calentar-${{ github.event.deployment.environment || 'manual' }}
   cancel-in-progress: true
 
 permissions:
