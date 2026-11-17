@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { LogoHorizontalDark } from "./Logo";
-import { getEstado } from "@/lib/db";
 
-function faseLabel(activas: number) {
-  if (activas <= 1) return "Fase 1 · MVP";
-  if (activas <= 5) return "Fase 2 · Cobertura nacional";
-  return "Fase 3 · Consolidación";
-}
-
-export async function Footer() {
-  const estado = await getEstado();
-  const activas = estado.filter((e) => e.estado === "ok").length;
-
+/**
+ * El pie no lee la base de datos, y tiene que seguir así.
+ *
+ * Vive en el layout raíz, de modo que cualquier dato que lea pasa a formar parte
+ * de las ~18.900 páginas. Hasta noviembre de 2026 leía `getEstado` solo para
+ * pintar una etiqueta de fase, y esa lectura lleva la etiqueta de caché
+ * `estado-fuentes`, que /api/revalidar invalida tras cada ingesta. Next
+ * invalida con ella todas las páginas que la usaron: cada noche el sitio entero
+ * quedaba caducado (`x-vercel-cache: STALE`) y los rastreadores regeneraban
+ * las fichas una a una. Cada regeneración es una escritura ISR en Vercel y una
+ * consulta a Neon, justo lo que el resto de la caché intenta evitar.
+ */
+export function Footer() {
   return (
     <footer className="bg-navy text-white">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -133,7 +135,7 @@ export async function Footer() {
           </div>
         </div>
         <div className="pt-4 text-sm text-white/70">
-          Proyecto cívico · Open source · {faseLabel(activas)}
+          Proyecto cívico · Open source
         </div>
       </div>
     </footer>

@@ -65,6 +65,11 @@ export async function POST(request: Request) {
 
   // Antes que las rutas: las páginas de /oposiciones leen este recuento de la
   // Data Cache, y regenerarlas con el de ayer no serviría de nada.
+  //
+  // Invalidar una etiqueta invalida también todas las páginas que la leyeron.
+  // Por eso ninguna de las dos puede leerse desde el layout ni desde las
+  // fichas: hoy solo las usan la portada, /sobre, /estado y /oposiciones,
+  // que están en LISTADOS de todos modos. Ver la nota de Footer.tsx.
   revalidateTag(TAG_CONTEO_OPOSICIONES, { expire: 0 });
   revalidateTag(TAG_ESTADO, { expire: 0 });
   for (const [ruta, tipo] of LISTADOS) revalidatePath(ruta, tipo);
