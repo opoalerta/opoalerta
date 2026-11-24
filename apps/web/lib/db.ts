@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { sqlClient } from "./sql";
 import { unstable_cache } from "next/cache";
 
 export type Convocatoria = {
@@ -40,32 +40,22 @@ export type EstadoFuente = {
 };
 
 /**
- * Cliente Neon (driver HTTP, apto para funciones serverless).
+ * Cliente Postgres (ver `lib/sql.ts`).
  * Devuelve null si no hay DATABASE_URL, para que build y previews no rompan.
+ *
+ * Con el driver HTTP de Neon había dos variantes: una con `cache: "no-store"`
+ * para que la Data Cache de Next no sirviera resultados obsoletos, y otra
+ * cacheable para la ficha. Por TCP no pasa por `fetch()`, así que Next no
+ * cachea nada por su cuenta: la frescura la deciden solo el `revalidate` de
+ * cada página y `unstable_cache`, que es lo que ya mandaba.
  */
 function client() {
-  const url = process.env.DATABASE_URL;
-  if (!url) return null;
-  // Sin caché: el driver de Neon usa fetch(), que Next puede cachear en la Data
-  // Cache y servir resultados obsoletos (p. ej. una ficha pedida antes de existir
-  // la convocatoria seguiría dando 404 tras ingerirla). Los datos son dinámicos.
-  return neon(url, { fetchOptions: { cache: "no-store" } });
+  return sqlClient();
 }
 
-/**
- * Igual que `client()`, pero dejando que Next cachee el fetch.
- *
- * Solo para la ficha de convocatoria, que es contenido de archivo: una vez
- * publicada en el boletín no cambia. `no-store` la obligaba a ser dinámica, y
- * con ~1.400 fichas que Google tiene que rastrear eso significaba una consulta
- * a Postgres y un `cache-control: no-store` por cada visita del robot. La
- * página declara su propio `revalidate`, que es quien manda sobre la frescura
- * —incluida la de un 404 servido antes de que la ingesta trajera la ficha.
- */
+/** Igual que `client()`; se conserva el nombre para no tocar cada llamada. */
 function clientCacheable() {
-  const url = process.env.DATABASE_URL;
-  if (!url) return null;
-  return neon(url);
+  return sqlClient();
 }
 
 /**
@@ -681,7 +671,7 @@ async function consultarConteoOposiciones(perfiles: PerfilConteo[]): Promise<Con
 
   try {
     const [pares, ccaas] = await Promise.all([
-      sql.query(
+      sql.unsafe(
         `WITH c AS (
            SELECT translate(lower(titulo), 'áéíóúüñàèìòùâêîôûãõç', 'aeiouunaeiouaeiouaoc') AS t, ccaa
            FROM convocatorias

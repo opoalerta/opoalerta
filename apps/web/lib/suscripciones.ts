@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { sqlClient } from "./sql";
 import { randomUUID } from "crypto";
 
 export type FiltrosSuscripcion = {
@@ -9,9 +9,7 @@ export type FiltrosSuscripcion = {
 };
 
 function client() {
-  const url = process.env.DATABASE_URL;
-  if (!url) return null;
-  return neon(url, { fetchOptions: { cache: "no-store" } });
+  return sqlClient();
 }
 
 function limpiar(v: string | null | undefined): string | null {

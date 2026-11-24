@@ -39,6 +39,7 @@ beforeEach((t) => {
   environment = { ...process.env };
   delete process.env.DATABASE_URL;
   delete process.env.VERCEL;
+  delete process.env.TRUSTED_CLIENT_IP_HEADER;
   process.env.RESEND_API_KEY = "test-only";
   process.env.TELEGRAM_BOT_TOKEN = "123:test-only";
   process.env.TELEGRAM_WEBHOOK_SECRET = secret;
@@ -207,8 +208,8 @@ test("webhook accepts /stop addressed to this bot", async () => {
 
 function limiter(result = 0, fail = false) {
   const calls = [];
-  const loaded = load("lib/alert-rate-limit.ts", { "@neondatabase/serverless": {
-    neon: () => async (_query, policies) => { calls.push(JSON.parse(policies)); if (fail) throw new Error("private"); return [{ retry_after: result }]; },
+  const loaded = load("lib/alert-rate-limit.ts", { "./sql": {
+    sqlClient: () => async (_query, policies) => { calls.push(JSON.parse(policies)); if (fail) throw new Error("private"); return [{ retry_after: result }]; },
   } });
   return { ...loaded, calls };
 }
@@ -232,6 +233,18 @@ test("limiter uses HMAC keys and ignores forged IP headers outside Vercel", asyn
   const keys = JSON.stringify(api.calls);
   for (const value of ["user@example.com", "1.2.3.4", secret]) assert.ok(!keys.includes(value));
   assert.equal(api.calls[0].length, 5);
+});
+
+test("trusted proxy header buckets by client IP and fails closed on bad values", async () => {
+  process.env.DATABASE_URL = "postgresql://test-only";
+  process.env.TRUSTED_CLIENT_IP_HEADER = "CF-Connecting-IP";
+  const api = limiter();
+  assert.equal((await api.limitSubscription(request({}, { "cf-connecting-ip": "bad" }), "telegram")).status, 503);
+  await api.limitSubscription(request({}, { "cf-connecting-ip": "1.2.3.4" }), "telegram");
+  await api.limitSubscription(request({}, { "cf-connecting-ip": "9.8.7.6" }), "telegram");
+  assert.notDeepEqual(api.calls[0], api.calls[1]);
+  // x-forwarded-for sigue sin valer fuera de Vercel aunque haya cabecera de confianza.
+  assert.equal((await api.limitSubscription(request({}, { "x-forwarded-for": "1.2.3.4" }), "telegram")).status, 503);
 });
 
 test("Vercel IP parsing fails closed; quota wait is returned", async () => {

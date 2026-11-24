@@ -24,6 +24,9 @@ const cabecerasSeguridad = [
 ];
 
 const nextConfig: NextConfig = {
+  // Servidor autocontenido en `.next/standalone` para la imagen Docker
+  // (Dockerfile). En Vercel no cambia nada: su build ignora esta opción.
+  output: "standalone",
   // `x-powered-by: Next.js` solo le sirve a quien busca versiones vulnerables.
   poweredByHeader: false,
   async headers() {
