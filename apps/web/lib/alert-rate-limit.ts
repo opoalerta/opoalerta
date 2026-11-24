@@ -1,6 +1,6 @@
 import { createHmac } from "node:crypto";
 import { isIP } from "node:net";
-import { neon } from "@neondatabase/serverless";
+import { sqlClient } from "./sql";
 
 export type LimitResult = { ok: true } | { ok: false; status: 429 | 503; retryAfter?: number };
 
@@ -8,11 +8,13 @@ export async function limitSubscription(request: Request, channel: "email" | "te
   const secret = process.env.ALERT_RATE_LIMIT_SECRET;
   const url = process.env.DATABASE_URL;
   if (!url || !secret || secret.length < 32) return { ok: false, status: 503 };
-  // Only trust the header on Vercel, where the ingress overwrites it.
-  // Other deployments share one conservative client bucket until a trusted proxy is configured.
+  // Only trust a client-IP header that the ingress overwrites: x-forwarded-for on Vercel, or the
+  // header named in TRUSTED_CLIENT_IP_HEADER (e.g. cf-connecting-ip) when the origin only accepts
+  // traffic from that proxy. Otherwise every client shares one conservative bucket.
   let client = "shared";
-  if (process.env.VERCEL === "1") {
-    const ip = request.headers.get("x-forwarded-for")?.trim() ?? "";
+  const trustedHeader = process.env.VERCEL === "1" ? "x-forwarded-for" : process.env.TRUSTED_CLIENT_IP_HEADER?.trim().toLowerCase();
+  if (trustedHeader) {
+    const ip = request.headers.get(trustedHeader)?.trim() ?? "";
     if (!isIP(ip)) return { ok: false, status: 503 };
     client = ip;
   }
@@ -31,8 +33,14 @@ export async function limitSubscription(request: Request, channel: "email" | "te
     );
   }
   try {
-    const sql = neon(url, { fetchOptions: { cache: "no-store", signal: AbortSignal.timeout(10000) } });
-    const rows = await sql`SELECT consumir_cuota_alertas(${JSON.stringify(policies)}::jsonb) AS retry_after`;
+    const sql = sqlClient();
+    if (!sql) return { ok: false, status: 503 };
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("timeout")), 10000); });
+    const rows = await Promise.race([
+      sql`SELECT consumir_cuota_alertas(${JSON.stringify(policies)}::jsonb) AS retry_after`,
+      timeout,
+    ]).finally(() => clearTimeout(timer));
     const retryAfter = rows[0]?.retry_after;
     if (!Number.isInteger(retryAfter) || retryAfter < 0) return { ok: false, status: 503 };
     return retryAfter === 0 ? { ok: true } : { ok: false, status: 429, retryAfter };
