@@ -16,6 +16,14 @@ jobs:
         working-directory: scrapers
     steps:
       - uses: actions/checkout@v7
+      - name: Tailscale (Postgres del VPS)
+        # La base vive en un VPS y solo escucha en la red privada de Tailscale.
+        # tag:ci solo puede llegar al 5432 de ese servidor (política del tailnet).
+        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
