@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getConvocatoriaById, type ConvocatoriaDetalle } from "@/lib/db";
+import { getConvocatoriaById, getConvocatoriaIds, type ConvocatoriaDetalle } from "@/lib/db";
 import { CCAA_NOMBRE } from "@/lib/ccaa";
 import { getBaseUrl } from "@/lib/site";
 import { tituloCorto } from "@/lib/titulo";
@@ -28,17 +28,25 @@ import { JsonLd } from "../../components/JsonLd";
 // ritmo de una cada ~35 s, cada visita de rastreador a una caducada era una
 // consulta, y bastaba una cada cinco minutos para que el compute de Neon no se
 // suspendiera nunca (98,6 de 100 CU-h gastadas el día 14). Ahora una ficha
-// solo se regenera cuando la invalida /api/revalidar o cuando un deploy vacía
-// la caché, y para eso último está el workflow `calentar.yml`.
+// solo se regenera cuando la invalida /api/revalidar.
 export const revalidate = false;
 
-// Sin esto la ruta salía como dinámica (ƒ en el build) y `revalidate` no
-// servía de nada: cada visita renderizaba contra Neon y Vercel respondía MISS.
-// Con la lista vacía no se prerenderiza ninguna en el build —son miles—, pero
-// la primera visita genera la ficha y la deja en caché, como en
-// /oposiciones/[a]/[b].
-export function generateStaticParams() {
-  return [];
+// En producción se prerenderizan todas en el build (2026-11-24). Antes la
+// lista iba vacía y cada deploy estrenaba una caché sin fichas: `calentar.yml`
+// las pedía todas después, y cada una era una escritura ISR. Eran ~74.000
+// unidades el día del deploy y otras tantas en los dos siguientes, más de la
+// mitad del cupo mensual de Hobby (200.000) por un solo deploy, cuando el día
+// normal no pasa de ~3.000. Lo prerenderizado viaja con el deploy y no cuenta
+// como escritura; solo la cuenta lo que luego invalida /api/revalidar.
+//
+// En los previews no: cada PR, Dependabot incluido, construiría miles de
+// páginas contra Neon para nada. Allí la primera visita genera la ficha, como
+// antes. Las que entren después del deploy, igual (`dynamicParams` sigue
+// activo por defecto).
+export async function generateStaticParams() {
+  if (process.env.VERCEL_ENV !== "production") return [];
+  const fichas = await getConvocatoriaIds();
+  return fichas.map(({ id }) => ({ id }));
 }
 
 function fmtFecha(iso: string | null): string {
